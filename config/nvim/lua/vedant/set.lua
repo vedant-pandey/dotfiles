@@ -8,3 +8,4 @@ vim.opt.expandtab = true
 vim.opt.smartindent = true
 vim.opt.wrap = true
 vim.opt.ww = "h,l"
+vim.cmd.colorscheme = "catppuccin"
