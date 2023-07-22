@@ -42,6 +42,16 @@ vim.keymap.set("n", "<C-b>", "<C-b>zz")
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
+local telescope_builtin = require("telescope.builtin")
+
+vim.keymap.set('n', '<leader>F', telescope_builtin.find_files, {})
+vim.keymap.set('n', '<leader>ff', telescope_builtin.git_files, {})
+vim.keymap.set('n', '<leader>fh', telescope_builtin.help_tags, {})
+vim.keymap.set('n', '<leader>st', telescope_builtin.live_grep, {})
+vim.keymap.set('n', '<leader>bf', telescope_builtin.buffers, {})
+vim.keymap.set('n', '<leader>fm', telescope_builtin.marks, {})
+
+
 -- set after plugin installs
 -- vim.keymap.set("n", "<leader>x", ":BufferKill<CR>")
 -- vim.keymap.set("n", "<leader>vb", "<cmd>vsplit<CR><cmd>Telescope find_files<cr>" -- split buffer and select what to open)
