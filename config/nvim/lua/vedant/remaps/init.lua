@@ -1,7 +1,6 @@
 vim.g.mapleader = " "
 
 -- basic stuff
-vim.keymap.set("n", "<leader>e", ":Vex<cr>")
 vim.keymap.set("n", "<leader>q", ":q<cr>")
 vim.keymap.set("n", "<leader>h", ":noh<CR>")
 vim.keymap.set("n", "<leader><CR>", ":so %<CR>")
@@ -9,6 +8,7 @@ vim.keymap.set("n", "<leader>w", ":w<cr>")
 vim.keymap.set("n", "<leader>s", ":w<cr>:so %<CR>")
 vim.keymap.set("i", "jk", "<esc>")
 vim.keymap.set("n", "<BS>", "X")
+vim.keymap.set("n", "VD", [[V"_D]])
 
 -- text editting skillz
 vim.keymap.set("n", "<leader>P", [["+P<CR>]])

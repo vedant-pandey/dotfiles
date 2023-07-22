@@ -7,3 +7,5 @@ vim.keymap.set('n', '<leader>st', telescope_builtin.live_grep, {})
 vim.keymap.set('n', '<leader>bf', telescope_builtin.buffers, {})
 vim.keymap.set('n', '<leader>fm', telescope_builtin.marks, {})
 
+-- file browser remaps
+vim.keymap.set('n', '<leader>e', "<cmd>Telescope find_files<CR>", {})

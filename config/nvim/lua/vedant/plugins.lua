@@ -38,4 +38,13 @@ require("lazy").setup({
         tag = "0.1.2",
         dependencies = { "nvim-lua/plenary.nvim" },
     },
+    {
+        "nvim-telescope/telescope-file-browser.nvim",
+        dependencies = {
+            "nvim-telescope/telescope.nvim",
+            "nvim-lua/plenary.nvim"
+        }
+    },
 })
+
+require("telescope").load_extension "file_browser"
