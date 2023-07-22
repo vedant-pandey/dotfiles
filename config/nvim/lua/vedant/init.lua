@@ -1,3 +1,4 @@
 require("vedant.plugins")
-require("vedant.remap")
+require("vedant.remaps")
 require("vedant.set")
+
