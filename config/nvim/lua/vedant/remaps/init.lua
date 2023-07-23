@@ -44,6 +44,5 @@ vim.keymap.set("n", "N", "Nzzzv")
 
 -- set after plugin installs
 -- vim.keymap.set("n", "<leader>x", ":BufferKill<CR>")
--- vim.keymap.set("n", "<leader>vb", "<cmd>vsplit<CR><cmd>Telescope find_files<cr>" -- split buffer and select what to open)
 -- vim.keymap.set("n", "<leader>`", "<cmd>ToggleTerm<cr>")
 require("vedant.remaps.telescope")

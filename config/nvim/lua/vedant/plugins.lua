@@ -45,6 +45,27 @@ require("lazy").setup({
             "nvim-lua/plenary.nvim"
         }
     },
+    {
+        "yamatsum/nvim-cursorline",
+    },
+    {
+        "neovim/nvim-lspconfig",
+    },
 })
 
+-- plugin configs
+-- telescope file browser
 require("telescope").load_extension "file_browser"
+
+require("nvim-cursorline").setup {
+  cursorline = {
+    enable = true,
+    timeout = 1000,
+    number = false,
+  },
+  cursorword = {
+    enable = true,
+    min_length = 3,
+    hl = { underline = true },
+  }
+}
