@@ -9,4 +9,4 @@ vim.keymap.set('n', '<leader>fm', telescope_builtin.marks, {})
 vim.keymap.set("n", "<leader>fv", "<cmd>vsplit<CR><cmd>Telescope find_files<cr>") -- split buffer and select what to open
 
 -- file browser remaps
-vim.keymap.set('n', '<leader>e', "<cmd>Telescope find_files<CR>", {})
+vim.keymap.set('n', '<leader>fe', "<cmd>Telescope file_browser<CR>", {})

@@ -14,8 +14,8 @@ vim.keymap.set("v", "D", [["_D]])
 vim.keymap.set("v", "d", [["_d]])
 
 -- text editting skillz
-vim.keymap.set("n", "<leader>P", [["+P<CR>]])
-vim.keymap.set("v", "<leader>p", [["_dP<CR>]])
+vim.keymap.set("n", "<leader>p", [["+P<CR>]])
+vim.keymap.set("v", "<leader>p", [["_d"+P<CR>]])
 vim.keymap.set("n", "<leader>y", [["+y]])
 vim.keymap.set("v", "<leader>d", [["_d]])
 vim.keymap.set("n", "<leader>va", "ggVG")
