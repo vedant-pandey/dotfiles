@@ -42,6 +42,8 @@ vim.keymap.set("n", "N", "Nzzzv")
 -- Nvim tree
 vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<cr>")
 vim.keymap.set("n", "<leader>gg", "<cmd>LazyGit<cr>")
+-- LSP keymaps
+vim.keymap.set("n", "<leader>li", "<cmd>LspInfo<cr>")
 -- set after plugin installs
 -- vim.keymap.set("n", "<leader>x", ":BufferKill<CR>")
 -- vim.keymap.set("n", "<leader>`", "<cmd>ToggleTerm<cr>")
