@@ -23,3 +23,7 @@ cargo install ripgrep
 brew install gh
 # install java
 # install gradle
+# install yabai
+brew install koekeishiya/formulae/yabai
+# install skhd
+brew install koekeishiya/formulae/skhd
