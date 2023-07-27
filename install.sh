@@ -18,3 +18,4 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 cargo install fd-find
 # install rip grep
 cargo install ripgrep
+# install docker
