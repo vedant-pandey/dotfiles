@@ -19,3 +19,7 @@ cargo install fd-find
 # install rip grep
 cargo install ripgrep
 # install docker
+# install gh
+brew install gh
+# install java
+# install gradle
