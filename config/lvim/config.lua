@@ -8,7 +8,7 @@ lvim.plugins = {
   {
     'catppuccin/nvim', name = 'catppuccin', priority = 1000
   },
-  { 'wakatime/vim-wakatime' },
+  -- { 'wakatime/vim-wakatime' },
   { 'nvim-tree/nvim-web-devicons' },
   {
     'pwntester/octo.nvim',
@@ -65,6 +65,16 @@ lvim.plugins = {
   },
 }
 
+lvim.keys.normal_mode["<leader>pc"] = false
+lvim.keys.normal_mode["<leader>pd"] = false
+lvim.keys.normal_mode["<leader>pi"] = false
+lvim.keys.normal_mode["<leader>pl"] = false
+lvim.keys.normal_mode["<leader>pp"] = false
+lvim.keys.normal_mode["<leader>ps"] = false
+lvim.keys.normal_mode["<leader>pS"] = false
+lvim.keys.normal_mode["<leader>pu"] = false
+
+
 -- VeReMaps
 lvim.keys.visual_mode["<leader>v;"] = "g<C-g>" -- count characters
 lvim.keys.normal_mode["<leader>vn"] = ":ene<CR>" -- new empty
@@ -92,3 +102,28 @@ vim.opt.wrap = true
 vim.opt.clipboard = ""
 lvim.keys.normal_mode["n"] = "nzzzv"
 lvim.keys.normal_mode["N"] = "Nzzzv"
+lvim.keys.insert_mode["jk"] = "<esc>"
+
+lvim.keys.normal_mode["<BS>"] = [["_X]]
+lvim.keys.normal_mode["D"] = [["_D]]
+lvim.keys.normal_mode["d"] = [["_d]]
+lvim.keys.visual_mode["D"] = [["_D]]
+lvim.keys.visual_mode["d"] = [["_d]]
+-- text editting skillz
+lvim.keys.normal_mode["<leader>p"] = [["+P<CR>]]
+lvim.keys.visual_mode["<leader>p"] = [["_d"+P<CR>]]
+lvim.keys.normal_mode["<leader>y"] = [["+y]]
+lvim.keys.visual_mode["<leader>d"] = [["_d]]
+lvim.keys.normal_mode["<leader>va"] = "ggVG"
+
+vim.opt.scrolloff = 8
+vim.opt.nu = true
+vim.opt.rnu = true
+vim.opt.ts = 4
+vim.opt.sts = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+vim.opt.smartindent = true
+vim.opt.wrap = true
+vim.opt.ww = "h,l"
+
