@@ -68,7 +68,12 @@ require("lazy").setup({
     },
     {
         "williamboman/mason.nvim",
-        build = ":MasonUpdate" -- :MasonUpdate updates registry contents
+        build = ":MasonUpdate", -- :MasonUpdate updates registry contents
+        opts = {
+            ensure_installed = {
+                "gopls",
+            }
+        },
     },
     {
         "williamboman/mason-lspconfig.nvim",
