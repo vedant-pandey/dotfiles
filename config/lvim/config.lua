@@ -115,6 +115,10 @@ lvim.keys.visual_mode["<leader>p"] = [["_d"+P<CR>]]
 lvim.keys.normal_mode["<leader>y"] = [["+y]]
 lvim.keys.visual_mode["<leader>d"] = [["_d]]
 lvim.keys.normal_mode["<leader>va"] = "ggVG"
+lvim.keys.normal_mode["<leader>va"] = "ggVG"
+
+lvim.keys.normal_mode["<C-n>"] = "<cmd>BufferLineCycleNext<cr>"
+lvim.keys.normal_mode["<C-p>"] = "<cmd>BufferLineCyclePrev<cr>"
 
 vim.opt.scrolloff = 8
 vim.opt.nu = true
