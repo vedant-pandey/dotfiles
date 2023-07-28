@@ -27,3 +27,10 @@ brew install gh
 brew install koekeishiya/formulae/yabai
 # install skhd
 brew install koekeishiya/formulae/skhd
+# install glow
+brew install glow
+# install jq
+brew install jq
+# install proto buffers
+brew install protobuf
+#
