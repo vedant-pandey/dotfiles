@@ -112,7 +112,8 @@ lvim.keys.visual_mode["d"] = [["_d]]
 -- text editting skillz
 lvim.keys.normal_mode["<leader>p"] = [["+P<CR>]]
 lvim.keys.visual_mode["<leader>p"] = [["_d"+P<CR>]]
-lvim.keys.normal_mode["<leader>y"] = [["+y]]
+lvim.keys.visual_mode["<leader>y"] = [["+y]]
+lvim.keys.normal_mode["<leader>y"] = [[V"+y]]
 lvim.keys.visual_mode["<leader>d"] = [["_d]]
 lvim.keys.normal_mode["<leader>va"] = "ggVG"
 lvim.keys.normal_mode["<leader>va"] = "ggVG"
