@@ -26,7 +26,7 @@ export PATH="$PATH:$ANDROID_HOME/tools/bin"
 export PATH="$PATH:$ANDROID_HOME/platform-tools"
 export PATH="$PATH":"$HOME/.pub-cache/bin"
 export PATH="$PATH":"/Users/vedant/Library/Python/3.11/bin"
-export GOPATH="$HOME/go/"
+export GOPATH="$HOME/go"
 
 export CPPFLAGS="-I/opt/homebrew/opt/openjdk@11/include"
 export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-11.jdk/Contents/Home"
