@@ -33,4 +33,8 @@ brew install glow
 brew install jq
 # install proto buffers
 brew install protobuf
+# fswatch(live reload)
+brew install fswatch
+# install GNU parallel
+brew install parallel
 #
