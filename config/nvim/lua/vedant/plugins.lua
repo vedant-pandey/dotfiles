@@ -98,6 +98,12 @@ require("lazy").setup({
             {'L3MON4D3/LuaSnip'},     -- Required
         }
     },
+    {
+        'numToStr/Comment.nvim',
+        config = function()
+            require('Comment').setup()
+        end
+    },
 })
 
 -- plugin configs
