@@ -5,17 +5,17 @@ yabai -m config layout bsp
 yabai -m config window_placement second_child
 
 # Padding settings
-yabai -m config top_padding 12
-yabai -m config bottom_padding 12
-yabai -m config left_padding 12
-yabai -m config right_padding 12
-yabai -m config window_gap 12
+yabai -m config top_padding 0
+yabai -m config bottom_padding 0
+yabai -m config left_padding 0
+yabai -m config right_padding 0
+yabai -m config window_gap 0
 
 # center mouse on window with focus
 yabai -m config mouse_follows_focus on
 
 # modifier for clicking and dragging with mouse
-yabai -m config mouse_modifier alt
+yabai -m config mouse_modifier fn
 # set modifier + left-click drag to move window
 yabai -m config mouse_action1 move
 # set modifier + right-click drag to resize window
@@ -26,5 +26,4 @@ yabai -m config mouse_action2 resize
 yabai -m mouse_drop_action swap
 
 # yabai -m rule --add app="^Karabiner-Elements$"manage=off
-yabai -m rule --add app="^System Settings$"manage=off
-yabai -m rule --add app="^Calculator$"manage=off
+yabai -m rule --add app="^(System Settings|Calculator|Calendar)$" manage=off
