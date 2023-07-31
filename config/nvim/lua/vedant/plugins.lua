@@ -14,7 +14,7 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Plugins list
 require("lazy").setup({
-    { 
+    {
         "folke/which-key.nvim",
         config = function()
             vim.o.timeout = true
@@ -99,12 +99,16 @@ require("lazy").setup({
         }
     },
     {
+        'hrsh7th/nvim-cmp'
+    },
+    {
         'numToStr/Comment.nvim',
         config = function()
             require('Comment').setup()
         end
     },
 })
+
 
 -- plugin configs
 -- telescope file browser
@@ -138,6 +142,8 @@ require("mason-lspconfig").setup_handlers {
         require("rust-tools").setup {}
     end
 }
+
+require('cmp').setup()
 
 local lsp = require('lsp-zero').preset({})
 

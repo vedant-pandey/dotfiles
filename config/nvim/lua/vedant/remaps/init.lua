@@ -5,6 +5,7 @@ vim.keymap.set("n", "<leader>q", ":q<cr>")
 vim.keymap.set("n", "<leader>a", ":qa<cr>")
 vim.keymap.set("n", "<leader>h", ":noh<CR>")
 vim.keymap.set("n", "<leader><CR>", ":so %<CR>")
+vim.keymap.set("n", "<leader><ESC>", ":so ~/.config/nvim/init.lua<CR>")
 vim.keymap.set("n", "<leader>w", ":w<cr>")
 vim.keymap.set("n", "<leader>s", ":w<cr>:so %<CR>")
 vim.keymap.set("i", "jk", "<esc>")
@@ -15,7 +16,7 @@ vim.keymap.set({"n", "v"}, "d", [["_d]])
 -- text editting skillz
 vim.keymap.set("n", "<leader>p", [["+P<CR>]])
 vim.keymap.set("v", "<leader>p", [["_d"+P<CR>]])
-vim.keymap.set("n", "<leader>y", [["+y]])
+vim.keymap.set({"n", "v"}, "<leader>y", [["+y]])
 vim.keymap.set("n", "<leader>va", "ggVG")
 
 -- Text moving skills

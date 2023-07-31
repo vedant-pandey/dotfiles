@@ -49,3 +49,6 @@ bindkey -e
 alias y="yarn"
 eval "$(fnm env --use-on-cd)"
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/amazon-corretto-11.jdk/Contents/Home
+alias vi=nvim
+
+export PATH="$PATH":"$GOPATH/bin"
