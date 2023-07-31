@@ -2,27 +2,32 @@ vim.g.mapleader = " "
 
 -- basic stuff
 vim.keymap.set("n", "<leader>q", ":q<cr>")
+vim.keymap.set("n", "<leader>a", ":qa<cr>")
 vim.keymap.set("n", "<leader>h", ":noh<CR>")
 vim.keymap.set("n", "<leader><CR>", ":so %<CR>")
 vim.keymap.set("n", "<leader>w", ":w<cr>")
 vim.keymap.set("n", "<leader>s", ":w<cr>:so %<CR>")
 vim.keymap.set("i", "jk", "<esc>")
 vim.keymap.set("n", "<BS>", [["_X]])
-vim.keymap.set("n", "D", [["_D]])
-vim.keymap.set("n", "d", [["_d]])
-vim.keymap.set("v", "D", [["_D]])
-vim.keymap.set("v", "d", [["_d]])
+vim.keymap.set({"n", "v"}, "D", [["_D]])
+vim.keymap.set({"n", "v"}, "d", [["_d]])
 
 -- text editting skillz
 vim.keymap.set("n", "<leader>p", [["+P<CR>]])
 vim.keymap.set("v", "<leader>p", [["_d"+P<CR>]])
 vim.keymap.set("n", "<leader>y", [["+y]])
-vim.keymap.set("v", "<leader>d", [["_d]])
 vim.keymap.set("n", "<leader>va", "ggVG")
 
--- highlight and move
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+-- Text moving skills
+vim.keymap.set("v", "<M-j>", ":m '>+1<CR>gv=gv")
+vim.keymap.set("v", "<M-k>", ":m '<-2<CR>gv=gv")
+vim.keymap.set("v", "<M-J>", ":t '><CR>gv=gv")
+vim.keymap.set("v", "<M-K>", ":t '<-1<CR>")
+vim.keymap.set("n", "<M-j>", ":m .+1<CR>")
+vim.keymap.set("n", "<M-k>", ":m .-2<CR>")
+vim.keymap.set("n", "<M-J>", ":t .<CR>")
+vim.keymap.set("n", "<M-K>", ":t .-1<CR>")
+-- vim.keymap.set("n", "<leader>va", "ggVG")
 
 -- window stuff
 vim.keymap.set("n", "<C-l>", "<C-w><C-l>")
@@ -42,9 +47,13 @@ vim.keymap.set("n", "N", "Nzzzv")
 -- Nvim tree
 vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<cr>")
 vim.keymap.set("n", "<leader>gg", "<cmd>LazyGit<cr>")
+
 -- LSP keymaps
 vim.keymap.set("n", "<leader>li", "<cmd>LspInfo<cr>")
 vim.keymap.set("n", "<leader>/", "<Plug>(comment_toggle_linewise_current)")
+vim.keymap.set("v", "<leader>/", "<Plug>(comment_toggle_linewise_visual)")
+-- vim.keymap.set("v", "<leader>/", "gc")
+
 -- set after plugin installs
 -- vim.keymap.set("n", "<leader>x", ":BufferKill<CR>")
 -- vim.keymap.set("n", "<leader>`", "<cmd>ToggleTerm<cr>")
