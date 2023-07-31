@@ -37,4 +37,5 @@ brew install protobuf
 brew install fswatch
 # install GNU parallel
 brew install parallel
+# install obsidian
 #
