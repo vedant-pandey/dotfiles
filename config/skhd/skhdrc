@@ -1,9 +1,56 @@
-# change window focus within space
-fn + cmd - j : yabai -m window --focus south
-fn + cmd - k : yabai -m window --focus north
-fn + cmd - h : yabai -m window --focus west
-fn + cmd - l : yabai -m window --focus east
+# base remaps
+fn - j : yabai -m window --focus south
+fn - k : yabai -m window --focus north
+fn - h : yabai -m window --focus west
+fn - l : yabai -m window --focus east
+fn - o : yabai -m space --rotate 270
+fn - i : yabai -m space --rotate 90
+fn - m : yabai -m window --toggle zoom-fullscreen 
+fn - n : yabai -m space --balance # occupy same area
 
-#change focus between external displays (left and right)
-fn + shift + cmd - h: yabai -m display --focus west
-fn + shift + cmd - l: yabai -m display --focus east
+# swap windows
+fn + shift - j : yabai -m window --swap south
+fn + shift - k : yabai -m window --swap north
+fn + shift - h : yabai -m window --swap west
+fn + shift - l : yabai -m window --swap east
+
+# move window and split
+fn + cmd - j : yabai -m window --warp south
+fn + cmd - k : yabai -m window --warp north
+fn + cmd - h : yabai -m window --warp west
+fn + cmd - l : yabai -m window --warp east
+
+# move window to prev and next space
+fn + cmd - p : yabai -m window --space prev;
+fn + cmd - n : yabai -m window --space next;
+fn + cmd - 1 : yabai -m window --space 1;
+fn + cmd - 2 : yabai -m window --space 2;
+fn + cmd - 3 : yabai -m window --space 3;
+fn + cmd - 4 : yabai -m window --space 4;
+fn + cmd - 5 : yabai -m window --space 5;
+fn + cmd - 6 : yabai -m window --space 6;
+fn + cmd - 7 : yabai -m window --space 7;
+fn + cmd - 8 : yabai -m window --space 8;
+
+# Not currently using these, maybe in future
+#
+#
+# change focus between external displays (left and right)
+# fn + shift + alt - h: yabai -m display --focus west
+# fn + shift + alt - l: yabai -m display --focus east
+
+# # move window to display left and right
+# shift + alt - s : yabai -m window --display west; yabai -m display --focus west;
+# shift + alt - g : yabai -m window --display east; yabai -m display --focus east;
+
+# # stop/start/restart yabai
+# ctrl + alt - q : brew services stop yabai
+# ctrl + alt - s : brew services start yabai
+# ctrl + alt - r : brew services restart yabai
+
+# flip along y-axis
+# shift + alt - y : yabai -m space --mirror y-axis
+# flip along x-axis
+# shift + alt - x : yabai -m space --mirror x-axis
+# toggle window float
+# shift + alt - t : yabai -m window --toggle float --grid 4:4:1:1:2:2
