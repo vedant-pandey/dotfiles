@@ -51,4 +51,7 @@ eval "$(fnm env --use-on-cd)"
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/amazon-corretto-11.jdk/Contents/Home
 alias vi=nvim
 
-export PATH="$PATH":"$GOPATH/bin"
+export PATH="$PATH:$GOPATH/bin"
+export HOMEBREW_NO_ANALYTICS=1
+
+bindkey -s "^f" "t-sesh\n"
