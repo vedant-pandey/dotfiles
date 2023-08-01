@@ -2,7 +2,7 @@
 
 trap 'echo "Interrupt found exiting"' 1 2 3 6 15
 
-session_dir=$(find ~/personal ~/personal/opensource -maxdepth 1 | fzf)
+session_dir=$(find ~/work ~/personal ~/personal/opensource -maxdepth 1 2> /dev/null | fzf)
 
 # Exit if fzf was interrupted
 if [ $? -ne 0 ]; then
