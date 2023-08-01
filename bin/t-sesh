@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+trap 'echo "Interrupt found exiting"' 1 2 3 6 15
+
+session_dir=$(find ~/personal ~/personal/opensource -maxdepth 1 | fzf)
+
+# Exit if fzf was interrupted
+if [ $? -ne 0 ]; then
+    exit
+fi
+
+session=$(basename "$session_dir" | tr . -)
+
+if ! tmux has-session -t "$session" 2> /dev/null; then
+    tmux new-session -s "$session" -c "$session_dir" -d
+fi
+
+if [ "$TERM_PROGRAM" = tmux ]; then
+    tmux switch-client -t "$session"
+else
+    tmux a -t "$session"
+fi
+
