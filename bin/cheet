@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+langs=$(echo "bash golang c java cpp javascript typescript rust")
+utils=$(echo "sed grep find xargs bindkey awk")
+
+selected=$(echo "$langs $utils" | tr " " "\n" | fzf)
+
+read -p "Topic: " query
+
+if echo "$langs" | rg -qs $selected; then
+    cheet_uri="cht.sh/$selected/$(echo "$query" | tr " " "+")"
+else
+    cheet_uri="cht.sh/$selected~$query"
+fi
+tmux split-window -h zsh -c "curl \"$cheet_uri\" | sed -e 's/\x1b\[[0-9;]*m//g' | bat"
