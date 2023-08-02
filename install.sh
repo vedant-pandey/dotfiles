@@ -41,4 +41,6 @@ brew install parallel
 # install grpc dependencies
  go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
  go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+# Install bat
+cargo install --locked bat
 #
