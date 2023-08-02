@@ -54,6 +54,7 @@ vim.keymap.set("n", "<leader>li", "<cmd>LspInfo<cr>")
 vim.keymap.set("n", "<leader>/", "<Plug>(comment_toggle_linewise_current)")
 vim.keymap.set("v", "<leader>/", "<Plug>(comment_toggle_linewise_visual)")
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww t-sesh<CR>")
+vim.keymap.set("n", "<C-g>", "<cmd>silent !tmux neww cheet<CR>")
 
 -- set after plugin installs
 -- vim.keymap.set("n", "<leader>x", ":BufferKill<CR>")

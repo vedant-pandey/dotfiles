@@ -65,70 +65,86 @@ lvim.plugins = {
   },
 }
 
-lvim.keys.normal_mode["<leader>pc"] = false
-lvim.keys.normal_mode["<leader>pd"] = false
-lvim.keys.normal_mode["<leader>pi"] = false
-lvim.keys.normal_mode["<leader>pl"] = false
-lvim.keys.normal_mode["<leader>pp"] = false
-lvim.keys.normal_mode["<leader>ps"] = false
-lvim.keys.normal_mode["<leader>pS"] = false
-lvim.keys.normal_mode["<leader>pu"] = false
 
+lvim.keys.normal_mode["<leader>p"] = nil
+lvim.keys.normal_mode["<leader>pc"] = nil
+lvim.keys.normal_mode["<leader>pd"] = nil
+lvim.keys.normal_mode["<leader>pi"] = nil
+lvim.keys.normal_mode["<leader>pl"] = nil
+lvim.keys.normal_mode["<leader>pp"] = nil
+lvim.keys.normal_mode["<leader>ps"] = nil
+lvim.keys.normal_mode["<leader>pS"] = nil
+lvim.keys.normal_mode["<leader>pu"] = nil
 
--- VeReMaps
-lvim.keys.visual_mode["<leader>v;"] = "g<C-g>" -- count characters
-lvim.keys.normal_mode["<leader>vn"] = ":ene<CR>" -- new empty
-lvim.keys.normal_mode["<leader>va"] = "ggVG" -- select whole file
-lvim.keys.normal_mode["<leader>vb"] = "<cmd>vsplit<CR><cmd>Telescope find_files<cr>" -- split buffer and select what to open
-lvim.keys.normal_mode["<leader>vy"] = "VY"
-lvim.keys.normal_mode["<leader>vd"] = "VD"
-
-vim.opt.rnu = true
-lvim.keys.normal_mode["<C-d>"] = "<C-d>zz"
-lvim.keys.normal_mode["<C-b>"] = "<C-b>zz"
-lvim.keys.normal_mode["<leader>x"] = ":BufferKill<CR>"
--- lvim.builtin["terminal"].open_mapping = [[<leader>`]]
-lvim.keys.normal_mode["<leader>`"] = "<cmd>ToggleTerm<cr>"
-lvim.keys.normal_mode["<leader>1"] = "0"
--- lvim.builtin.execs = { { nil, "<M-1>", }, { nil, "<M-2>", }, { nil, "<M-3>", }, }
-lvim.keys.normal_mode["<leader>2"] = "_"
-lvim.keys.normal_mode["<leader>3"] = "0f="
-lvim.keys.normal_mode["<leader>4"] = "$"
-lvim.keys.visual_mode["<leader>1"] = "0"
-lvim.keys.visual_mode["<leader>2"] = "_"
-lvim.keys.visual_mode["<leader>3"] = "0f="
-lvim.keys.visual_mode["<leader>4"] = "$"
-vim.opt.wrap = true
-vim.opt.clipboard = ""
-lvim.keys.normal_mode["n"] = "nzzzv"
-lvim.keys.normal_mode["N"] = "Nzzzv"
+-- basic stuff
+lvim.keys.normal_mode["<leader>q"] = ":q<cr>"
+lvim.keys.normal_mode["<leader>a"] = ":qa<cr>"
+lvim.keys.normal_mode["<leader>h"] = ":noh<CR>"
+lvim.keys.normal_mode["<leader><CR>"] = ":so %<CR>"
+lvim.keys.normal_mode["<leader><ESC>"] = ":so ~/.config/nvim/init.lua<CR>"
+lvim.keys.normal_mode["<leader>w"] = ":w<cr>"
+lvim.keys.normal_mode["<leader>s"] = ":w<cr>:so %<CR>"
 lvim.keys.insert_mode["jk"] = "<esc>"
-
 lvim.keys.normal_mode["<BS>"] = [["_X]]
 lvim.keys.normal_mode["D"] = [["_D]]
-lvim.keys.normal_mode["d"] = [["_d]]
 lvim.keys.visual_mode["D"] = [["_D]]
+lvim.keys.normal_mode["d"] = [["_d]]
 lvim.keys.visual_mode["d"] = [["_d]]
+
 -- text editting skillz
 lvim.keys.normal_mode["<leader>p"] = [["+P<CR>]]
 lvim.keys.visual_mode["<leader>p"] = [["_d"+P<CR>]]
+lvim.keys.normal_mode["<leader>y"] = [["+y]]
 lvim.keys.visual_mode["<leader>y"] = [["+y]]
-lvim.keys.normal_mode["<leader>y"] = [[V"+y]]
-lvim.keys.visual_mode["<leader>d"] = [["_d]]
-lvim.keys.normal_mode["<leader>va"] = "ggVG"
 lvim.keys.normal_mode["<leader>va"] = "ggVG"
 
-lvim.keys.normal_mode["<C-n>"] = "<cmd>BufferLineCycleNext<cr>"
-lvim.keys.normal_mode["<C-p>"] = "<cmd>BufferLineCyclePrev<cr>"
+-- Text moving skills
+lvim.keys.visual_mode["<M-j>"] = ":m '>+1<CR>gv=gv"
+lvim.keys.visual_mode["<M-k>"] = ":m '<-2<CR>gv=gv"
+lvim.keys.visual_mode["<M-J>"] = ":t '><CR>gv=gv"
+lvim.keys.visual_mode["<M-K>"] = ":t '<-1<CR>"
+lvim.keys.normal_mode["<M-j>"] = ":m .+1<CR>"
+lvim.keys.normal_mode["<M-k>"] = ":m .-2<CR>"
+lvim.keys.normal_mode["<M-J>"] = ":t .<CR>"
+lvim.keys.normal_mode["<M-K>"] = ":t .-1<CR>"
+-- vim.keymap.set("n", "<leader>va", "ggVG")
 
-vim.opt.scrolloff = 8
-vim.opt.nu = true
-vim.opt.rnu = true
-vim.opt.ts = 4
-vim.opt.sts = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
-vim.opt.smartindent = true
-vim.opt.wrap = true
-vim.opt.ww = "h,l"
+-- window stuff
+lvim.keys.normal_mode["<C-l>"] = "<C-w><C-l>"
+lvim.keys.normal_mode["<C-h>"] = "<C-w><C-h>"
+lvim.keys.normal_mode["<C-j>"] = "<C-w><C-j>"
+lvim.keys.normal_mode["<C-k>"] = "<C-w><C-k>"
+lvim.keys.normal_mode["<M-W>"] = "<C-w>="
 
+-- Lunar vim remaps
+lvim.keys.visual_mode["<leader>v;"] = "g<C-g>"
+lvim.keys.normal_mode["<leader>vn"] = ":ene<CR>"
+lvim.keys.normal_mode["<C-d>"] = "<C-d>zz"
+lvim.keys.normal_mode["<C-b>"] = "<C-b>zz"
+lvim.keys.normal_mode["n"] = "nzzzv"
+lvim.keys.normal_mode["N"] = "Nzzzv"
+lvim.keys.normal_mode["<C-n>"] = "<cmd>BufferLineCycleNext<CR>"
+lvim.keys.normal_mode["<C-p>"] = "<cmd>BufferLineCyclePrev<CR>"
+lvim.keys.normal_mode["<leader>x"] = "<cmd>BufferKill<CR>"
+
+-- Nvim tree
+lvim.keys.normal_mode["<leader>e"] = "<cmd>NvimTreeToggle<cr>"
+lvim.keys.normal_mode["<leader>gg"] = "<cmd>LazyGit<cr>"
+
+-- LSP keymaps
+lvim.keys.normal_mode["<leader>li"] = "<cmd>LspInfo<cr>"
+lvim.keys.normal_mode["<leader>/"] = "<Plug>(comment_toggle_linewise_current)"
+lvim.keys.visual_mode["<leader>/"] = "<Plug>(comment_toggle_linewise_visual)"
+lvim.keys.normal_mode["<C-f>"] = "<cmd>silent !tmux neww t-sesh<CR>"
+lvim.keys.normal_mode["<C-g>"] = "<cmd>silent !tmux neww cheet<CR>"
+
+
+-- local telescope_builtin = require('telescope.builtin')
+
+-- vim.keymap.set({'n', 'v'}, '<leader>f', telescope_builtin.find_files, {})
+-- vim.keymap.set({'n', 'v'}, '<leader>F', telescope_builtin.git_files, {})
+-- vim.keymap.set({'n', 'v'}, '<leader>st', telescope_builtin.live_grep, {})
+-- vim.keymap.set({'n', 'v'}, '<leader>bf', telescope_builtin.buffers, {})
+-- vim.keymap.set({'n', 'v'}, '<leader>mf', telescope_builtin.marks, {})
+-- vim.keymap.set({'n', 'v'}, '<leader>vf', '<cmd>vsplit<CR><cmd>Telescope find_files<cr>') -- split buffer and select what to open
+--
