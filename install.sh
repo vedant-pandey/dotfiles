@@ -43,4 +43,6 @@ brew install parallel
  go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 # Install bat
 cargo install --locked bat
+# install haskell
+curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 #
