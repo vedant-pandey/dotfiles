@@ -5,11 +5,19 @@ utils=$(echo "sed grep find xargs bindkey awk")
 
 selected=$(echo "$langs $utils" | tr " " "\n" | fzf)
 
-read -p "Topic: " query
+read -p "Topic: " topic
+query=$(echo "$topic" | tr -d " ")
 
-if echo "$langs" | rg -qs $selected; then
-    cheet_uri="cht.sh/$selected/$(echo "$query" | tr " " "+")"
+if [[ -z query ]]; then
+  echo "empty"
+  cheet_uri="cht.sh/$selected"
 else
+  echo "$query"
+  if echo "$langs" | rg -qi $selected; then
+    cheet_uri="cht.sh/$selected/$(echo "$query" | tr " " "+")"
+  else
     cheet_uri="cht.sh/$selected~$query"
+  fi
 fi
+
 tmux split-window -h zsh -c "curl \"$cheet_uri\" | sed -e 's/\x1b\[[0-9;]*m//g' | bat"
