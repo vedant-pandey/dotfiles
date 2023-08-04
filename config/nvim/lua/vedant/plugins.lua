@@ -102,17 +102,80 @@ require("lazy").setup({
         'hrsh7th/nvim-cmp'
     },
     {
+        'hrsh7th/cmp-nvim-lsp'
+    },
+    {
         'numToStr/Comment.nvim',
         config = function()
             require('Comment').setup()
         end
     },
+    {
+        'rhysd/git-messenger.vim'
+    },
+  { 'ThePrimeagen/vim-be-good' },
+  { 'nvim-tree/nvim-web-devicons' },
+  {
+    'pwntester/octo.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope.nvim',
+      'nvim-tree/nvim-web-devicons',
+    },
+    config = function()
+      require 'octo'.setup()
+    end
+  },
+  {
+    'nacro90/numb.nvim',
+    event = 'BufRead',
+    config = function()
+      require('numb').setup {
+        show_numbers = true,    -- Enable 'number' for the window while peeking
+        show_cursorline = true, -- Enable 'cursorline' for the window while peeking
+      }
+    end,
+  },
+  {
+    'chentoast/marks.nvim',
+    config = function()
+      require 'marks'.setup {
+        default_mappings = true, -- whether to map keybinds or not. default true
+        builtin_marks = { ".", "<", ">", "^" }, -- which builtin marks to show. default {}
+        cyclic = true, -- whether movements cycle back to the beginning/end of buffer. default true
+        force_write_shada = false, -- whether the shada file is updated after modifying uppercase marks. default false
+        refresh_interval = 1000, -- how often (in ms) to redraw signs/recompute mark positions.
+        sign_priority = { lower = 10, upper = 15, builtin = 8, bookmark = 22 }, -- sign priorities for each type of mark 
+        excluded_filetypes = {}, -- disables mark tracking for specific filetypes. default {}
+        -- marks.nvim allows you to configure up to 10 bookmark groups, each with its own
+        -- sign/virttext. Bookmarks can be used to group together positions and quickly move
+        -- across multiple buffers. default sign is '!@#$%^&*()' (from 0 to 9), and
+        -- default virt_text is "".
+        bookmark_0 = {
+          sign = "⚑",
+          virt_text = "BM0",
+          -- explicitly prompt for a virtual line annotation when setting a bookmark from this group.
+          -- defaults to false.
+          annotate = true,
+        },
+        mappings = {
+          preview = "<leader>bm"
+        }
+      }
+    end
+  },
+  {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+  },
 })
 
 
 -- plugin configs
 -- telescope file browser
 require("telescope").load_extension "file_browser"
+
+require("nvim-tree").load_extension "file_browser"
 
 require("nvim-cursorline").setup {
   cursorline = {
