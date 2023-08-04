@@ -63,6 +63,9 @@ lvim.plugins = {
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
   },
+  {
+      'rhysd/git-messenger.vim'
+  }
 }
 
 
@@ -148,3 +151,16 @@ lvim.keys.normal_mode["<C-g>"] = "<cmd>silent !tmux neww cheet<CR>"
 -- vim.keymap.set({'n', 'v'}, '<leader>mf', telescope_builtin.marks, {})
 -- vim.keymap.set({'n', 'v'}, '<leader>vf', '<cmd>vsplit<CR><cmd>Telescope find_files<cr>') -- split buffer and select what to open
 --
+
+vim.opt.so = 8
+vim.opt.nu = true
+vim.opt.rnu = true
+vim.opt.ts = 4
+vim.opt.sts = 4
+vim.opt.sw = 4
+vim.opt.et = true
+vim.opt.si = true
+vim.opt.wrap = true
+vim.opt.ww = "h,l"
+vim.opt.tgc = true
+vim.opt.ic = true
