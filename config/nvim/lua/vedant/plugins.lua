@@ -50,6 +50,9 @@ require("lazy").setup({
     },
     {
         "neovim/nvim-lspconfig",
+        config = function ()
+            require "vedant.configs.lspconfig"
+        end
     },
     {
         "kdheepak/lazygit.nvim",
@@ -140,22 +143,21 @@ require("lazy").setup({
     'chentoast/marks.nvim',
     config = function()
       require 'marks'.setup {
-        default_mappings = true, -- whether to map keybinds or not. default true
-        builtin_marks = { ".", "<", ">", "^" }, -- which builtin marks to show. default {}
-        cyclic = true, -- whether movements cycle back to the beginning/end of buffer. default true
-        force_write_shada = false, -- whether the shada file is updated after modifying uppercase marks. default false
-        refresh_interval = 1000, -- how often (in ms) to redraw signs/recompute mark positions.
-        sign_priority = { lower = 10, upper = 15, builtin = 8, bookmark = 22 }, -- sign priorities for each type of mark 
-        excluded_filetypes = {}, -- disables mark tracking for specific filetypes. default {}
-        -- marks.nvim allows you to configure up to 10 bookmark groups, each with its own
-        -- sign/virttext. Bookmarks can be used to group together positions and quickly move
-        -- across multiple buffers. default sign is '!@#$%^&*()' (from 0 to 9), and
-        -- default virt_text is "".
+        default_mappings = true,
+        builtin_marks = {
+            ".",
+            "<",
+            ">",
+            "^"
+        },
+        cyclic = true,
+        force_write_shada = false,
+        refresh_interval = 1000,
+        sign_priority = { lower = 10, upper = 15, builtin = 8, bookmark = 22 },
+        excluded_filetypes = {},
         bookmark_0 = {
           sign = "⚑",
           virt_text = "BM0",
-          -- explicitly prompt for a virtual line annotation when setting a bookmark from this group.
-          -- defaults to false.
           annotate = true,
         },
         mappings = {
@@ -168,14 +170,17 @@ require("lazy").setup({
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
   },
+  {
+      'akinsho/bufferline.nvim',
+      version = "*",
+      dependencies = 'nvim-tree/nvim-web-devicons'
+  },
 })
 
 
 -- plugin configs
 -- telescope file browser
 require("telescope").load_extension "file_browser"
-
-require("nvim-tree").load_extension "file_browser"
 
 require("nvim-cursorline").setup {
   cursorline = {
@@ -206,9 +211,26 @@ require("mason-lspconfig").setup_handlers {
     end
 }
 
-require('cmp').setup()
+local cmp = require('cmp')
+
+cmp.setup({
+    snippet = {},
+    mapping = {
+      ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.close(),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    },
+    sources = {
+      { name = 'nvim_lsp' },
+      { name = 'buffer' },
+    }
+})
 
 local lsp = require('lsp-zero').preset({})
+
+require("bufferline").setup{}
 
 lsp.on_attach(function(client, bufnr)
   -- see :help lsp-zero-keybindings
@@ -219,4 +241,23 @@ end)
 -- (Optional) Configure lua language server for neovim
 require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
 
+-- local util = require('lspconfig/util')
+-- local lastRootPath = nil
+-- local gopath = os.getenv("GOPATH")
+-- if gopath == nil then
+--   gopath = ""
+-- end
+-- local gopathmod = gopath..'/pkg/mod'
+--
+-- nvim_lsp.gopls.setup {
+--   root_dir = function(fname)
+--     local fullpath = vim.fn.expand(fname, ':p')
+--     if string.find(fullpath, gopathmod) and lastRootPath ~= nil then
+--         return lastRootPath
+--     end
+--     lastRootPath = util.root_pattern("go.mod", ".git")(fname)
+--     return lastRootPath
+--   end,
+--   }
+--
 lsp.setup()

@@ -29,6 +29,10 @@ vim.keymap.set("n", "<M-k>", ":m .-2<CR>")
 vim.keymap.set("n", "<M-J>", ":t .<CR>")
 vim.keymap.set("n", "<M-K>", ":t .-1<CR>")
 -- vim.keymap.set("n", "<leader>va", "ggVG")
+vim.keymap.set("n", "<", "<<")
+vim.keymap.set("n", ">", ">>")
+vim.keymap.set("v", "<", "<gv")
+vim.keymap.set("v", ">", ">gv")
 
 -- window stuff
 vim.keymap.set("n", "<C-l>", "<C-w><C-l>")
@@ -57,6 +61,12 @@ vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww t-sesh<CR>")
 vim.keymap.set("n", "<C-g>", "<cmd>silent !tmux neww cheet<CR>")
 
 -- set after plugin installs
--- vim.keymap.set("n", "<leader>x", ":BufferKill<CR>")
+vim.keymap.set("n", "<leader>x", ":bd<CR>")
+vim.keymap.set("n", "<C-n>", "<cmd>BufferLineCycleNext<CR>")
+vim.keymap.set("n", "<C-p>", "<cmd>BufferLineCyclePrev<CR>")
+
+vim.keymap.set("n", "<leader>;", "<cmd>vsplit %<CR>")
+vim.keymap.set("n", "<leader>'", "<cmd>split %<CR>")
+
 -- vim.keymap.set("n", "<leader>`", "<cmd>ToggleTerm<cr>")
 require("vedant.remaps.telescope")
