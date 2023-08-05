@@ -141,6 +141,8 @@ lvim.keys.visual_mode["<leader>/"] = "<Plug>(comment_toggle_linewise_visual)"
 lvim.keys.normal_mode["<C-f>"] = "<cmd>silent !tmux neww t-sesh<CR>"
 lvim.keys.normal_mode["<C-g>"] = "<cmd>silent !tmux neww cheet<CR>"
 
+lvim.keys.normal_mode["<leader>;"] = "<cmd>vsplit %<CR>"
+lvim.keys.normal_mode["<leader>'"] = "<cmd>split %<CR>"
 
 -- local telescope_builtin = require('telescope.builtin')
 
@@ -164,3 +166,4 @@ vim.opt.wrap = true
 vim.opt.ww = "h,l"
 vim.opt.tgc = true
 vim.opt.ic = true
+vim.opt.clipboard=""
