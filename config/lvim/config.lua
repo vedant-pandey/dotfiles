@@ -143,6 +143,7 @@ lvim.keys.normal_mode["<C-g>"] = "<cmd>silent !tmux neww cheet<CR>"
 
 lvim.keys.normal_mode["<leader>;"] = "<cmd>vsplit %<CR>"
 lvim.keys.normal_mode["<leader>'"] = "<cmd>split %<CR>"
+lvim.keys.normal_mode["<leader>Q"] = "<cmd>qa!<CR>"
 
 -- local telescope_builtin = require('telescope.builtin')
 
