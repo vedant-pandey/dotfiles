@@ -10,7 +10,7 @@ query=$(echo "$topic" | tr -d " ")
 
 if [[ -z $query ]]; then
   # echo "empty"
-  cheet_uri="cht.sh/$selected"
+  cheet_uri="cht.sh/$selected/:learn"
 else
   # echo "$query"
   if [ "$query" = "ls" ]; then
@@ -27,5 +27,5 @@ fi
 
 echo "$cheet_uri"
 
-# tmux split-window -h zsh -c "curl \"$cheet_uri\" | sed -e 's/\x1b\[[0-9;]*m//g' | less"
-tmux split-window -h zsh -c "curl \"$cheet_uri\" | less -r"
+tmux split-window -h zsh -c "curl \"$cheet_uri\" | sed -e 's/\x1b\[[0-9;]*m//g' | $EDITOR"
+# tmux split-window -h zsh -c "curl \"$cheet_uri\" | less -r"
