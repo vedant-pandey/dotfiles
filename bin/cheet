@@ -8,16 +8,24 @@ selected=$(echo "$langs $utils" | tr " " "\n" | fzf)
 read -p "Topic: " topic
 query=$(echo "$topic" | tr -d " ")
 
-if [[ -z query ]]; then
-  echo "empty"
+if [[ -z $query ]]; then
+  # echo "empty"
   cheet_uri="cht.sh/$selected"
 else
-  echo "$query"
-  if echo "$langs" | rg -qi $selected; then
-    cheet_uri="cht.sh/$selected/$(echo "$query" | tr " " "+")"
+  # echo "$query"
+  if [ "$query" = "ls" ]; then
+      echo "hello"
+      cheet_uri="cht.sh/$selected/:list"
   else
-    cheet_uri="cht.sh/$selected~$query"
+      if echo "$langs" | rg -qi $selected; then
+          cheet_uri="cht.sh/$selected/$(echo "$query" | tr " " "+")"
+      else
+          cheet_uri="cht.sh/$selected~$query"
+      fi
   fi
 fi
 
-tmux split-window -h zsh -c "curl \"$cheet_uri\" | sed -e 's/\x1b\[[0-9;]*m//g' | bat"
+echo "$cheet_uri"
+
+# tmux split-window -h zsh -c "curl \"$cheet_uri\" | sed -e 's/\x1b\[[0-9;]*m//g' | less"
+tmux split-window -h zsh -c "curl \"$cheet_uri\" | less -r"
