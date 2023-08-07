@@ -110,7 +110,6 @@ lvim.keys.normal_mode["<M-j>"] = ":m .+1<CR>"
 lvim.keys.normal_mode["<M-k>"] = ":m .-2<CR>"
 lvim.keys.normal_mode["<M-J>"] = ":t .<CR>"
 lvim.keys.normal_mode["<M-K>"] = ":t .-1<CR>"
--- vim.keymap.set("n", "<leader>va", "ggVG")
 
 -- window stuff
 lvim.keys.normal_mode["<C-l>"] = "<C-w><C-l>"
