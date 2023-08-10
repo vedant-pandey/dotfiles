@@ -149,8 +149,6 @@ lvim.keys.normal_mode["<leader>Q"] = "<cmd>qa!<CR>"
 
 lvim.keys.normal_mode["]d"] = "<cmd>lua vim.diagnostic.goto_next()<CR>"
 lvim.keys.normal_mode["[d"] = "<cmd>lua vim.diagnostic.goto_prev()<CR>"
-lvim.keys.normal_mode["{"] = "{zz"
-lvim.keys.normal_mode["}"] = "}zz"
 lvim.keys.normal_mode["<leader>z"] = "$zf%"
 
 -- local telescope_builtin = require('telescope.builtin')
@@ -163,7 +161,7 @@ lvim.keys.normal_mode["<leader>z"] = "$zf%"
 -- vim.keymap.set({'n', 'v'}, '<leader>vf', '<cmd>vsplit<CR><cmd>Telescope find_files<cr>') -- split buffer and select what to open
 --
 
-vim.opt.so = 8
+vim.opt.so = 16
 vim.opt.nu = true
 vim.opt.rnu = true
 vim.opt.ts = 4
