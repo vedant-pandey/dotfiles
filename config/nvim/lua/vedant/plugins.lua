@@ -175,6 +175,9 @@ require("lazy").setup({
       version = "*",
       dependencies = 'nvim-tree/nvim-web-devicons'
   },
+  {
+      'folke/lsp-colors.nvim'
+  },
 })
 
 
@@ -260,4 +263,13 @@ require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
 --   end,
 --   }
 --
-lsp.setup()
+require("catppuccin").setup({
+    integrations = {
+        cmp = true,
+        gitsigns = true,
+        nvimtree = true,
+        treesitter = true,
+        notify = false,
+        mini = false,
+    }
+})
