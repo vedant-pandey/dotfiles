@@ -174,3 +174,12 @@ vim.opt.ww = "h,l"
 vim.opt.tgc = true
 vim.opt.ic = true
 vim.opt.clipboard=""
+
+vim.cmd([[
+if executable('opam')
+    let g:opamshare=substitute(system('opam var share'),'\n$','','''')
+    if isdirectory(g:opamshare."/merlin/vim")
+        execute "set rtp+=" . g:opamshare."/merlin/vim"
+    endif
+endif
+]])
