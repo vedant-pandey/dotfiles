@@ -178,6 +178,9 @@ require("lazy").setup({
   {
       'folke/lsp-colors.nvim'
   },
+  {
+      'ziglang/zig.vim'
+  },
 })
 
 
