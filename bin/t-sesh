@@ -2,11 +2,28 @@
 
 trap 'echo "Interrupt found exiting"' 1 2 3 6 15
 
-session_dir=$(find ~/work ~/personal ~/personal/opensource -maxdepth 1 2> /dev/null | fzf)
+create_cmd="Create-dir"
+work_dir="work"
+personal_dir="personal"
+
+session_cmd=$(find ~/work ~/personal ~/personal/opensource -maxdepth 1 2> /dev/null | xargs echo "$create_cmd" | tr " " "\n" | fzf)
 
 # Exit if fzf was interrupted
 if [ $? -ne 0 ]; then
     exit
+fi
+
+if [ "$session_cmd" = "$create_cmd" ]; then
+    dest=$(echo "$work_dir $personal_dir" | tr " " "\n" | fzf)
+    read -p "Project Name: " proj_dir
+
+    session_dir="$HOME/$dest/$proj_dir"
+
+    if [ ! -d "session_dir" ]; then
+        mkdir "$session_dir" 
+    fi
+else
+    session_dir="$session_cmd"
 fi
 
 session=$(basename "$session_dir" | tr . -)
