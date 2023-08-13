@@ -7,3 +7,5 @@
  
 [core]
  sshCommand = "ssh -i ~/.ssh/github-work"
+[push]
+ autoSetupRemote = true

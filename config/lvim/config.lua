@@ -150,6 +150,7 @@ lvim.keys.normal_mode["<leader>Q"] = "<cmd>qa!<CR>"
 lvim.keys.normal_mode["]d"] = "<cmd>lua vim.diagnostic.goto_next()<CR>"
 lvim.keys.normal_mode["[d"] = "<cmd>lua vim.diagnostic.goto_prev()<CR>"
 lvim.keys.normal_mode["<leader>z"] = "$zf%"
+lvim.keys.normal_mode["<leader>m"] = "<cmd>Telescope marks<cr>"
 
 -- local telescope_builtin = require('telescope.builtin')
 
