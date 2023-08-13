@@ -62,6 +62,7 @@ lvim.plugins = {
     {
         "folke/todo-comments.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
+        config = true
     },
     {
         'rhysd/git-messenger.vim'
@@ -161,6 +162,8 @@ lvim.keys.normal_mode["<leader>m"] = "<cmd>Telescope marks<cr>"
 -- vim.keymap.set({'n', 'v'}, '<leader>mf', telescope_builtin.marks, {})
 -- vim.keymap.set({'n', 'v'}, '<leader>vf', '<cmd>vsplit<CR><cmd>Telescope find_files<cr>') -- split buffer and select what to open
 --
+
+require('todo-comments').setup()
 
 vim.opt.so = 16
 vim.opt.nu = true
