@@ -90,7 +90,6 @@ lvim.keys.normal_mode["<leader>h"] = ":noh<CR>"
 lvim.keys.normal_mode["<leader><CR>"] = ":so %<CR>"
 lvim.keys.normal_mode["<leader><ESC>"] = ":so ~/.config/nvim/init.lua<CR>"
 lvim.keys.normal_mode["<leader>w"] = ":w<cr>"
-lvim.keys.normal_mode["<leader>s"] = ":w<cr>:so %<CR>"
 lvim.keys.insert_mode["jk"] = "<esc>"
 lvim.keys.normal_mode["<BS>"] = [["_X]]
 lvim.keys.normal_mode["D"] = [["_D]]

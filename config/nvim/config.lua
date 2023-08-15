@@ -95,7 +95,6 @@ lvim.keys.normal_mode["<leader>h"] = ":noh<CR>"
 lvim.keys.normal_mode["<leader><CR>"] = ":so %<CR>"
 lvim.keys.normal_mode["<leader><ESC>"] = ":so ~/.config/nvim/init.lua<CR>"
 lvim.keys.normal_mode["<leader>w"] = ":w<cr>"
-lvim.keys.normal_mode["<leader>s"] = ":w<cr>:so %<CR>"
 lvim.keys.insert_mode["jk"] = "<esc>"
 lvim.keys.normal_mode["<BS>"] = [["_X]]
 lvim.keys.normal_mode["D"] = [["_D]]
@@ -157,6 +156,8 @@ lvim.keys.normal_mode["]d"] = "<cmd>lua vim.diagnostic.goto_next()<CR>"
 lvim.keys.normal_mode["[d"] = "<cmd>lua vim.diagnostic.goto_prev()<CR>"
 lvim.keys.normal_mode["<leader>z"] = "$zf%"
 lvim.keys.normal_mode["<leader>m"] = "<cmd>Telescope marks<cr>"
+lvim.keys.normal_mode["<leader>tq"] = "<cmd>TodoQuickFix<cr>"
+lvim.keys.normal_mode["<leader>tt"] = "<cmd>TodoTelescope<cr>"
 
 -- local telescope_builtin = require('telescope.builtin')
 
