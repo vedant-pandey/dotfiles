@@ -159,6 +159,9 @@ lvim.keys.normal_mode["<leader>m"] = "<cmd>Telescope marks<cr>"
 lvim.keys.normal_mode["<leader>tq"] = "<cmd>TodoQuickFix<cr>"
 lvim.keys.normal_mode["<leader>tt"] = "<cmd>TodoTelescope<cr>"
 
+lvim.keys.normal_mode["<leader>vk"] = "<cmd>!ssh-add -D<cr>"
+lvim.keys.normal_mode["<leader>vx"] = "<cmd>!chmod +x %<cr>"
+
 -- local telescope_builtin = require('telescope.builtin')
 
 -- vim.keymap.set({'n', 'v'}, '<leader>f', telescope_builtin.find_files, {})
