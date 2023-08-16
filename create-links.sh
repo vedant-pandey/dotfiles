@@ -1,5 +1,6 @@
 #!/bin/bash
 
+trap 'echo "Interrupt found exiting"' 1 2 3 6 15
 
 # # Config folder
 # stow -Rvt ~/.config config
@@ -10,8 +11,6 @@
 mkdir test
 cp -r ssh test
 cd test/ssh
-
-set +e
 
 $(ansible-vault decrypt *)&>/dev/null
 
