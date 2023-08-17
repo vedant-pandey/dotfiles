@@ -39,7 +39,7 @@ export CPPFLAGS="$CPPFLAGS -I$(brew --prefix llvm@15)/include"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
-export EDITOR='lvim'
+export EDITOR='nvim'
 
 # opam configuration
 [[ ! -r /Users/vedant/.opam/opam-init/init.zsh ]] || source /Users/vedant/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
