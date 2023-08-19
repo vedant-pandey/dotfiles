@@ -4,3 +4,5 @@
   path = ~/.gitconfig-work
 [includeIf "hasconfig:remote.*.url:git@github.com:TriffyDigital/**"]
   path = ~/.gitconfig-work
+[push]
+ autoSetupRemote = true
