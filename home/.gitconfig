@@ -4,3 +4,5 @@
   path = ~/.gitconfig-work
 [includeIf "hasconfig:remote.*.url:git@github.com:TriffyDigital/**"]
   path = ~/.gitconfig-work
+[url "ssh://git@github.com/"]
+	insteadOf = https://github.com/
