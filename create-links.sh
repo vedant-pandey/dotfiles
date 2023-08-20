@@ -1,24 +1,23 @@
 #!/bin/bash
 
-trap 'echo "Interrupt found exiting"' 1 2 3 6 15
+echo "INIT LINKING CONFIGS"
+echo ""
+stow -nRvt ~/.config config
+echo ""
+echo "DONE LINKING CONFIGS"
+echo "~~~~~~~~~~~~~~~~~~~~~~~"
 
-# # Config folder
-# stow -Rvt ~/.config config
-#
-# # Home folder
-# stow -Rvt ~ home
-#
-mkdir test
-cp -r ssh test
-cd test/ssh
+echo "INIT LINKING HOME FILES"
+echo ""
+stow -nRvt ~ home
+echo ""
+echo "DONE LINKING HOME FILES"
+echo "~~~~~~~~~~~~~~~~~~~~~~~"
 
-$(ansible-vault decrypt *)&>/dev/null
-
-if [ $? -eq 0]; then
-    echo "Decryption Sucessful"
-else
-    echo "Decryption failed, removing unused files"
-#     cd ../..
-#     rm -r test
-#     echo "Files cleaned"
-fi
+echo "INIT LINKING SSH KEYS"
+echo ""
+cd decrypted
+stow -nRvt ~/.ssh ssh
+echo ""
+echo "DONE LINKING SSH KEYS"
+echo "~~~~~~~~~~~~~~~~~~~~~~~"
