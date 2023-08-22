@@ -1,23 +1,22 @@
 #!/bin/bash
 
-echo "INIT LINKING CONFIGS"
-echo ""
+if [[ -z $1 ]]; then
+    echo -e "pass flags\n"
+    exit 1
+fi
+
+echo -e "INIT LINKING CONFIGS\n"
 stow -nRvt ~/.config config
-echo ""
-echo "DONE LINKING CONFIGS"
-echo "~~~~~~~~~~~~~~~~~~~~~~~"
+echo -e "\nDONE LINKING CONFIGS\n"
+echo -e "~~~~~~~~~~~~~~~~~~~~~~~\n"
 
-echo "INIT LINKING HOME FILES"
-echo ""
+echo -e "INIT LINKING HOME FILES\n"
 stow -nRvt ~ home
-echo ""
-echo "DONE LINKING HOME FILES"
-echo "~~~~~~~~~~~~~~~~~~~~~~~"
+echo -e "\nDONE LINKING HOME FILES\n"
+echo -e "~~~~~~~~~~~~~~~~~~~~~~~\n"
 
-echo "INIT LINKING SSH KEYS"
-echo ""
+echo -e "INIT LINKING SSH KEYS\n"
 cd decrypted
 stow -nRvt ~/.ssh ssh
-echo ""
-echo "DONE LINKING SSH KEYS"
-echo "~~~~~~~~~~~~~~~~~~~~~~~"
+echo -e "\nDONE LINKING SSH KEYS\n"
+echo -e "~~~~~~~~~~~~~~~~~~~~~~~\n"
