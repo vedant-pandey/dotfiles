@@ -1,7 +1,11 @@
 #!/bin/bash
 
 if [[ -z $1 ]]; then
-    echo -e "pass flags\n"
+    echo "Usage: ./create-links.sh [-c] [-h] [-s] [-a]"
+    echo -e "-a: Link all"
+    echo -e "-c: Link config"
+    echo -e "-h: Link home"
+    echo -e "-s: Link ssh"
     exit 1
 fi
 
