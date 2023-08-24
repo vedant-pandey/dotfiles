@@ -1,6 +1,7 @@
 #!/bin/bash
 
 if [[ -z $1 ]]; then
+    echo "Illegal option"
     echo "Usage: ./create-links.sh [-c] [-h] [-s] [-a]"
     echo -e "-a: Link all"
     echo -e "-c: Link config"
@@ -8,6 +9,23 @@ if [[ -z $1 ]]; then
     echo -e "-s: Link ssh"
     exit 1
 fi
+
+# if [[ ! " ${array[@]} " =~ " -a " ]] && [[ ! " ${array[@]} " =~ " -c " ]] && [[ ! " ${array[@]} " =~ " -h " ]] && [[ ! " ${array[@]} " =~ " -s " ]]; then
+#     echo "Invalid flags"
+#     exit 1
+# fi
+
+ALL=false
+
+if echo $* | grep -e "-a" -q; then
+    ALL=true
+else
+    echo "invalid flags"
+fi
+
+echo "$ALL"
+
+exit 1
 
 echo -e "INIT LINKING CONFIGS\n"
 stow -nRvt ~/.config config
