@@ -165,6 +165,11 @@ lvim.keys.normal_mode["<leader>vx"] = "<cmd>!chmod +x %<cr>"
 lvim.keys.normal_mode[">"] = ">>"
 lvim.keys.normal_mode["<"] = "<<"
 
+lvim.keys.normal_mode["<leader>vd"] = "vaBVD"
+
+-- Golang
+lvim.keys.normal_mode["<leader>vf"] = ":silent !gofmt -s -w %<cr>"
+
 -- local telescope_builtin = require('telescope.builtin')
 
 -- vim.keymap.set({'n', 'v'}, '<leader>f', telescope_builtin.find_files, {})
