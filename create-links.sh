@@ -29,7 +29,7 @@ elif echo $* | grep -e "-h" -q; then
 elif echo $* | grep -e "-s" -q; then
     LINK_SSH=true
 else
-    echo "Invalid flag(s)"
+    echo "Unknown flag(s) $*"
 fi
 
 if $LINK_ALL || $LINK_CONFIG; then
