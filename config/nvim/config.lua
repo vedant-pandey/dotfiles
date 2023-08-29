@@ -171,15 +171,8 @@ lvim.keys.normal_mode["<leader>VD"] = "vaBVD"
 -- Golang
 lvim.keys.normal_mode["<leader>vf"] = ":silent !gofmt -s -w %<cr>"
 
--- local telescope_builtin = require('telescope.builtin')
-
--- vim.keymap.set({'n', 'v'}, '<leader>f', telescope_builtin.find_files, {})
--- vim.keymap.set({'n', 'v'}, '<leader>F', telescope_builtin.git_files, {})
--- vim.keymap.set({'n', 'v'}, '<leader>st', telescope_builtin.live_grep, {})
--- vim.keymap.set({'n', 'v'}, '<leader>bf', telescope_builtin.buffers, {})
--- vim.keymap.set({'n', 'v'}, '<leader>mf', telescope_builtin.marks, {})
--- vim.keymap.set({'n', 'v'}, '<leader>vf', '<cmd>vsplit<CR><cmd>Telescope find_files<cr>') -- split buffer and select what to open
---
+lvim.keys.visual_mode["<leader>vs"] = [["hy:%s/<C-r>h/<C-r>h/gc<left><left><left>]]
+lvim.keys.normal_mode["<leader>vs"] = [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]]
 
 require('todo-comments').setup()
 
