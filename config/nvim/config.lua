@@ -165,9 +165,6 @@ lvim.keys.normal_mode["<leader>vx"] = "<cmd>!chmod +x %<cr>"
 lvim.keys.normal_mode[">"] = ">>"
 lvim.keys.normal_mode["<"] = "<<"
 
-lvim.keys.normal_mode["<leader>vd"] = "viBVD"
-lvim.keys.normal_mode["<leader>VD"] = "vaBVD"
-
 -- Golang
 lvim.keys.normal_mode["<leader>vf"] = ":silent !gofmt -s -w %<cr>"
 
