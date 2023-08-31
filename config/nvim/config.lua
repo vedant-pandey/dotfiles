@@ -1,19 +1,9 @@
--- Read the docs: https://www.lunarvim.org/docs/configuration
--- Video Tutorials: https://www.youtube.com/watch?v=sFA9kX-Ud_c&list=PLhoH5vyxr6QqGu0i7tt_XoVK9v-KvZ3m6
--- Forum: https://www.reddit.com/r/lunarvim/
--- Discord: https://discord.com/invite/Xb9B4Ny
-
--- Read the docs: https://www.lunarvim.org/docs/configuration
--- Video Tutorials: https://www.youtube.com/watch?v=sFA9kX-Ud_c&list=PLhoH5vyxr6QqGu0i7tt_XoVK9v-KvZ3m6
--- Forum: https://www.reddit.com/r/lunarvim/
--- Discord: https://discord.com/invite/Xb9B4Ny
 lvim.colorscheme = "catppuccin"
 lvim.plugins = {
     { 'ThePrimeagen/vim-be-good' },
     {
         'catppuccin/nvim', name = 'catppuccin', priority = 1000
     },
-    -- { 'wakatime/vim-wakatime' },
     { 'nvim-tree/nvim-web-devicons' },
     {
         'pwntester/octo.nvim',
@@ -76,17 +66,6 @@ lvim.plugins = {
         'kevinhwang91/nvim-bqf'
     },
 }
-
-
-lvim.keys.normal_mode["<leader>p"] = nil
-lvim.keys.normal_mode["<leader>pc"] = nil
-lvim.keys.normal_mode["<leader>pd"] = nil
-lvim.keys.normal_mode["<leader>pi"] = nil
-lvim.keys.normal_mode["<leader>pl"] = nil
-lvim.keys.normal_mode["<leader>pp"] = nil
-lvim.keys.normal_mode["<leader>ps"] = nil
-lvim.keys.normal_mode["<leader>pS"] = nil
-lvim.keys.normal_mode["<leader>pu"] = nil
 
 -- basic stuff
 lvim.keys.normal_mode["<leader>q"] = ":q<cr>"
