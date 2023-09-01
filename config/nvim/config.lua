@@ -37,15 +37,9 @@ lvim.plugins = {
                 refresh_interval = 1000, -- how often (in ms) to redraw signs/recompute mark positions.
                 sign_priority = { lower = 10, upper = 15, builtin = 8, bookmark = 22 }, -- sign priorities for each type of mark 
                 excluded_filetypes = {}, -- disables mark tracking for specific filetypes. default {}
-                -- marks.nvim allows you to configure up to 10 bookmark groups, each with its own
-                -- sign/virttext. Bookmarks can be used to group together positions and quickly move
-                -- across multiple buffers. default sign is '!@#$%^&*()' (from 0 to 9), and
-                -- default virt_text is "".
                 bookmark_0 = {
                     sign = "⚑",
                     virt_text = "BM0",
-                    -- explicitly prompt for a virtual line annotation when setting a bookmark from this group.
-                    -- defaults to false.
                     annotate = true,
                 },
                 mappings = {
@@ -64,6 +58,13 @@ lvim.plugins = {
     },
     {
         'kevinhwang91/nvim-bqf'
+    },
+    {
+        "andymass/vim-matchup",
+        event = "CursorMoved",
+        config = function()
+            vim.g.matchup_matchparen_offscreen = { method = "popup" }
+        end,
     },
 }
 
@@ -149,6 +150,8 @@ lvim.keys.normal_mode["<leader>vf"] = ":silent !gofmt -s -w %<cr>"
 
 lvim.keys.visual_mode["<leader>vs"] = [["hy:%s/<C-r>h/<C-r>h/gc<left><left><left>]]
 lvim.keys.normal_mode["<leader>vs"] = [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]]
+
+lvim.builtin.treesitter.matchup.enable = true
 
 require('todo-comments').setup()
 
