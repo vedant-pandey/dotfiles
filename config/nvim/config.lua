@@ -59,13 +59,6 @@ lvim.plugins = {
     {
         'kevinhwang91/nvim-bqf'
     },
-    {
-        "andymass/vim-matchup",
-        event = "CursorMoved",
-        config = function()
-            vim.g.matchup_matchparen_offscreen = { method = "popup" }
-        end,
-    },
 }
 
 -- basic stuff
@@ -150,8 +143,6 @@ lvim.keys.normal_mode["<leader>vf"] = ":silent !gofmt -s -w %<cr>"
 
 lvim.keys.visual_mode["<leader>vs"] = [["hy:%s/<C-r>h/<C-r>h/gc<left><left><left>]]
 lvim.keys.normal_mode["<leader>vs"] = [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]]
-
-lvim.builtin.treesitter.matchup.enable = true
 
 require('todo-comments').setup()
 
