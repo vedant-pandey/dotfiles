@@ -59,6 +59,15 @@ lvim.plugins = {
     {
         'kevinhwang91/nvim-bqf'
     },
+    {
+        "folke/trouble.nvim",
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        opts = {
+            -- your configuration comes here
+            -- or leave it empty to use the default settings
+            -- refer to the configuration section below
+        },
+    }
 }
 
 -- basic stuff
@@ -131,6 +140,7 @@ lvim.keys.normal_mode["<leader>z"] = "$zf%"
 lvim.keys.normal_mode["<leader>m"] = "<cmd>Telescope marks<cr>"
 lvim.keys.normal_mode["<leader>tq"] = "<cmd>TodoQuickFix<cr>"
 lvim.keys.normal_mode["<leader>tt"] = "<cmd>TodoTelescope<cr>"
+lvim.keys.normal_mode["<leader>tr"] = "<cmd>TodoTrouble<cr>"
 
 lvim.keys.normal_mode["<leader>vk"] = "<cmd>!ssh-add -D<cr>"
 lvim.keys.normal_mode["<leader>vx"] = "<cmd>!chmod +x %<cr>"
