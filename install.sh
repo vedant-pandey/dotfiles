@@ -53,4 +53,6 @@ ln -s /usr/local/opt/emacs-mac/Emacs.app /Applications/Emacs.app
 # install doom emacs
 git clone https://github.com/hlissner/doom-emacs ~/.emacs.d
 ~/.emacs.d/bin/doom install
+# install zig
+brew install zig
 #
