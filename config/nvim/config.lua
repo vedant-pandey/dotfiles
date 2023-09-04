@@ -154,6 +154,9 @@ lvim.keys.normal_mode["<leader>vf"] = ":silent !gofmt -s -w %<cr>"
 lvim.keys.visual_mode["<leader>vs"] = [["hy:%s/<C-r>h/<C-r>h/gc<left><left><left>]]
 lvim.keys.normal_mode["<leader>vs"] = [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]]
 
+lvim.keys.normal_mode["<leader>["] = "<C-x>"
+lvim.keys.normal_mode["<leader>]"] = "<C-a>"
+
 require('todo-comments').setup()
 
 vim.opt.so = 16
