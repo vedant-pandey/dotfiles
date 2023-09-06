@@ -142,7 +142,7 @@ lvim.keys.normal_mode["<leader>tq"] = "<cmd>TodoQuickFix<cr>"
 lvim.keys.normal_mode["<leader>tt"] = "<cmd>TodoTelescope<cr>"
 lvim.keys.normal_mode["<leader>tr"] = "<cmd>TodoTrouble<cr>"
 
-lvim.keys.normal_mode["<leader>vk"] = "<cmd>!ssh-add -D<cr>"
+lvim.keys.normal_mode["<leader>vk"] = "<cmd>silent !ssh-add -D<cr>"
 lvim.keys.normal_mode["<leader>vx"] = "<cmd>!chmod +x %<cr>"
 
 lvim.keys.normal_mode[">"] = ">>"
