@@ -67,6 +67,12 @@ lvim.plugins = {
             -- or leave it empty to use the default settings
             -- refer to the configuration section below
         },
+    },
+    {
+        'rmagatti/goto-preview',
+        config = function()
+            require('goto-preview').setup {}
+        end
     }
 }
 
