@@ -73,7 +73,7 @@ lvim.plugins = {
         config = function()
             require('goto-preview').setup {}
         end
-    }
+    },
 }
 
 -- basic stuff
