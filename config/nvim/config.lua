@@ -158,6 +158,7 @@ lvim.keys.normal_mode["<leader>vs"] = [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><L
 
 lvim.keys.normal_mode["<leader>["] = "<C-x>"
 lvim.keys.normal_mode["<leader>]"] = "<C-a>"
+vim.keymap.set('n', '<leader>sw', ':Telescope grep_string<cr>')
 
 require('todo-comments').setup()
 
