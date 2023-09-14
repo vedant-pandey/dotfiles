@@ -160,6 +160,8 @@ lvim.keys.normal_mode["<leader>["] = "<C-x>"
 lvim.keys.normal_mode["<leader>]"] = "<C-a>"
 lvim.keys.normal_mode["<leader>sw"] = ":Telescope grep_string<cr>"
 
+lvim.keys.normal_mode["<leader>gp"] = ":lua require('goto-preview').goto_preview_definition()<cr>"
+
 require('todo-comments').setup()
 
 vim.opt.so = 16
