@@ -71,6 +71,23 @@ lvim.plugins = {
             require('goto-preview').setup {}
         end
     },
+    {
+        'kristijanhusak/vim-dadbod-ui',
+        dependencies = {
+            { 'tpope/vim-dadbod', lazy = true },
+            { 'kristijanhusak/vim-dadbod-completion', ft = { 'sql', 'mysql', 'plsql' }, lazy = true },
+        },
+        cmd = {
+            'DBUI',
+            'DBUIToggle',
+            'DBUIAddConnection',
+            'DBUIFindBuffer',
+        },
+        init = function()
+            -- Your DBUI configuration
+            vim.g.db_ui_use_nerd_fonts = 1
+        end,
+    },
 }
 
 -- basic stuff
@@ -161,6 +178,9 @@ lvim.keys.normal_mode["<leader>]"] = "<C-a>"
 lvim.keys.normal_mode["<leader>sw"] = ":Telescope grep_string<cr>"
 
 lvim.keys.normal_mode["<leader>gp"] = ":lua require('goto-preview').goto_preview_definition()<cr>"
+
+-- dadbod ui
+lvim.keys.normal_mode["<leader>ui"] = ":DBUIToggle<cr>"
 
 require('todo-comments').setup()
 
