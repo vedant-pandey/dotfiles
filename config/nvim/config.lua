@@ -180,6 +180,7 @@ lvim.keys.normal_mode["<leader>gp"] = ":lua require('goto-preview').goto_preview
 
 -- dadbod ui
 lvim.keys.normal_mode["<leader>ui"] = ":DBUIToggle<cr>"
+lvim.keys.normal_mode["<leader>Da"] = ":DBUIAddConnection<cr>"
 
 require('todo-comments').setup()
 
