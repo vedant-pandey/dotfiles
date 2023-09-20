@@ -93,24 +93,20 @@ lvim.plugins = {
 lvim.keys.normal_mode["<leader>q"] = ":q<cr>"
 lvim.keys.normal_mode["<leader>a"] = ":qa<cr>"
 lvim.keys.normal_mode["<leader>h"] = ":noh<CR>"
-lvim.keys.normal_mode["<leader><CR>"] = ":so %<CR>"
-lvim.keys.normal_mode["<leader><ESC>"] = ":so ~/.config/nvim/init.lua<CR>"
 lvim.keys.normal_mode["<leader>w"] = ":w<cr>"
 lvim.keys.insert_mode["jk"] = "<esc>"
 lvim.keys.normal_mode["<BS>"] = [["_X]]
-lvim.keys.normal_mode["D"] = [["_D]]
-lvim.keys.visual_mode["D"] = [["_D]]
-lvim.keys.normal_mode["d"] = [["_d]]
-lvim.keys.visual_mode["d"] = [["_d]]
+lvim.keys.normal_mode["<leader>D"] = [["_D]]
+lvim.keys.visual_mode["<leader>D"] = [["_D]]
+lvim.keys.normal_mode["<leader>d"] = [["_d]]
+lvim.keys.visual_mode["<leader>d"] = [["_d]]
 
--- text editting skillz
 lvim.keys.normal_mode["<leader>p"] = [["+P<CR>]]
 lvim.keys.visual_mode["<leader>p"] = [["_d"+P<CR>]]
 lvim.keys.normal_mode["<leader>y"] = [["+y]]
 lvim.keys.visual_mode["<leader>y"] = [["+y]]
 lvim.keys.normal_mode["<leader>va"] = "ggVG"
 
--- Text moving skills
 lvim.keys.visual_mode["<M-j>"] = ":m '>+1<CR>gv=gv"
 lvim.keys.visual_mode["<M-k>"] = ":m '<-2<CR>gv=gv"
 lvim.keys.visual_mode["<M-J>"] = ":t '><CR>gv=gv"
@@ -120,7 +116,6 @@ lvim.keys.normal_mode["<M-k>"] = ":m .-2<CR>"
 lvim.keys.normal_mode["<M-J>"] = ":t .<CR>"
 lvim.keys.normal_mode["<M-K>"] = ":t .-1<CR>"
 
--- window stuff
 lvim.keys.normal_mode["<C-l>"] = "<C-w><C-l>"
 lvim.keys.normal_mode["<C-h>"] = "<C-w><C-h>"
 lvim.keys.normal_mode["<C-j>"] = "<C-w><C-j>"
@@ -132,8 +127,8 @@ lvim.keys.visual_mode["<leader>v;"] = "g<C-g>"
 lvim.keys.normal_mode["<leader>vn"] = ":ene<CR>"
 lvim.keys.normal_mode["<C-d>"] = "<C-d>zz"
 lvim.keys.normal_mode["<C-b>"] = "<C-b>zz"
-lvim.keys.normal_mode["n"] = "nzzzv"
-lvim.keys.normal_mode["N"] = "Nzzzv"
+-- lvim.keys.normal_mode["n"] = "nzzzv"
+-- lvim.keys.normal_mode["N"] = "Nzzzv"
 lvim.keys.normal_mode["<C-n>"] = "<cmd>BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<C-p>"] = "<cmd>BufferLineCyclePrev<CR>"
 lvim.keys.normal_mode["<leader>x"] = "<cmd>BufferKill<CR>"
@@ -178,9 +173,7 @@ lvim.keys.normal_mode["<leader>sw"] = ":Telescope grep_string<cr>"
 
 lvim.keys.normal_mode["<leader>gp"] = ":lua require('goto-preview').goto_preview_definition()<cr>"
 
--- dadbod ui
 lvim.keys.normal_mode["<leader>ui"] = ":DBUIToggle<cr>"
-lvim.keys.normal_mode["<leader>Da"] = ":DBUIAddConnection<cr>"
 
 require('todo-comments').setup()
 
