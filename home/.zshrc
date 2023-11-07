@@ -58,3 +58,11 @@ bindkey -s "^f" "t-sesh\n"
 bindkey -s "^g" "cheet\n"
 
 [ -f "/Users/vedant/.ghcup/env" ] && source "/Users/vedant/.ghcup/env" # ghcup-env
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/vedant/bin/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/vedant/bin/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/vedant/bin/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/vedant/bin/google-cloud-sdk/completion.zsh.inc'; fi
+. $HOME/.asdf/asdf.sh
+. $HOME/.asdf/completions/asdf.bash
