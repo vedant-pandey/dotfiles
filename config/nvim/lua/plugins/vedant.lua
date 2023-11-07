@@ -4,6 +4,7 @@ return {
     "catppuccin/nvim",
     name = "catppuccin",
     priority = 1000,
+    lazy = false,
   },
   { "nvim-tree/nvim-web-devicons" },
   {
@@ -104,12 +105,16 @@ return {
             dialyzerEnabled = false,
             enableTestLenses = false,
           }),
-          on_attach = function(client, bufnr) end,
         },
       })
     end,
     dependencies = {
       "nvim-lua/plenary.nvim",
     },
+  },
+  {
+    "numToStr/Comment.nvim",
+    opts = {},
+    lazy = false,
   },
 }

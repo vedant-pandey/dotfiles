@@ -30,9 +30,16 @@ vim.keymap.set("n", "<leader>Q", "<cmd>qa!<CR>")
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "<C-b>", "<C-b>zz")
 
+vim.keymap.set("n", "<C-c>", "<esc>")
+vim.keymap.set("n", "<leader>h", ":noh<CR>")
+
 vim.keymap.set("n", "<leader>vk", "<cmd>silent !ssh-add -D<cr>")
 vim.keymap.set("n", "<leader>vx", "<cmd>!chmod +x %<cr>")
 vim.keymap.set("v", "<leader>vs", [["hy:%s/<C-r>h/<C-r>h/gc<left><left><left>]])
 vim.keymap.set("n", "<leader>vs", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
 vim.keymap.set("n", "<leader>ui", ":DBUIToggle<cr>")
+-- vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<cr>")
+vim.keymap.set({'n', 'v'}, "<M-Left>", "B")
+vim.keymap.set({'n', 'v'}, "<M-Right>", "E")
+
