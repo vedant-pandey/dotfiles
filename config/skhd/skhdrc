@@ -42,8 +42,10 @@ fn + shift + alt - j: yabai -m display --focus south
 fn + shift + alt - k: yabai -m display --focus north
 
 # # move window to display left and right
-# shift + alt - s : yabai -m window --display west; yabai -m display --focus west;
-# shift + alt - g : yabai -m window --display east; yabai -m display --focus east;
+fn + shift + cmd - h : yabai -m window --display west; yabai -m display --focus west;
+fn + shift + cmd - l : yabai -m window --display east; yabai -m display --focus east;
+fn + shift + cmd - j : yabai -m window --display south; yabai -m display --focus south;
+fn + shift + cmd - k : yabai -m window --display north; yabai -m display --focus north;
 
 # # stop/start/restart yabai
 # ctrl + alt - q : brew services stop yabai
