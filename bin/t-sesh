@@ -6,7 +6,7 @@ create_cmd="Create-dir"
 work_dir="work"
 personal_dir="personal"
 
-session_cmd=$(find ~/work ~/personal ~/personal/opensource -maxdepth 1 2> /dev/null | xargs echo "$create_cmd" | tr " " "\n" | fzf)
+session_cmd=$(find ~/work ~/personal ~/personal/opensource ~/personal/onest -maxdepth 1 2> /dev/null | xargs echo "$create_cmd" | tr " " "\n" | fzf)
 
 # Exit if fzf was interrupted
 if [ $? -ne 0 ]; then
