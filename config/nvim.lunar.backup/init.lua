@@ -23,3 +23,13 @@ Log:debug "Starting LunarVim"
 
 local commands = require "lvim.core.commands"
 commands.load(commands.defaults)
+
+vim.cmd([[
+if executable('opam')
+    let g:opamshare=substitute(system('opam var share'),'\n$','','''')
+    if isdirectory(g:opamshare."/merlin/vim")
+        execute "set rtp+=" . g:opamshare."/merlin/vim"
+    endif
+endif
+]])
+

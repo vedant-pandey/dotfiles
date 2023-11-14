@@ -8,5 +8,9 @@ vim.keymap.set({'n', 'v'}, '<leader>bf', telescope_builtin.buffers, {})
 vim.keymap.set({'n', 'v'}, '<leader>mf', telescope_builtin.marks, {})
 vim.keymap.set({'n', 'v'}, '<leader>vf', '<cmd>vsplit<CR><cmd>Telescope find_files<cr>') -- split buffer and select what to open
 
+vim.keymap.set('n', "<leader>tq", "<cmd>TodoQuickFix<cr>")
+vim.keymap.set('n', "<leader>tt", "<cmd>TodoTelescope<cr>")
+vim.keymap.set('n', "<leader>tr", "<cmd>TodoTrouble<cr>")
+
 -- file browser remaps
 -- vim.keymap.set({'n', 'v'}, '<leader>fe', '<cmd>Telescope file_browser<CR>', {})
