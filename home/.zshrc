@@ -66,3 +66,6 @@ if [ -f '/Users/vedant/bin/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/veda
 if [ -f '/Users/vedant/bin/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/vedant/bin/google-cloud-sdk/completion.zsh.inc'; fi
 . $HOME/.asdf/asdf.sh
 . $HOME/.asdf/completions/asdf.bash
+
+# Turso
+export PATH="/Users/vedant/.turso:$PATH"

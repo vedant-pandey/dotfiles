@@ -146,6 +146,15 @@ return packer.startup(function(use)
 		},
 	})
 
+	use({
+		"zbirenbaum/copilot.lua",
+		cmd = "Copilot",
+		event = "InsertEnter",
+		config = function()
+			require("copilot").setup({})
+		end,
+	})
+
 	if packer_bootstrap then
 		require("packer").sync()
 	end
