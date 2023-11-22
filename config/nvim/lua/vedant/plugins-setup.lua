@@ -146,14 +146,23 @@ return packer.startup(function(use)
 		},
 	})
 
+	use({ "kevinhwang91/nvim-bqf", ft = "qf" })
+
 	use({
-		"zbirenbaum/copilot.lua",
-		cmd = "Copilot",
-		event = "InsertEnter",
-		config = function()
-			require("copilot").setup({})
+		"renerocksai/telekasten.nvim",
+		requires = { "nvim-telescope/telescope.nvim" },
+	})
+
+	use({ "renerocksai/calendar-vim" })
+
+	use({
+		"iamcco/markdown-preview.nvim",
+		run = function()
+			vim.fn["mkdp#util#install"]()
 		end,
 	})
+
+	use({ "github/copilot.vim" })
 
 	if packer_bootstrap then
 		require("packer").sync()

@@ -24,6 +24,13 @@ null_ls.setup({
 				return utils.root_has_file(".eslintrc.js") -- change file extension if you use something else
 			end,
 		}),
+		-- null_ls.builtins.formatting.ocamllsp.with({
+		-- 	command = "ocamlformat",
+		-- 	args = { "--enable-outside-detected-project" },
+		-- }),
+		null_ls.builtins.formatting.ocamlformat.with({
+			filetypes = { "ocaml", "ocaml.menhir", "ocaml.interface", "ocaml.ocamllex", "reason", "dune" },
+		}),
 	},
 	-- configure format on save
 	on_attach = function(current_client, bufnr)
@@ -35,8 +42,20 @@ null_ls.setup({
 				callback = function()
 					vim.lsp.buf.format({
 						filter = function(client)
-							--  only use null-ls for formatting instead of lsp server
-							return client.name == "null-ls"
+							local ocaml_filetypes = {
+								["ocaml"] = true,
+								["ocaml.menhir"] = true,
+								["ocaml.interface"] = true,
+								["ocaml.ocamllex"] = true,
+								["reason"] = true,
+								["dune"] = true,
+							}
+
+							if ocaml_filetypes[vim.bo.filetype] then
+								return client.name == "ocamllsp"
+							else
+								return client.name == "null-ls"
+							end
 						end,
 						bufnr = bufnr,
 					})

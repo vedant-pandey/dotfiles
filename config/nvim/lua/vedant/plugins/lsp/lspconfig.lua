@@ -18,8 +18,9 @@ local on_attach = function(_, bufnr)
 	local opts = { noremap = true, silent = true, buffer = bufnr }
 
 	-- set keybinds
-	keymap.set("n", "gf", "<cmd>Lspsaga lsp_finder<CR>", opts) -- show definition, references
+	keymap.set("n", "gf", "<cmd>Lspsaga finder<CR>", opts) -- show definition, references
 	keymap.set("n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", opts) -- got to declaration
+	keymap.set("n", "gr", "<Cmd>lua vim.lsp.buf.references()<CR>", opts) -- got to declaration
 	keymap.set("n", "gd", "<cmd>Lspsaga goto_definition<CR>", opts) -- see definition and make edits in window
 	keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts) -- go to implementation
 	keymap.set("n", "<leader>la", "<cmd>Lspsaga code_action<CR>", opts) -- see available code actions
@@ -89,9 +90,21 @@ lspconfig["lua_ls"].setup({
 })
 
 lspconfig.ocamllsp.setup({
-    cmd = { "ocamllsp" },
-    filetypes = { "ocaml", "ocaml.menhir", "ocaml.interface", "ocaml.ocamllex", "reason", "dune" },
-    root_dir = lspconfig.util.root_pattern("*.opam", "esy.json", "package.json", ".git", "dune-project", "dune-workspace"),
-    on_attach = on_attach,
-    capabilities = capabilities
+	cmd = { "ocamllsp" },
+	filetypes = { "ocaml", "ocaml.menhir", "ocaml.interface", "ocaml.ocamllex", "reason", "dune" },
+	root_dir = lspconfig.util.root_pattern(
+		"*.opam",
+		"esy.json",
+		"package.json",
+		".git",
+		"dune-project",
+		"dune-workspace"
+	),
+	on_attach = on_attach,
+	capabilities = capabilities,
+})
+
+lspconfig["reason_ls"].setup({
+	on_attach = on_attach,
+	capabilities = capabilities,
 })

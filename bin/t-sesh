@@ -15,7 +15,7 @@ if [ $? -ne 0 ]; then
 fi
 
 if [ "$session_cmd" = "$create_cmd" ]; then
-    dest=$(echo "$work_dir $personal_dir" | tr " " "\n" | fzf)
+    dest=$(echo "$work_dir $personal_dir $oss_dir" | tr " " "\n" | fzf)
     read -p "Project Name: " proj_dir
 
     session_dir="$HOME/$dest/$proj_dir"

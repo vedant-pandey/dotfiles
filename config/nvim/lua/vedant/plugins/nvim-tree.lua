@@ -1,22 +1,25 @@
-local setup, nvimtree = pcall(require, 'nvim-tree')
+local setup, nvimtree = pcall(require, "nvim-tree")
 if not setup then
-    return
+	return
 end
 
 vim.g.loaded = 1
 vim.g.loaded_netrwPlugin = 1
 
 nvimtree.setup({
-    sort_by = "case_sensitive",
-    view = {
-        width = 30,
-    },
-    renderer = {
-        group_empty = true,
-    },
-    filters = {
-        git_ignored = false,
-        dotfiles = false,
-    },
+	sort_by = "case_sensitive",
+	view = {
+		width = 30,
+	},
+	renderer = {
+		group_empty = true,
+	},
+	filters = {
+		git_ignored = false,
+		dotfiles = false,
+	},
+	update_focused_file = {
+		enable = true,
+	},
+	-- update_focused_file.enable
 })
-
