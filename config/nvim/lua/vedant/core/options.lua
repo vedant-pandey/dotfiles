@@ -10,6 +10,6 @@ vim.opt.wrap = true
 vim.opt.ww = "h,l"
 vim.opt.tgc = true
 vim.opt.ic = true
-vim.opt.signcolumn = "yes:2"
+vim.opt.signcolumn = "yes:1"
 
 vim.cmd.colorscheme("catppuccin")
