@@ -1,5 +1,3 @@
-NVIM_LOG_FILE = vim.env.HOME .. "/.cache/nvim.log"
-
 require("vedant.plugins-setup")
 
 -- plugin imports
