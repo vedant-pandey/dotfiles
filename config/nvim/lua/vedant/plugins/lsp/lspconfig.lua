@@ -61,13 +61,6 @@ lspconfig["tailwindcss"].setup({
 	on_attach = on_attach,
 })
 
--- configure emmet language server
-lspconfig["emmet_ls"].setup({
-	capabilities = capabilities,
-	on_attach = on_attach,
-	filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
-})
-
 -- configure lua server (with special settings)
 lspconfig["lua_ls"].setup({
 	capabilities = capabilities,
@@ -105,6 +98,16 @@ lspconfig.ocamllsp.setup({
 })
 
 lspconfig["reason_ls"].setup({
+	on_attach = on_attach,
+	capabilities = capabilities,
+})
+
+lspconfig["svelte"].setup({
+	on_attach = on_attach,
+	capabilities = capabilities,
+})
+
+lspconfig["clangd"].setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
 })
