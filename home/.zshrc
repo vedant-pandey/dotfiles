@@ -55,7 +55,7 @@ export PATH="$PATH:$GOPATH/bin"
 export HOMEBREW_NO_ANALYTICS=1
 
 bindkey -s "^f" "t-sesh\n"
-bindkey -s "^g" "cheet\n"
+bindkey -s "^g" "nvim .\n"
 
 [ -f "/Users/vedant/.ghcup/env" ] && source "/Users/vedant/.ghcup/env" # ghcup-env
 

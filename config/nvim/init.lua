@@ -17,6 +17,11 @@ require("vedant.plugins.treesitter")
 require("vedant.plugins.gitsigns")
 require("vedant.plugins.telekasten")
 require("vedant.plugins.copilot")
+require("vedant.plugins.hlargs")
+require("vedant.plugins.rust-tools")
+require("vedant.plugins.ibl")
+require("vedant.plugins.ufo")
+require("vedant.plugins.leap")
 
 -- core imports
 require("vedant.core.remaps")

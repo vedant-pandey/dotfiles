@@ -164,6 +164,22 @@ return packer.startup(function(use)
 
 	use({ "github/copilot.vim" })
 
+	use("puremourning/vimspector")
+
+	use({ "m-demare/hlargs.nvim" })
+
+	use("simrat39/rust-tools.nvim")
+
+	use("lukas-reineke/indent-blankline.nvim")
+
+	use({ "kevinhwang91/nvim-ufo", requires = "kevinhwang91/promise-async" })
+
+	use("tpope/vim-surround")
+
+	use("RRethy/vim-illuminate")
+
+	use("ggandor/leap.nvim")
+
 	if packer_bootstrap then
 		require("packer").sync()
 	end

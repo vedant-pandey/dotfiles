@@ -9,8 +9,6 @@ vim.keymap.set("n", "<leader><ESC>", ":so ~/.config/nvim/init.lua<CR>")
 vim.keymap.set("n", "<leader>w", ":w<cr>")
 vim.keymap.set("i", "jk", "<esc>")
 vim.keymap.set("n", "<BS>", [["_X]])
-vim.keymap.set({ "n", "v" }, "<leader>D", [["_D]])
-vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
 
 -- text editting skillz
 vim.keymap.set("n", "<leader>p", [["+P<CR>]])
@@ -57,7 +55,7 @@ vim.keymap.set("n", "<leader>li", "<cmd>LspInfo<cr>")
 vim.keymap.set("n", "<leader>/", "<Plug>(comment_toggle_linewise_current)")
 vim.keymap.set("v", "<leader>/", "<Plug>(comment_toggle_linewise_visual)")
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww t-sesh<CR>")
-vim.keymap.set("n", "<C-g>", "<cmd>silent !tmux neww cheet<CR>")
+-- vim.keymap.set("n", "<C-g>", "<cmd>silent !tmux neww cheet<CR>")
 
 -- set after plugin installs
 vim.keymap.set("n", "<leader>x", ":bd<CR>")
@@ -82,6 +80,9 @@ vim.keymap.set("n", "<leader>[", "<C-x>")
 vim.keymap.set("n", "<leader>]", "<C-a>")
 vim.keymap.set("n", "<leader>sw", ":Telescope grep_string<cr>")
 
+vim.keymap.set("n", "<leader>gx", ":execute '!open ' . shellescape(expand('<cfile>'), 1)<CR>")
+
 require("vedant.core.remaps.telescope")
 require("vedant.core.remaps.telekasten")
 require("vedant.core.remaps.markdownpreview")
+require("vedant.core.remaps.debug")
