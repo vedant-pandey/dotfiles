@@ -11,21 +11,24 @@
 
     packages = with pkgs; [
       stow
+      # neovim
       # rustup
-      # unable to find zap-zsh
       lsd
       fnm
       lazygit
-      # install tmux plugin manager(tpm)
       fd
+      # docker
+      # java
+      protobuf
+      fswatch
       ripgrep
-      # docker wrapper for nix
       gh
       glow
       jq
       parallel
       bat
       du-dust
+      zig
     ];
 
     file = {
