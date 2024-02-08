@@ -1,31 +1,17 @@
 { config, pkgs, ... }:
 
 {
-#  # Home Manager is pretty good at managing dotfiles. The primary way to manage
-#  # plain files is through 'home.file'.
-#  home.file = {
-#    # # Building this configuration will create a copy of 'dotfiles/screenrc' in
-#    # # the Nix store. Activating the configuration will then make '~/.screenrc' a
-#    # # symlink to the Nix store copy.
-#    # ".screenrc".source = dotfiles/screenrc;
-#
-#    # # You can also set the file content immediately.
-#    # ".gradle/gradle.properties".text = ''
-#    #   org.gradle.console=verbose
-#    #   org.gradle.daemon.idletimeout=3600000
-#    # '';
-#  };
-#
-
+  # Home Manager needs a bit of information about you and the paths it should
+  # manage.
   home = {
-    username = "root";
-    homeDirectory = "/root";
-    stateVersion = "22.11";
+    username = "vedant";
+    homeDirectory = "/Users/vedant";
+
+    stateVersion = "23.11";
 
     packages = with pkgs; [
       stow
-      tmux
-      rustup
+      # rustup
       # unable to find zap-zsh
       lsd
       fnm
@@ -39,36 +25,90 @@
       jq
       parallel
       bat
-      kubernetes
-      xclip
+      du-dust
     ];
+
+    file = {
+    };
 
     sessionVariables = {
     };
   };
 
   programs = {
-      zsh = {
-          enable = true;
-          initExtra = ''
-            bindkey -e
-          '';
-      };
 
-      fzf = {
-          enable = true;
-          enableZshIntegration = true;
-          fileWidgetCommand = "fd --type f";
-      };
+    zsh = {
+        enable = true;
+        enableAutosuggestions = true;
+        enableCompletion = true;
+        autocd = true;
+        defaultKeymap = "emacs";
+        syntaxHighlighting.enable = true;
+        history = {
+            extended = true;
+            ignoreAllDups = true;
+            share = true;
+            expireDuplicatesFirst = true;
+        };
+        historySubstringSearch = {
+            enable = true;
+        };
+        initExtra = (builtins.readFile ./.zshrc);
+    };
 
-      neovim = {
-          enable = true;
-          defaultEditor = true;
-          viAlias = true;
-          vimAlias = true;
-      };
+    tmux = {
+        enable = true;
+        prefix = "C-a";
+        aggressiveResize = false;
+        mouse = true;
+        baseIndex = 1;
+        plugins = with pkgs; [
+            tmuxPlugins.sensible
+            tmuxPlugins.logging
+        ];
+        extraConfig = (builtins.readFile ./.tmux.conf);
+    };
 
-      home-manager.enable = true;
+    fzf = {
+        enable = true;
+        enableZshIntegration = true;
+        fileWidgetCommand = "fd --type f";
+    };
+
+    git = {
+        enable = true;
+        delta = {
+            enable = true;
+        };
+        ignores = [
+            "vedanttest/"
+        ];
+        includes = [
+        {
+            contents = {
+                push = {
+                    autoSetupRemote = true;
+                };
+            };
+        }
+        {
+            condition = "gitdir:~/personal/";
+            contents = {
+                user = {
+                    name = "Vedant Pandey";
+                    email = "vedantpandey46@gmail.com";
+                };
+                github = {
+                    user = "vedant-pandey";
+                };
+                core = {
+                    sshCommand = "ssh -i ~/.ssh/github-personal";
+                };
+            };
+        }
+        ];
+    };
+    # Let Home Manager install and manage itself.
+    home-manager.enable = true;
   };
-
 }
