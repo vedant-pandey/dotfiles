@@ -1,9 +1,0 @@
-[user]
- name = Vedant Pandey
- email = vedant@triffy.co
-
-[github]
- user = "vedant-triffy"
- 
-[core]
- sshCommand = "ssh -i ~/.ssh/github-work"
