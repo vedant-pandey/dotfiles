@@ -10,6 +10,8 @@ plug "zap-zsh/sudo"
 # autoload -Uz compinit
 # compinit
 
+bindkey -e
+
 export ANDROID_HOME="$HOME/Library/Android/sdk"
 # PATH exports
 export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"

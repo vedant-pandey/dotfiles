@@ -65,6 +65,7 @@
         aggressiveResize = false;
         mouse = true;
         baseIndex = 1;
+        keyMode = "vi";
         plugins = with pkgs; [
             tmuxPlugins.sensible
             tmuxPlugins.logging
