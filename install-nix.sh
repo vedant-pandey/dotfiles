@@ -2,6 +2,8 @@
 sh <(curl -L https://nixos.org/nix/install) --daemon
 # Enable Flakes
 echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
+# Restart shell
+exec $SHELL
 # Install Home-manager
 nix run home-manager/master -- init --switch
 # Install Zap
