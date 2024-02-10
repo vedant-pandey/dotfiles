@@ -9,7 +9,7 @@ echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
 # Restart shell
 source /etc/profile
 # Download Home-manager
-nix run home-manager/master -- init
+nix run home-manager/master -- init --switch
 # Install TPM
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 # Clone repo
