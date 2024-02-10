@@ -1,5 +1,9 @@
+#!/bin/bash
+
 # Install Nix
-sh <(curl -L https://nixos.org/nix/install) --daemon --yes
+curl -L https://nixos.org/nix/install > nix.sh
+sh nix.sh --daemon --yes
+rm ./nix.sh
 # Enable Flakes
 echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
 # Restart shell
