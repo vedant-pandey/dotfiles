@@ -1,5 +1,5 @@
 # Created by Zap installer
-[ -f /Users/vedant/.local/share/zap/zap.zsh ] && source /Users/vedant/.local/share/zap/zap.zsh
+[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
 plug "zap-zsh/supercharge"
 plug "zap-zsh/zap-prompt"
 plug "wintermi/zsh-lsd"
