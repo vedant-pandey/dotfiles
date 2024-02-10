@@ -12,10 +12,12 @@
 
   outputs = { nixpkgs, home-manager, ... }:
     let
-      system = "aarch64-darwin";
+      userConfig = builtins.fromTOML (builtins.readFile ./user.toml);
+      system = userConfig.system;
+      user = userConfig.user;
       pkgs = nixpkgs.legacyPackages.${system};
     in {
-      homeConfigurations."vedant" = home-manager.lib.homeManagerConfiguration {
+      homeConfigurations.${user} = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
 
         # Specify your home configuration modules here, for example,

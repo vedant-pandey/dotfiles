@@ -1,11 +1,14 @@
 { config, pkgs, ... }:
 
+let 
+userConfig = builtins.fromTOML (builtins.readFile ./user.toml);
+in
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home = {
-    username = "vedant";
-    homeDirectory = "/Users/vedant";
+    username = userConfig.user;
+    homeDirectory = userConfig.home;
 
     stateVersion = "23.11";
 
@@ -99,11 +102,11 @@
             condition = "gitdir:~/personal/";
             contents = {
                 user = {
-                    name = "Vedant Pandey";
-                    email = "vedantpandey46@gmail.com";
+                    name = userConfig.fullName;
+                    email = userConfig.email;
                 };
                 github = {
-                    user = "vedant-pandey";
+                    user = userConfig.githubUsername;
                 };
                 core = {
                     sshCommand = "ssh -i ~/.ssh/github-personal";
