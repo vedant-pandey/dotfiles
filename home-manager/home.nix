@@ -115,6 +115,15 @@ in
         }
         ];
     };
+
+    neovim = {
+        enable = true;
+        defaultEditor = true;
+        viAlias = true;
+        vimAlias = true;
+	extraLuaConfig = (builtins.readFile ./init.lua);
+    };
+
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
   };

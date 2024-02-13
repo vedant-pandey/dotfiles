@@ -48,10 +48,12 @@ alias y="yarn"
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/amazon-corretto-11.jdk/Contents/Home
 alias vi=nvim
 
-# export PATH="$PATH:$GOPATH/bin"
-# export HOMEBREW_NO_ANALYTICS=1
+export PATH="$PATH:$GOPATH/bin"
+export HOMEBREW_NO_ANALYTICS=1
 
 bindkey -s "^f" "t-sesh\n"
 bindkey -s "^g" "nvim .\n"
+bindkey -s "^h" "home-manager switch --show-trace\n"
+
 
 [ -f "/Users/vedant/.ghcup/env" ] && source "/Users/vedant/.ghcup/env" # ghcup-env

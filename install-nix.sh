@@ -27,3 +27,5 @@ rm init-config.nix
 home-manager switch
 # Install Zap
 zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1 --keep
+# Reload shell
+exec $SHELL

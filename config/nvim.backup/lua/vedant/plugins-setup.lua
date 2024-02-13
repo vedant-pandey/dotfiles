@@ -35,9 +35,6 @@ return packer.startup(function(use)
 
 	use("bluz71/vim-nightfly-guicolors") -- preferred colorscheme
 
-	-- essential plugins
-	use("tpope/vim-surround") -- add, delete, change surroundings (it's awesome)
-
 	-- commenting with gc
 	use("numToStr/Comment.nvim")
 
@@ -72,7 +69,7 @@ return packer.startup(function(use)
 	use("neovim/nvim-lspconfig") -- easily configure language servers
 	use("hrsh7th/cmp-nvim-lsp") -- for autocompletion
 	use({
-		"glepnir/lspsaga.nvim",
+		"nvimdev/lspsaga.nvim",
 		branch = "main",
 		requires = {
 			{ "nvim-tree/nvim-web-devicons" },
@@ -162,10 +159,6 @@ return packer.startup(function(use)
 		end,
 	})
 
-	use({ "github/copilot.vim" })
-
-	use("puremourning/vimspector")
-
 	use({ "m-demare/hlargs.nvim" })
 
 	use("simrat39/rust-tools.nvim")
@@ -179,6 +172,8 @@ return packer.startup(function(use)
 	use("RRethy/vim-illuminate")
 
 	use("ggandor/leap.nvim")
+
+	use({ "neoclide/coc.nvim", branch = "release" })
 
 	if packer_bootstrap then
 		require("packer").sync()
