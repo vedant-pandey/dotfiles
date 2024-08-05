@@ -232,7 +232,7 @@ require("lazy").setup({
       ts_config = {
 	lua = { "string" }, -- don't add pairs in lua string treesitter nodes
 	javascript = { "template_string" }, -- don't add pairs in javscript template_string treesitter nodes
-	java = false, -- don't check treesitter on java
+	-- java = false, -- don't check treesitter on java
       },
     } -- this is equalent to setup({}) function
   },
@@ -313,10 +313,17 @@ require("lazy").setup({
 
   {
     'kevinhwang91/nvim-ufo',
+    dependencies = {
+      'kevinhwang91/promise-async',
+    },
     opts = {},
   },
 
   'ziglang/zig.vim',
+
+  'mfussenegger/nvim-jdtls',
+
+  'tpope/vim-dadbod',
 }, {})
 
 --[[
@@ -326,6 +333,8 @@ require("lazy").setup({
 --]]
 vim.o.scrolloff = 16
 vim.o.relativenumber = true
+vim.o.number = true
+vim.o.colorcolumn = 120
 vim.o.tabstop = 4
 vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
@@ -409,6 +418,7 @@ require("telescope").setup({
 	["<C-d>"] = false,
       },
     },
+    path_display = {"smart"},
   },
 })
 
@@ -658,6 +668,9 @@ local servers = {
   rust_analyzer = {},
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
+  --
+  barium = {},
+  jdtls = {},
 
   lua_ls = {
     Lua = {
@@ -838,3 +851,8 @@ vim.keymap.set("n", "<leader>zt", ":Telekasten toggle_todo<CR>", { desc = "Toggl
 vim.keymap.set("n", "<leader>zb", ":Telekasten show_backlinks<CR>", { desc = "Show [B]acklinks" })
 vim.keymap.set("n", "<leader>zr", ":Telekasten rename_note<CR>", { desc = "[R]ename note" })
 vim.keymap.set("n", "<leader>zC", ":CalendarT<CR>", { desc = "Open [C]alendar" })
+
+vim.keymap.set("n", "<leader>ga", ":Git blame<CR>", { desc = "[G]it bl[A]me" })
+vim.keymap.set("n", "<leader>gb", ":GBrowse<CR>", { desc = "[G]it [B]rowse" })
+vim.keymap.set("n", "<leader>gc", ":GBrowse!<CR>", { desc = "[G]it [C]opy link" })
+vim.keymap.set("v", "<leader>gc", ":'<,'>GBrowse!<CR>", { desc = "[G]it [C]opy link" })

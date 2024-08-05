@@ -14,6 +14,7 @@ in
 
     packages = with pkgs; [
       stow
+      graphviz
       # neovim
       # rustup
       lsd
@@ -32,6 +33,8 @@ in
       bat
       du-dust
       zig
+      postgresql
+      go
     ];
 
     file = {
@@ -64,7 +67,6 @@ in
 
     tmux = {
         enable = true;
-        prefix = "C-a";
         aggressiveResize = false;
         mouse = true;
         baseIndex = 1;
@@ -89,6 +91,7 @@ in
         };
         ignores = [
             "vedanttest/"
+            "out"
         ];
         includes = [
         {
@@ -96,17 +99,22 @@ in
                 push = {
                     autoSetupRemote = true;
                 };
+                rerere = {
+                    enabled = true;
+                };
+                column.ui = "auto";
+                branch.sort = "-committerdate";
             };
         }
         {
             condition = "gitdir:~/personal/";
             contents = {
                 user = {
-                    name = userConfig.fullName;
-                    email = userConfig.email;
+                    name = "Vedant Pandey";
+                    email = "vedantpandey46@gmail.com";
                 };
                 github = {
-                    user = userConfig.githubUsername;
+                    user = "vedant-pandey";
                 };
                 core = {
                     sshCommand = "ssh -i ~/.ssh/github-personal";

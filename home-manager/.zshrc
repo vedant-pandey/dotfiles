@@ -18,34 +18,30 @@ export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 export PATH="$PATH:/opt/apache-maven/bin"
 export PATH="$PATH:$(brew --prefix llvm@15)/bin"
-export PATH="$BUN_INSTALL/bin:$PATH"
 export PATH="$PATH:$HOME/bin"
 export PATH="$PATH:$HOME/.flutter/bin"
-export PATH="$PATH:$ANDROID_HOME/tools"
-export PATH="$PATH:$ANDROID_HOME/tools/bin"
-export PATH="$PATH:$ANDROID_HOME/platform-tools"
 export PATH="$PATH":"$HOME/.pub-cache/bin"
 export PATH="$PATH":"/Users/vedant/Library/Python/3.11/bin"
 export GOPATH="$HOME/go"
 
 export CPPFLAGS="-I/opt/homebrew/opt/openjdk@11/include"
-export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-11.jdk/Contents/Home"
-. "$HOME/.cargo/env"
+export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home"
+# . "$HOME/.cargo/env"
 
 export LDFLAGS="$LDFLAGS -L$(brew --prefix llvm@15)/lib"
 export CPPFLAGS="$CPPFLAGS -I$(brew --prefix llvm@15)/include"
 # bun completions
-[ -s "/Users/vedant/.bun/_bun" ] && source "/Users/vedant/.bun/_bun"
+# [ -s "/Users/vedant/.bun/_bun" ] && source "/Users/vedant/.bun/_bun"
 
 # bun
-export BUN_INSTALL="$HOME/.bun"
+# export BUN_INSTALL="$HOME/.bun"
 export EDITOR='nvim'
 
 # opam configuration
 [[ ! -r /Users/vedant/.opam/opam-init/init.zsh ]] || source /Users/vedant/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
 
 alias y="yarn"
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/amazon-corretto-11.jdk/Contents/Home
+eval "$(fnm env --use-on-cd)"
 alias vi=nvim
 
 export PATH="$PATH:$GOPATH/bin"
@@ -57,3 +53,21 @@ bindkey -s "^h" "home-manager switch --show-trace\n"
 
 
 [ -f "/Users/vedant/.ghcup/env" ] && source "/Users/vedant/.ghcup/env" # ghcup-env
+eval "$(/opt/homebrew/bin/brew shellenv)"
+# Set up rtx for runtime management
+eval "$(rtx activate zsh)"
+# source /Users/pandveda/.brazil_completion/zsh_completion
+if [ -e /home/pandveda/.nix-profile/etc/profile.d/nix.sh ]; then . /home/pandveda/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
+if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+    . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+fi
+
+
+# You probably also want to add Nix to your path:
+export PATH=$HOME/.nix-profile/bin:$PATH
+
+# If you plan to use home-manager, it may also be required to set NIX_PATH
+export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/$USER/channels${NIX_PATH:+:$NIX_PATH}
+export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+
