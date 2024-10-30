@@ -10,19 +10,18 @@ in
     username = userConfig.user;
     homeDirectory = userConfig.home;
 
-    stateVersion = "23.11";
+    stateVersion = "24.05";
 
     packages = with pkgs; [
+      elixir
+      qemu
+      ansible
       stow
       graphviz
-      # neovim
-      # rustup
       lsd
       fnm
       lazygit
       fd
-      # docker
-      # java
       protobuf
       fswatch
       ripgrep
@@ -35,9 +34,11 @@ in
       zig
       postgresql
       go
+      cmake
     ];
 
     file = {
+        ".config/nvim/init.lua".source = config.lib.file.mkOutOfStoreSymlink "/Users/vedant/personal/dotfiles/home-manager/init.lua";
     };
 
     sessionVariables = {
@@ -104,6 +105,9 @@ in
                 };
                 column.ui = "auto";
                 branch.sort = "-committerdate";
+                init = {
+                    defaultBranch = "main";
+                };
             };
         }
         {
@@ -121,6 +125,21 @@ in
                 };
             };
         }
+        {
+            condition = "gitdir:~/work/";
+            contents = {
+                user = {
+                    name = userConfig.fullName;
+                    email = "";
+                };
+                github = {
+                    user = userConfig.githubUsername;
+                };
+                core = {
+                    sshCommand = "";
+                };
+            };
+        }
         ];
     };
 
@@ -129,7 +148,11 @@ in
         defaultEditor = true;
         viAlias = true;
         vimAlias = true;
-	extraLuaConfig = (builtins.readFile ./init.lua);
+    };
+
+    direnv = {
+        enable = true;
+        enableZshIntegration = true;
     };
 
     # Let Home Manager install and manage itself.

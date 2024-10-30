@@ -6,6 +6,16 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+-- Remove or comment out these lines:
+-- vim.g.loaded_netrw = 1
+-- vim.g.loaded_netrwPlugin = 1
+
+-- Optional: Add some Netrw configuration
+vim.g.netrw_banner = 0        -- Disable banner
+vim.g.netrw_browse_split = 4  -- Open in previous window
+vim.g.netrw_altv = 1          -- Open splits to the right
+vim.g.netrw_liststyle = 1     -- Tree view
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -72,80 +82,7 @@ require("lazy").setup({
 
   { "folke/which-key.nvim", opts = {} },
 
-  {
-    "lewis6991/gitsigns.nvim",
-    opts = {
-      signs = {
-	add = { text = "+" },
-	change = { text = "~" },
-	delete = { text = "_" },
-	topdelete = { text = "‾" },
-	changedelete = { text = "~" },
-      },
-      on_attach = function(bufnr)
-	local gs = package.loaded.gitsigns
-
-	local function map(mode, l, r, opts)
-	  opts = opts or {}
-	  opts.buffer = bufnr
-	  vim.keymap.set(mode, l, r, opts)
-	end
-
-	-- Navigation
-	map({ "n", "v" }, "]c", function()
-	  if vim.wo.diff then
-	    return "]c"
-	  end
-	  vim.schedule(function()
-	    gs.next_hunk()
-	  end)
-	  return "<Ignore>"
-	  end, { expr = true, desc = "Jump to next hunk" })
-
-	map({ "n", "v" }, "[c", function()
-	  if vim.wo.diff then
-	    return "[c"
-	  end
-	  vim.schedule(function()
-	    gs.prev_hunk()
-	  end)
-	  return "<Ignore>"
-	  end, { expr = true, desc = "Jump to previous hunk" })
-
-	-- Actions
-	-- visual mode
-	map("v", "<leader>hs", function()
-	  gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
-	  end, { desc = "stage git hunk" })
-	map("v", "<leader>hr", function()
-	  gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
-	  end, { desc = "reset git hunk" })
-	-- normal mode
-	map("n", "<leader>hs", gs.stage_hunk, { desc = "git stage hunk" })
-	map("n", "<leader>hr", gs.reset_hunk, { desc = "git reset hunk" })
-	map("n", "<leader>hS", gs.stage_buffer, { desc = "git Stage buffer" })
-	map("n", "<leader>hu", gs.undo_stage_hunk, { desc = "undo stage hunk" })
-	map("n", "<leader>hR", gs.reset_buffer, { desc = "git Reset buffer" })
-	map("n", "<leader>hp", gs.preview_hunk, { desc = "preview git hunk" })
-	map("n", "<leader>hb", function()
-	  gs.blame_line({ full = false })
-	  end, { desc = "git blame line" })
-	map("n", "<leader>hd", gs.diffthis, { desc = "git diff against index" })
-	map("n", "<leader>hD", function()
-	  gs.diffthis("~")
-	  end, { desc = "git diff against last commit" })
-
-	-- Toggles
-	map("n", "<leader>tb", gs.toggle_current_line_blame, { desc = "toggle git blame line" })
-	map("n", "<leader>td", gs.toggle_deleted, { desc = "toggle git show deleted" })
-
-	-- Text object
-	map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "select git hunk" })
-      end,
-    },
-  },
-
-  { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 
   {
     -- Set lualine as statusline
@@ -193,33 +130,6 @@ require("lazy").setup({
       "nvim-treesitter/nvim-treesitter-textobjects",
     },
     build = ":TSUpdate",
-  },
-
-  {
-    "nvim-tree/nvim-tree.lua",
-    version = "*",
-    lazy = false,
-    dependencies = {
-      "nvim-tree/nvim-web-devicons",
-    },
-    config = function()
-      require("nvim-tree").setup {
-	sort_by = "case_sensitive",
-	view = {
-	  width = 30,
-	},
-	renderer = {
-	  group_empty = true,
-	},
-	filters = {
-	  git_ignored = false,
-	  dotfiles = false,
-	},
-	update_focused_file = {
-	  enable = true,
-	},
-      }
-    end,
   },
 
   'justinmk/vim-sneak',
@@ -282,7 +192,7 @@ require("lazy").setup({
 
   {
     'akinsho/bufferline.nvim',
-    version = "*",
+    -- version = "*",
     dependencies = 'nvim-tree/nvim-web-devicons',
     opts = {},
   },
@@ -294,7 +204,6 @@ require("lazy").setup({
     'renerocksai/telekasten.nvim',
     dependencies = {
       'nvim-telescope/telescope.nvim',
-      'renerocksai/calendar-vim',
     },
     opts = {
       home = vim.fn.expand("~/personal/notes/telekasten"),
@@ -314,7 +223,7 @@ require("lazy").setup({
   {
     'kevinhwang91/nvim-ufo',
     dependencies = {
-      'kevinhwang91/promise-async',
+      'kevinhwang91/promise-async'
     },
     opts = {},
   },
@@ -322,8 +231,93 @@ require("lazy").setup({
   'ziglang/zig.vim',
 
   'mfussenegger/nvim-jdtls',
-
   'tpope/vim-dadbod',
+  -- 'vrischmann/tree-sitter-templ',
+  -- 'github/copilot.vim',
+
+  {
+    "ray-x/go.nvim",
+    dependencies = {  -- optional packages
+      "ray-x/guihua.lua",
+      "neovim/nvim-lspconfig",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    config = function()
+      require("go").setup()
+    end,
+    event = {"CmdlineEnter"},
+    ft = {"go", 'gomod'},
+  },
+
+  {
+    "pmizio/typescript-tools.nvim",
+    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+    opts = {},
+  },
+
+  {
+    "elixir-tools/elixir-tools.nvim",
+    version = "*",
+    event = { "BufReadPre", "BufNewFile" },
+    config = function()
+      local elixir = require("elixir")
+      local elixirls = require("elixir.elixirls")
+
+      elixir.setup {
+	nextls = {enable = true},
+	elixirls = {
+	  enable = true,
+	  settings = elixirls.settings {
+	    dialyzerEnabled = false,
+	    enableTestLenses = false,
+	  },
+	  on_attach = function(client, bufnr)
+	    vim.keymap.set("n", "<leader>lfp", ":ElixirFromPipe<cr>", { buffer = true, noremap = true, desc = "E[L]ixir [F]rom [P]ipe" })
+	    vim.keymap.set("n", "<leader>ltp", ":ElixirToPipe<cr>", { buffer = true, noremap = true, desc = "E[L]ixir [T]o [P]ipe" })
+	    vim.keymap.set("v", "<leader>lem", ":ElixirExpandMacro<cr>", { buffer = true, noremap = true, desc = "E[L]ixir [E]xpand [M]acro" })
+	  end,
+	},
+	projectionist = {
+	  enable = true
+	}
+      }
+    end,
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+
+    {
+      'tjdevries/ocaml.nvim',
+    },
+  },
+
+  {
+    'rmagatti/auto-session',
+    lazy = false,
+    dependencies = {
+      'nvim-telescope/telescope.nvim', -- Only needed if you want to use session lens
+    },
+
+    ---enables autocomplete for opts
+    ---@module "auto-session"
+    ---@type AutoSession.Config
+    opts = {
+      suppressed_dirs = { '~/', '~/Projects', '~/Downloads', '/' },
+      -- log_level = 'debug',
+    }
+  },
+
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    opts = {},
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+  },
+
+  -- {
+  --   "nvim-telescope/telescope-file-browser.nvim",
+  --   dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
+  -- },
+
 }, {})
 
 --[[
@@ -333,8 +327,8 @@ require("lazy").setup({
 --]]
 vim.o.scrolloff = 16
 vim.o.relativenumber = true
+vim.o.colorcolumn = 80
 vim.o.number = true
-vim.o.colorcolumn = 120
 vim.o.tabstop = 4
 vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
@@ -358,7 +352,6 @@ vim.cmd.colorscheme("catppuccin")
 vim.loader.enable()
 
 vim.g.loaded = 1
-vim.g.loaded_netrwPlugin = 1
 
 vim.o.hlsearch = true
 vim.o.mouse = "a"
@@ -388,7 +381,6 @@ vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 -- Diagnostic keymaps
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic message" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })
-vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<cr>")
 vim.keymap.set("n", "<leader>E", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
 vim.keymap.set("n", "<leader>qd", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
 vim.keymap.set("n", "<leader>qt", "<cmd>TodoTrouble<cr>", { desc = "Open [T]odo list" })
@@ -405,6 +397,103 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   pattern = "*",
 })
 
+local format_sync_grp = vim.api.nvim_create_augroup("GoImport", {})
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*.go",
+  callback = function()
+   require('go.format').goimport()
+  end,
+  group = format_sync_grp,
+})
+
+local function debug_keymap(key)
+  local modes = {'n', 'v', 'x', 's', 'o', 'i', 'l', 'c', 't'}
+  for _, mode in ipairs(modes) do
+    local map = vim.fn.maparg(key, mode, false, true)
+    if map and not vim.tbl_isempty(map) then
+      print(string.format("Mode %s: %s -> %s (defined in %s)", mode, key, map.rhs, map.scriptfile or "Unknown"))
+    end
+  end
+end
+
+-- Usage example:
+-- debug_keymap('<space>s')
+
+-- You can also create a user command for easier debugging:
+vim.api.nvim_create_user_command('DebugKeymap', function(opts)
+  debug_keymap(opts.args)
+end, {nargs = 1})
+
+require('render-markdown').setup({
+  file_types = { 'markdown', 'quatro' },
+  render_modes = { 'n', 'v', 'i', 'c' },
+  heading = { position = 'inline' },
+  debounce = 100,
+})
+
+--[[
+=====================================================================
+==================== TELESCOPE HISTORY SEARCH COMMAND ===============
+=====================================================================
+--]]
+
+local function search_command_history()
+  local history = vim.api.nvim_exec('history cmd', true)
+
+  local lines = {}
+  for line in history:gmatch("[^\r\n]+") do
+    local _, command = line:match("^%s*(%d+)%s+(.+)")
+    if command then
+      table.insert(lines, 1, command)  -- Insert at the beginning to reverse order
+    end
+  end
+
+  -- Add the most recent command (which called this function)
+  local most_recent = vim.fn.histget('cmd', -1)
+  if most_recent and most_recent ~= '' then
+    table.insert(lines, 1, most_recent)
+  end
+
+  -- Remove duplicates while preserving order
+  local seen = {}
+  local unique_lines = {}
+  for _, line in ipairs(lines) do
+    if not seen[line] then
+      seen[line] = true
+      table.insert(unique_lines, line)
+    end
+  end
+
+  -- Use Telescope to search through the commands
+  require('telescope.pickers').new({}, {
+    prompt_title = 'Command History',
+    finder = require('telescope.finders').new_table {
+      results = unique_lines
+    },
+    sorter = require('telescope.config').values.generic_sorter({}),
+    attach_mappings = function(prompt_bufnr, map)
+      local actions = require('telescope.actions')
+      actions.select_default:replace(function()
+        actions.close(prompt_bufnr)
+        local selection = require('telescope.actions.state').get_selected_entry()
+        vim.fn.histadd('cmd', selection[1])
+        -- Execute the selected command
+        -- vim.cmd(selection[1])
+
+	-- only write the current command without executing
+	vim.api.nvim_feedkeys(':' .. selection[1], 'n', true)
+
+      end)
+      return true
+    end,
+  }):find()
+end
+
+-- Create a user command to trigger the search
+vim.api.nvim_create_user_command('SearchCommandHistory', search_command_history, {})
+
+vim.keymap.set("n", "<leader>sx", search_command_history, { desc = "[S]earch e[X]ecuted commands" })
+
 --[[
 =====================================================================
 ==================== CONFIGURE TELESCOPE ============================
@@ -418,17 +507,19 @@ require("telescope").setup({
 	["<C-d>"] = false,
       },
     },
-    path_display = {"smart"},
+    path_display = {"smart"}
+  },
+  pickers = {
+    find_files = {
+      hidden = true,
+    },
   },
 })
 
 -- Enable telescope fzf native, if installed
 pcall(require("telescope").load_extension, "fzf")
 
--- Telescope live_grep in git root
--- Function to find the git root directory based on the current buffer's path
 local function find_git_root()
-  -- Use the current buffer's path as the starting point for the git search
   local current_file = vim.api.nvim_buf_get_name(0)
   local current_dir
   local cwd = vim.fn.getcwd()
@@ -436,11 +527,9 @@ local function find_git_root()
   if current_file == "" then
     current_dir = cwd
   else
-    -- Extract the directory from the current file's path
     current_dir = vim.fn.fnamemodify(current_file, ":h")
   end
 
-  -- Find the Git root directory from the current file's path
   local git_root = vim.fn.systemlist("git -C " .. vim.fn.escape(current_dir, " ") .. " rev-parse --show-toplevel")[1]
   if vim.v.shell_error ~= 0 then
     print("Not a git repository. Searching on current working directory")
@@ -461,16 +550,69 @@ end
 
 vim.api.nvim_create_user_command("LiveGrepGitRoot", live_grep_git_root, {})
 
+-- Define theme mapping
+local theme_mapping = {
+  -- Specific picker names
+  -- find_files = "ivy",
+  -- live_grep = "ivy",
+  -- -- Patterns (will be checked with string.match)
+  -- ["^git"] = "dropdown",  -- All git-related pickers
+  -- ["grep$"] = "ivy",      -- All pickers ending with 'grep'
+  -- Default theme (used if no other matches are found)
+  default = "ivy"
+}
+
+local function get_all_picker_names()
+  local pickers = {}
+
+  -- Get built-in pickers
+  for picker_name, _ in pairs(require('telescope.builtin')) do
+    if type(require('telescope.builtin')[picker_name]) == "function" then
+      table.insert(pickers, picker_name)
+    end
+  end
+
+  -- Get custom pickers
+  for picker_name, _ in pairs(require('telescope').extensions) do
+    table.insert(pickers, picker_name)
+  end
+
+  -- Add any other custom pickers that might not be in extensions
+  -- For example, if you have a custom picker named 'my_custom_picker':
+  -- table.insert(pickers, 'my_custom_picker')
+  return pickers
+end
+
+local function get_theme_for_picker(picker_name)
+  -- Check for exact matches first
+  if theme_mapping[picker_name] then
+    return theme_mapping[picker_name]
+  end
+  -- Check for pattern matches
+  for pattern, theme_name in pairs(theme_mapping) do
+    if picker_name:match(pattern) then
+      return theme_name
+    end
+  end
+  -- Return default theme if no matches found
+  return theme_mapping.default
+end
+
+local all_pickers = get_all_picker_names()
+
+local pickers_config = {}
+for _, picker_name in ipairs(all_pickers) do
+  pickers_config[picker_name] = {theme = get_theme_for_picker(picker_name)}
+end
+
+require('telescope').setup({
+  pickers = pickers_config,
+})
+
 -- See `:help telescope.builtin`
 vim.keymap.set("n", "<leader>?", require("telescope.builtin").oldfiles, { desc = "[?] Find recently opened files" })
 vim.keymap.set("n", "<leader><space>", require("telescope.builtin").buffers, { desc = "[ ] Find existing buffers" })
-vim.keymap.set("n", "<leader>sb", function()
-  -- You can pass additional configuration to telescope to change theme, layout, etc.
-  require("telescope.builtin").current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
-    winblend = 10,
-    previewer = false,
-  }))
-end, { desc = "Fuzzily [S]earch in current [B]uffer" })
+vim.keymap.set("n", "<leader>sb", require("telescope.builtin").current_buffer_fuzzy_find, { desc = "Fuzzily [S]earch in current [B]uffer" })
 
 local function telescope_live_grep_open_files()
   require("telescope.builtin").live_grep({
@@ -478,6 +620,9 @@ local function telescope_live_grep_open_files()
     prompt_title = "Live Grep in Open Files",
   })
 end
+
+-- require("telescope").load_extension "file_browser"
+
 vim.keymap.set("n", "<leader>s/", telescope_live_grep_open_files, { desc = "[S]earch [/] in Open Files" })
 vim.keymap.set("n", "<leader>ss", require("telescope.builtin").builtin, { desc = "[S]earch [S]elect Telescope" })
 vim.keymap.set("n", "<leader>gf", require("telescope.builtin").git_files, { desc = "Search [G]it [F]iles" })
@@ -488,14 +633,17 @@ vim.keymap.set("n", "<leader>sg", require("telescope.builtin").live_grep, { desc
 vim.keymap.set("n", "<leader>sG", ":LiveGrepGitRoot<cr>", { desc = "[S]earch by [G]rep on Git Root" })
 vim.keymap.set("n", "<leader>sd", require("telescope.builtin").diagnostics, { desc = "[S]earch [D]iagnostics" })
 vim.keymap.set("n", "<leader>sr", require("telescope.builtin").resume, { desc = "[S]earch [R]esume" })
+-- vim.keymap.set("n", "<leader>e", ":Telescope file_browser path=%:p:h select_buffer=true<CR>")
+
 
 --[[
 =====================================================================
-==================== CONFUGURE TREESITTER ===========================
+==================== CONFIGURE TREESITTER ===========================
 =====================================================================
--- --]]
--- [[ Configure Treesitter ]]
--- See `:help nvim-treesitter`
+--]]
+
+require('ocaml').setup()
+
 -- Defer Treesitter setup after first render to improve startup time of 'nvim {filename}'
 vim.defer_fn(function()
   require("nvim-treesitter.configs").setup({
@@ -513,6 +661,10 @@ vim.defer_fn(function()
       "vimdoc",
       "vim",
       "bash",
+      "elixir",
+      "eex",
+      "heex",
+      "markdown",
     },
 
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
@@ -581,6 +733,13 @@ vim.defer_fn(function()
   })
 end, 0)
 
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = false,
+  },
+}
+
 --[[
 =====================================================================
 ==================== CONFIGURE LSP ==================================
@@ -625,6 +784,21 @@ local on_attach = function(_, bufnr)
     end, { desc = "Format current buffer with LSP" })
 end
 
+vim.api.nvim_create_autocmd("FileType", {
+     pattern = "ocaml",
+     callback = function()
+       -- Disable the switch mappings
+       vim.keymap.set('n', '<LocalLeader>s', '<Nop>', { buffer = true })
+       vim.keymap.set('n', '<LocalLeader>S', '<Nop>', { buffer = true })
+       -- Disable the type printing mappings
+       vim.keymap.set('n', '<LocalLeader>t', '<Nop>', { buffer = true })
+       vim.keymap.set('x', '<LocalLeader>t', '<Nop>', { buffer = true })
+       -- Optionally, set your own mappings here
+       -- For example:
+       -- vim.keymap.set('n', '<LocalLeader>x', YourCustomFunction, { buffer = true })
+     end
+   })
+
 -- document existing key chains
 require("which-key").register({
   ["<leader>b"] = { name = "[B]uffer", _ = "which_key_ignore" },
@@ -661,16 +835,27 @@ require("mason-lspconfig").setup()
 --
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
+vim.filetype.add({ extension = { templ = "templ" } })
 local servers = {
   clangd = {},
+  nextls = {},
+  elixirls = {},
   gopls = {},
+  templ = {},
+  html = { filetypes = { 'html', 'templ' } },
+  htmx = { filetypes = { 'html', 'templ' } },
+  tailwindcss = {
+    filetypes = { "templ", "astro", "javascript", "typescript", "react" },
+    init_options = { userLanguages = { templ = "html" } },
+  },
   -- pyright = {},
   rust_analyzer = {},
-  -- tsserver = {},
-  -- html = { filetypes = { 'html', 'twig', 'hbs'} },
-  --
-  barium = {},
   jdtls = {},
+  barium = {},
+  zls = {},
+  ocamllsp = {
+    filetypes = { "ocaml", "ocaml.menhir", "ocaml.interface", "ocaml.ocamllex", "reason", "dune" },
+  },
 
   lua_ls = {
     Lua = {
@@ -683,6 +868,9 @@ local servers = {
     },
   },
 }
+
+-- Enable elixir support
+-- require("elixir").setup()
 
 -- Setup neovim lua configuration
 require("neodev").setup()
@@ -743,24 +931,24 @@ cmp.setup({
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     }),
-    ["<Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-	cmp.select_next_item()
-      elseif luasnip.expand_or_locally_jumpable() then
-	luasnip.expand_or_jump()
-      else
-	fallback()
-      end
-      end, { "i", "s" }),
-    ["<S-Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-	cmp.select_prev_item()
-      elseif luasnip.locally_jumpable(-1) then
-	luasnip.jump(-1)
-      else
-	fallback()
-      end
-      end, { "i", "s" }),
+ --    ["<Tab>"] = cmp.mapping(function(fallback)
+ --      if cmp.visible() then
+	-- cmp.select_next_item()
+ --      elseif luasnip.expand_or_locally_jumpable() then
+	-- luasnip.expand_or_jump()
+ --      else
+	-- fallback()
+ --      end
+ --      end, { "i", "s" }),
+ --    ["<S-Tab>"] = cmp.mapping(function(fallback)
+ --      if cmp.visible() then
+	-- cmp.select_prev_item()
+ --      elseif luasnip.locally_jumpable(-1) then
+	-- luasnip.jump(-1)
+ --      else
+	-- fallback()
+ --      end
+ --      end, { "i", "s" }),
   }),
   sources = {
     { name = "nvim_lsp" },
@@ -833,8 +1021,6 @@ vim.keymap.set("n", "<leader>bl", "<cmd>BufferLineCloseRight<CR>", { desc = "Clo
 vim.keymap.set("n", "<leader>;", "<cmd>vsplit %<CR>", { desc = "[;] Split vertical" })
 vim.keymap.set("n", "<leader>'", "<cmd>split %<CR>", { desc = "['] Split horizontal" })
 vim.keymap.set("n", "<leader>vx", "<cmd>!chmod +x %<cr>", { desc = "Make current file e[X]ecutable" })
-vim.keymap.set("v", "<leader>vs", [["hy:%s/<C-r>h/<C-r>h/gc<left><left><left>]], { desc = "[S]earch selection" })
-vim.keymap.set("n", "<leader>vs", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "[S]earch selection" })
 vim.keymap.set("n", "<leader>vh", "<cmd>!home-manager switch --show-trace<CR>", { desc = "[H]ome manager switch" })
 vim.keymap.set("n", "<leader>va", "ggVG", { desc = "Select [A]ll text" })
 
@@ -843,10 +1029,10 @@ vim.keymap.set("n", "<leader>zf", ":Telekasten find_notes<CR>", { desc = "[F]ind
 vim.keymap.set("n", "<leader>zd", ":Telekasten find_daily_notes<CR>", { desc = "Find [D]aily notes" })
 vim.keymap.set("n", "<leader>zg", ":Telekasten search_notes<CR>", { desc = "[G] Search notes" })
 vim.keymap.set("n", "<leader>zz", ":Telekasten follow_link<CR>", { desc = "[Z] Follow link" })
+vim.keymap.set("n", "<leader>zx", ":silent !tmux new-window glow % -p<CR>", { desc = "[X] Visualize current file" })
 vim.keymap.set("n", "<leader>zT", ":Telekasten goto_today<CR>", { desc = "Goto [T]oday" })
 vim.keymap.set("n", "<leader>zW", ":Telekasten goto_thisweek<CR>", { desc = "Goto this [W]eek" })
 vim.keymap.set("n", "<leader>zn", ":Telekasten new_note<CR>", { desc = "[N]ew note" })
-vim.keymap.set("n", "<leader>zc", ":Telekasten show_calendar<CR>", { desc = "Show [C]alendar side" })
 vim.keymap.set("n", "<leader>zt", ":Telekasten toggle_todo<CR>", { desc = "Toggle [T]odo" })
 vim.keymap.set("n", "<leader>zb", ":Telekasten show_backlinks<CR>", { desc = "Show [B]acklinks" })
 vim.keymap.set("n", "<leader>zr", ":Telekasten rename_note<CR>", { desc = "[R]ename note" })
