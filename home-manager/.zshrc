@@ -17,12 +17,8 @@ export ANDROID_HOME="$HOME/Library/Android/sdk"
 export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 export PATH="$PATH:/opt/apache-maven/bin"
-<<<<<<< HEAD
-export PATH="$PATH:$(brew --prefix llvm@15)/bin"
-=======
 export PATH="$PATH:$(brew --prefix llvm)/bin"
 export PATH="$BUN_INSTALL/bin:$PATH"
->>>>>>> 11cbacd (fix: cleaning up configs)
 export PATH="$PATH:$HOME/bin"
 export PATH="$PATH:$HOME/bin/zig"
 export PATH="$PATH:$HOME/.flutter/bin"
@@ -61,9 +57,9 @@ eval "$(fnm env --use-on-cd)"
 eval "$(/opt/homebrew/bin/brew shellenv)"
 if [ -e /home/pandveda/.nix-profile/etc/profile.d/nix.sh ]; then . /home/pandveda/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
-if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
-    . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-fi
+# if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+#     . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+# fi
 
 
 # You probably also want to add Nix to your path:

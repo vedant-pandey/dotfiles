@@ -35,6 +35,7 @@ in
       postgresql
       go
       cmake
+      zig
     ];
 
     file = {
@@ -49,7 +50,8 @@ in
 
     zsh = {
         enable = true;
-        enableAutosuggestions = true;
+        autosuggestion.enable = true;
+
         enableCompletion = true;
         autocd = true;
         defaultKeymap = "emacs";
