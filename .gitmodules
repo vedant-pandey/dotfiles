@@ -1,3 +1,6 @@
 [submodule "secrets"]
 	path = secrets
 	url = git@github.com:vedant-pandey/secrets.git
+[submodule "notes"]
+	path = notes
+	url = git@github.com:vedant-pandey/personal-notes.git
