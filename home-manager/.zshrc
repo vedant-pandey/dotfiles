@@ -1,3 +1,46 @@
+##################### HOME MANAGER CONFIG COPY START ##############################################
+# Enable autosuggestions
+if [ -f /nix/store/*-zsh-autosuggestions*/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+    source /nix/store/*-zsh-autosuggestions*/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+
+# Enable syntax highlighting
+if [ -f /nix/store/*-zsh-syntax-highlighting*/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+    source /nix/store/*-zsh-syntax-highlighting*/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+
+# Enable substring history search
+if [ -f /nix/store/*-zsh-history-substring-search*/share/zsh-history-substring-search/zsh-history-substring-search.zsh ]; then
+    source /nix/store/*-zsh-history-substring-search*/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+fi
+
+# Enable completion
+autoload -U compinit && compinit
+
+# Enable autocd
+setopt autocd
+
+# Set keymap
+bindkey -e  # This sets emacs keymap
+
+# History settings
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=10000
+SAVEHIST=10000
+setopt EXTENDED_HISTORY          # Write timestamps to history
+setopt HIST_EXPIRE_DUPS_FIRST   # Expire duplicate entries first when trimming history
+setopt HIST_IGNORE_ALL_DUPS     # Delete old recorded entry if new entry is a duplicate
+setopt HIST_FIND_NO_DUPS        # Do not display a line previously found
+setopt HIST_SAVE_NO_DUPS        # Don't write duplicate entries in the history file
+setopt SHARE_HISTORY            # Share history between all sessions
+
+# # Substring history search keybindings
+# bindkey '^[[A' history-substring-search-up
+# bindkey '^[[B' history-substring-search-down
+##################### HOME MANAGER CONFIG COPY END ################################################
+
+
 # Created by Zap installer
 [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
 plug "zap-zsh/supercharge"
@@ -42,6 +85,7 @@ export CPPFLAGS="$CPPFLAGS -I$(brew --prefix llvm)/include"
 
 # opam configuration
 [[ ! -r /Users/vedant/.opam/opam-init/init.zsh ]] || source /Users/vedant/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
+[[ ! -r '/Users/pandveda/.opam/opam-init/init.zsh' ]] || source '/Users/pandveda/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
 
 alias y="yarn"
 
@@ -57,14 +101,46 @@ eval "$(fnm env --use-on-cd)"
 eval "$(/opt/homebrew/bin/brew shellenv)"
 if [ -e /home/pandveda/.nix-profile/etc/profile.d/nix.sh ]; then . /home/pandveda/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
-# if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
-#     . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-# fi
-
-
 # You probably also want to add Nix to your path:
 export PATH=$HOME/.nix-profile/bin:$PATH
 
 # If you plan to use home-manager, it may also be required to set NIX_PATH
 export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/$USER/channels${NIX_PATH:+:$NIX_PATH}
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+
+####################################### WORK DEPS START ###########################################
+
+if command -v ninja-dev-sync >/dev/null 2>&1; then
+    alias nds="ninja-dev-sync"
+fi
+
+if command -v brazil-build >/dev/null 2>&1; then
+    alias bb=brazil-build
+    alias bba='brazil-build apollo-pkg'
+    alias bre='brazil-runtime-exec'
+    alias brc='brazil-recursive-cmd'
+    alias bws='brazil ws'
+    alias bwsuse='bws use --gitMode -p'
+    alias bwscreate='bws create -n'
+fi
+
+if command -v brazil-recursive-cmd >/dev/null 2>&1; then
+    alias brc=brazil-recursive-cmd
+    alias bbr='brc brazil-build'
+    alias bball='brc --allPackages'
+    alias bbb='brc --allPackages brazil-build'
+    alias bbc='brc --allPackages brazil-build clean'
+    alias bbra='bbr apollo-pkg'
+fi
+
+if command -v tmux >/dev/null 2>&1; then
+    alias ta='tmux a'
+fi
+
+if command -v eda >/dev/null 2>&1; then
+    alias erg='eda run git'
+fi
+
+alias dsk="ssh devdesk"
+
+####################################### WORK DEPS END #############################################

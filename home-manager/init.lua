@@ -11,10 +11,10 @@ vim.g.maplocalleader = " "
 -- vim.g.loaded_netrwPlugin = 1
 
 -- Optional: Add some Netrw configuration
-vim.g.netrw_banner = 0 -- Disable banner
+vim.g.netrw_banner = 0       -- Disable banner
 vim.g.netrw_browse_split = 4 -- Open in previous window
-vim.g.netrw_altv = 1 -- Open splits to the right
-vim.g.netrw_liststyle = 1 -- Tree view
+vim.g.netrw_altv = 1         -- Open splits to the right
+vim.g.netrw_liststyle = 1    -- Tree view
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -45,7 +45,7 @@ require("lazy").setup({
       "williamboman/mason-lspconfig.nvim",
 
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { "j-hui/fidget.nvim", opts = {} },
+      { "j-hui/fidget.nvim",       opts = {} },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       "folke/neodev.nvim",
@@ -82,7 +82,7 @@ require("lazy").setup({
 
   { "folke/which-key.nvim", opts = {} },
 
-  { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+  { "catppuccin/nvim",      name = "catppuccin", priority = 1000 },
 
   {
     -- Set lualine as statusline
@@ -139,9 +139,9 @@ require("lazy").setup({
     "windwp/nvim-autopairs",
     event = "InsertEnter",
     opts = {
-      check_ts = true, -- enable treesitter
+      check_ts = true,                      -- enable treesitter
       ts_config = {
-        lua = { "string" }, -- don't add pairs in lua string treesitter nodes
+        lua = { "string" },                 -- don't add pairs in lua string treesitter nodes
         javascript = { "template_string" }, -- don't add pairs in javscript template_string treesitter nodes
         -- java = false, -- don't check treesitter on java
       },
@@ -282,22 +282,34 @@ require("lazy").setup({
   },
 
   {
+    "chipsenkbeil/org-roam.nvim",
+    tag = "0.1.0",
+    dependencies = {
+      {
+        "nvim-orgmode/orgmode",
+        tag = "0.3.4",
+      },
+    },
+    config = function()
+      require("org-roam").setup({
+        directory = "~/personal/notes/orgmode",
+      })
+    end
+  },
+
+  {
     "nvim-orgmode/orgmode",
     event = "VeryLazy",
     ft = { "org" },
     config = function()
       -- Setup orgmode
-      require("orgmode").setup({
+      local org = require('orgmode')
+
+      org.setup_ts_grammar()
+      org.setup({
         org_agenda_files = "~/personal/notes/orgmode/**/*",
         org_default_notes_file = "~/personal/notes/orgmode/refile.org",
       })
-
-      -- NOTE: If you are using nvim-treesitter with ~ensure_installed = "all"~ option
-      -- add ~org~ to ignore_install
-      -- require('nvim-treesitter.configs').setup({
-      --   ensure_installed = 'all',
-      --   ignore_install = { 'org' },
-      -- })
     end,
   },
 }, {})
@@ -452,28 +464,28 @@ local function search_command_history()
 
   -- Use Telescope to search through the commands
   require("telescope.pickers")
-    .new({}, {
-      prompt_title = "Command History",
-      finder = require("telescope.finders").new_table({
-        results = unique_lines,
-      }),
-      sorter = require("telescope.config").values.generic_sorter({}),
-      attach_mappings = function(prompt_bufnr, map)
-        local actions = require("telescope.actions")
-        actions.select_default:replace(function()
-          actions.close(prompt_bufnr)
-          local selection = require("telescope.actions.state").get_selected_entry()
-          vim.fn.histadd("cmd", selection[1])
-          -- Execute the selected command
-          -- vim.cmd(selection[1])
+      .new({}, {
+        prompt_title = "Command History",
+        finder = require("telescope.finders").new_table({
+          results = unique_lines,
+        }),
+        sorter = require("telescope.config").values.generic_sorter({}),
+        attach_mappings = function(prompt_bufnr, map)
+          local actions = require("telescope.actions")
+          actions.select_default:replace(function()
+            actions.close(prompt_bufnr)
+            local selection = require("telescope.actions.state").get_selected_entry()
+            vim.fn.histadd("cmd", selection[1])
+            -- Execute the selected command
+            -- vim.cmd(selection[1])
 
-          -- only write the current command without executing
-          vim.api.nvim_feedkeys(":" .. selection[1], "n", true)
-        end)
-        return true
-      end,
-    })
-    :find()
+            -- only write the current command without executing
+            vim.api.nvim_feedkeys(":" .. selection[1], "n", true)
+          end)
+          return true
+        end,
+      })
+      :find()
 end
 
 -- Create a user command to trigger the search
@@ -498,13 +510,13 @@ require("telescope").setup({
   },
 })
 local default_pickers =
-  {
-    find_files = {
-      hidden = true,
+    {
+      find_files = {
+        hidden = true,
+      },
     },
-  },
-  -- Enable telescope fzf native, if installed
-  pcall(require("telescope").load_extension, "fzf")
+    -- Enable telescope fzf native, if installed
+    pcall(require("telescope").load_extension, "fzf")
 
 local function find_git_root()
   local current_file = vim.api.nvim_buf_get_name(0)
@@ -720,19 +732,19 @@ vim.defer_fn(function()
         set_jumps = true, -- whether to set jumps in the jumplist
         goto_next_start = {
           ["]m"] = "@function.outer",
-          ["]]"] = "@class.outer",
+          ["]c"] = "@class.outer",
         },
         goto_next_end = {
           ["]M"] = "@function.outer",
-          ["]["] = "@class.outer",
+          ["]C"] = "@class.outer",
         },
         goto_previous_start = {
           ["[m"] = "@function.outer",
-          ["[["] = "@class.outer",
+          ["[c"] = "@class.outer",
         },
         goto_previous_end = {
           ["[M"] = "@function.outer",
-          ["[]"] = "@class.outer",
+          ["[C"] = "@class.outer",
         },
       },
       swap = {
@@ -766,10 +778,10 @@ vim.treesitter.query.set(
   [[
   (let_binding) @let_binding.outer
   (let_binding body: (_) @let_binding.inner)
-  
+
   (module_binding) @module_binding.outer
   (module_binding body: (_) @module_binding.inner)
-  
+
   (match_expression) @match_expression.outer
   (match_expression body: (_) @match_expression.inner)
 ]]

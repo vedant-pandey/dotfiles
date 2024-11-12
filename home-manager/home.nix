@@ -13,6 +13,7 @@ in
     stateVersion = "24.05";
 
     packages = with pkgs; [
+      pandoc
       elixir
       qemu
       ansible
@@ -36,10 +37,16 @@ in
       go
       cmake
       zig
+
+      # ZSH config deps
+      zsh-autosuggestions
+      zsh-syntax-highlighting
+      zsh-history-substring-search
     ];
 
     file = {
-        ".config/nvim/init.lua".source = config.lib.file.mkOutOfStoreSymlink "/Users/vedant/personal/dotfiles/home-manager/init.lua";
+        ".config/nvim/init.lua".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/init.lua";
+        ".zshrc".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/.zshrc";
     };
 
     sessionVariables = {
@@ -48,26 +55,25 @@ in
 
   programs = {
 
-    zsh = {
-        enable = true;
-        autosuggestion.enable = true;
-
-        enableCompletion = true;
-        autocd = true;
-        defaultKeymap = "emacs";
-        syntaxHighlighting.enable = true;
-        history = {
-            extended = true;
-            ignoreAllDups = true;
-            share = true;
-            expireDuplicatesFirst = true;
-        };
-        historySubstringSearch = {
-            enable = true;
-        };
-        initExtra = (builtins.readFile ./.zshrc);
-    };
-
+    # zsh = {
+    #     enable = true;
+    #     autosuggestion.enable = true;
+    #
+    #     enableCompletion = true;
+    #     autocd = true;
+    #     defaultKeymap = "emacs";
+    #     syntaxHighlighting.enable = true;
+    #     history = {
+    #         extended = true;
+    #         ignoreAllDups = true;
+    #         share = true;
+    #         expireDuplicatesFirst = true;
+    #     };
+    #     historySubstringSearch = {
+    #         enable = true;
+    #     };
+    # };
+    #
     tmux = {
         enable = true;
         aggressiveResize = false;
