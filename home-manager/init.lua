@@ -259,12 +259,18 @@ require("lazy").setup({
   },
 
   {
-    "MeanderingProgrammer/render-markdown.nvim",
-    opts = {},
+    'MeanderingProgrammer/render-markdown.nvim',
     dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      "nvim-tree/nvim-web-devicons",
-    },
+      'nvim-treesitter/nvim-treesitter',
+      'echasnovski/mini.nvim',
+      'nvim-treesitter/nvim-treesitter',
+      'echasnovski/mini.icons',
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-tree/nvim-web-devicons'
+    }, -- if you prefer nvim-web-devicons
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {},
   },
 
   {
@@ -292,7 +298,7 @@ require("lazy").setup({
     },
     config = function()
       require("org-roam").setup({
-        directory = "~/personal/dotfiler/notes/orgmode",
+        directory = "~/personal/dotfiles/notes/orgmode",
       })
     end
   },
@@ -420,7 +426,7 @@ vim.api.nvim_create_user_command("DebugKeymap", function(opts)
 end, { nargs = 1 })
 
 require("render-markdown").setup({
-  file_types = { "markdown", "quatro" },
+  file_types = { "markdown", "quatro", "org", "orgagenda" },
   render_modes = { "n", "v", "i", "c" },
   heading = { position = "inline" },
   debounce = 100,
@@ -428,6 +434,13 @@ require("render-markdown").setup({
 
 -- Disable zig.vim autoformat as it pauses the buffer
 vim.g.zig_fmt_autosave = 0
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "org", "orgagenda" },
+  callback = function()
+    vim.opt_local.wrap = false
+  end
+})
 
 --[[
 =====================================================================
@@ -675,6 +688,7 @@ vim.defer_fn(function()
       "heex",
       "markdown",
       "ocaml",
+      "org",
     },
 
     fold = { enable = true },
@@ -1083,7 +1097,7 @@ cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 -- vim: ts=2 sts=2 sw=2 et
 --[[
 =====================================================================
-==================== PERSONAL CONFIGURATION =========================
+==================== PERSONAL KEYMAPS ===============================
 =====================================================================
 --]]
 -- basic stuff
