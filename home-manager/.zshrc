@@ -35,9 +35,6 @@ setopt HIST_FIND_NO_DUPS        # Do not display a line previously found
 setopt HIST_SAVE_NO_DUPS        # Don't write duplicate entries in the history file
 setopt SHARE_HISTORY            # Share history between all sessions
 
-# # Substring history search keybindings
-# bindkey '^[[A' history-substring-search-up
-# bindkey '^[[B' history-substring-search-down
 ##################### HOME MANAGER CONFIG COPY END ################################################
 
 
@@ -69,19 +66,15 @@ export PATH="$PATH":"$HOME/.pub-cache/bin"
 export PATH="$PATH":"/Users/vedant/Library/Python/3.11/bin"
 export PATH="$PATH":"/usr/local/go/bin"
 export PATH="$PATH":"$(which zig)"
-# export PATH="$PATH:$(dirname (which elixir))"
 
 export GOPATH="$HOME/go"
 export PATH="$PATH:$GOPATH/bin"
 
 export CPPFLAGS="-I/opt/homebrew/opt/openjdk@11/include"
 export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home"
-# . "$HOME/.cargo/env"
 
-export LDFLAGS="$LDFLAGS -L$(brew --prefix llvm)/lib"
-export CPPFLAGS="$CPPFLAGS -I$(brew --prefix llvm)/include"
-# bun completions
-# [ -s "/Users/vedant/.bun/_bun" ] && source "/Users/vedant/.bun/_bun"
+export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
 
 # opam configuration
 [[ ! -r /Users/vedant/.opam/opam-init/init.zsh ]] || source /Users/vedant/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null

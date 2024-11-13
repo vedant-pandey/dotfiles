@@ -292,7 +292,7 @@ require("lazy").setup({
     },
     config = function()
       require("org-roam").setup({
-        directory = "~/personal/notes/orgmode",
+        directory = "~/personal/dotfiler/notes/orgmode",
       })
     end
   },
@@ -307,8 +307,8 @@ require("lazy").setup({
 
       org.setup_ts_grammar()
       org.setup({
-        org_agenda_files = "~/personal/notes/orgmode/**/*",
-        org_default_notes_file = "~/personal/notes/orgmode/refile.org",
+        org_agenda_files = "~/personal/dotfiles/notes/orgmode/**/*",
+        org_default_notes_file = "~/personal/dotfiles/notes/orgmode/refile.org",
       })
     end,
   },
@@ -1128,6 +1128,7 @@ vim.keymap.set("n", "<leader>bq", ":q<cr>", { desc = "[B]uffer [Q]uit" })
 vim.keymap.set("n", "<leader>ba", ":qa<cr>", { desc = "[B]uffer quit [A]ll" })
 vim.keymap.set("n", "<leader>bw", ":w<cr>", { desc = "[B]uffer [W]rite" })
 vim.keymap.set("n", "<leader>bx", ":Bdelete<CR>", { desc = "[B]uffer e[X]it" })
+vim.keymap.set("n", "<leader>bX", ":Bdelete!<CR>", { desc = "[B]uffer e[X]it" })
 vim.keymap.set("n", "<leader>bn", ":ene<CR>", { desc = "[B]uffer [N]ew" })
 vim.keymap.set("n", "<leader>bo", "<cmd>BufferLineCloseOthers<CR>", { desc = "Close other buffers" })
 vim.keymap.set("n", "<leader>bh", "<cmd>BufferLineCloseLeft<CR>", { desc = "Close all buffers to the left" })
