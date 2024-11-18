@@ -1,4 +1,4 @@
 decrypted/
 test/
-user.toml
+**/user.toml
 .DS_Store
