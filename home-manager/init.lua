@@ -249,9 +249,6 @@ require("lazy").setup({
       "nvim-telescope/telescope.nvim",
     },
 
-    ---enables autocomplete for opts
-    ---@module "auto-session"
-    ---@type AutoSession.Config
     opts = {
       suppressed_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
       -- log_level = 'debug',
@@ -268,8 +265,6 @@ require("lazy").setup({
       'nvim-treesitter/nvim-treesitter',
       'nvim-tree/nvim-web-devicons'
     }, -- if you prefer nvim-web-devicons
-    ---@module 'render-markdown'
-    ---@type render.md.UserConfig
     opts = {},
   },
 
@@ -315,6 +310,43 @@ require("lazy").setup({
       org.setup({
         org_agenda_files = "~/personal/dotfiles/notes/orgmode/**/*",
         org_default_notes_file = "~/personal/dotfiles/notes/orgmode/refile.org",
+        org_deadline_warning_days = 7,
+        org_todo_keywords = {
+          'Unplanned(u)',
+          'Todo(t)',
+          'InProgress(i)',
+          '|',
+          'Reassigned(r)',
+          'Deprioritised(d)',
+          'Finished(f)',
+        },
+        org_todo_keyword_faces = {
+          Unplanned = ':foreground #333333 :background #E5E5E5',
+          Todo = ':background #FFE5E5 :foreground #CC0000',
+          InProgress = ':background #E5F2FF :foreground #0066CC',
+          Reassigned = ':background #FFF3E5 :foreground #CC6600',
+          Deprioritised = ':background #F2E5FF :foreground #6600CC',
+          Finished = ':background #E5FFE5 :foreground #006600',
+        },
+        calendar_week_start_day = 0,
+        org_agenda_span = 'day',
+        org_startup_folded = 'content',
+        mappings = {
+          org_return_uses_meta_return = true,
+          org = {
+            org_todo = 'gl',
+            org_todo_prev = 'gh',
+            org_priority_up = 'gk',
+            org_priority_down = 'gj',
+            org_meta_return = '<CR>',
+            org_toggle_checkbox = '<Leader><CR>',
+            org_open_at_point = 'gd',
+          },
+          agenda = {
+            org_agenda_priority_up = 'gk',
+            org_agenda_priority_down = 'gj',
+          },
+        },
       })
     end,
   },
@@ -442,6 +474,55 @@ vim.api.nvim_create_autocmd("FileType", {
   end
 })
 
+-- Function to calculate and put result in specified register
+local function copy_calc_selection()
+  -- Get the current visual selection
+  local visual_start = vim.fn.getpos("'<")
+  local visual_end = vim.fn.getpos("'>")
+  local lines = vim.fn.getline(visual_start[2], visual_end[2])
+  local expression = table.concat(lines, " ")
+
+  -- Calculate using bc
+  local result = vim.fn.system('echo "' .. expression .. '" | bc')
+  -- Remove trailing newline
+  result = result:gsub("\n$", "")
+
+  -- Store in default register
+  vim.fn.setreg('"', result)
+
+  -- Optional: Show feedback
+  vim.notify("Result " .. result .. " copied to default register")
+end
+
+-- 2. Whole line calculation
+local function copy_calc_line()
+  local line = vim.api.nvim_get_current_line()
+
+  local result = vim.fn.system('echo "' .. line .. '" | bc')
+  result = result:gsub("\n$", "")
+
+  vim.fn.setreg('"', result)
+  vim.notify("Result " .. result .. " copied to default register")
+end
+
+-- 3. Cursor to end of line calculation
+local function copy_calc_till_end()
+  local line = vim.api.nvim_get_current_line()
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+  local expression = line:sub(col + 1) -- +1 because Lua strings are 1-based
+
+  local result = vim.fn.system('echo "' .. expression .. '" | bc')
+  result = result:gsub("\n$", "")
+
+  vim.fn.setreg('"', result)
+  vim.notify("Result " .. result .. " copied to default register")
+end
+
+-- Map it to a key in visual mode
+vim.keymap.set('v', '<Leader>ca', copy_calc_selection, { desc = "Calculate selection" })
+vim.keymap.set('n', '<Leader>ca', copy_calc_line, { desc = "Calculate line" })
+vim.keymap.set('n', '<Leader>cd', copy_calc_till_end, { desc = "Calculate till end" })
+
 --[[
 =====================================================================
 ==================== TELESCOPE HISTORY SEARCH COMMAND ===============
@@ -483,7 +564,7 @@ local function search_command_history()
           results = unique_lines,
         }),
         sorter = require("telescope.config").values.generic_sorter({}),
-        attach_mappings = function(prompt_bufnr, map)
+        attach_mappings = function(prompt_bufnr, _)
           local actions = require("telescope.actions")
           actions.select_default:replace(function()
             actions.close(prompt_bufnr)
@@ -522,14 +603,13 @@ require("telescope").setup({
     path_display = { "smart" },
   },
 })
-local default_pickers =
-    {
-      find_files = {
-        hidden = true,
-      },
-    },
-    -- Enable telescope fzf native, if installed
-    pcall(require("telescope").load_extension, "fzf")
+local default_pickers = {
+  find_files = {
+    hidden = true,
+  },
+}
+-- Enable telescope fzf native, if installed
+pcall(require("telescope").load_extension, "fzf")
 
 local function find_git_root()
   local current_file = vim.api.nvim_buf_get_name(0)
@@ -649,7 +729,12 @@ end
 vim.keymap.set("n", "<leader>s/", telescope_live_grep_open_files, { desc = "[S]earch [/] in Open Files" })
 vim.keymap.set("n", "<leader>ss", require("telescope.builtin").builtin, { desc = "[S]earch [S]elect Telescope" })
 vim.keymap.set("n", "<leader>gf", require("telescope.builtin").git_files, { desc = "Search [G]it [F]iles" })
-vim.keymap.set("n", "<leader>f", require("telescope.builtin").find_files, { desc = "Search [F]iles" })
+-- vim.keymap.set("n", "<leader>f", require("telescope.builtin").find_files, { desc = "Search [F]iles" })
+vim.keymap.set("n", "<leader>f",
+  function()
+    require("telescope.builtin").find_files({ find_command = { 'rg', '--files', '--iglob', '!.git', '--hidden' } })
+  end,
+  { desc = "Search [F]iles" })
 vim.keymap.set("n", "<leader>sh", require("telescope.builtin").help_tags, { desc = "[S]earch [H]elp" })
 vim.keymap.set("n", "<leader>sw", require("telescope.builtin").grep_string, { desc = "[S]earch current [W]ord" })
 vim.keymap.set("n", "<leader>sg", require("telescope.builtin").live_grep, { desc = "[S]earch by [G]rep" })
@@ -1050,29 +1135,12 @@ cmp.setup({
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     }),
-    --    ["<Tab>"] = cmp.mapping(function(fallback)
-    --      if cmp.visible() then
-    -- cmp.select_next_item()
-    --      elseif luasnip.expand_or_locally_jumpable() then
-    -- luasnip.expand_or_jump()
-    --      else
-    -- fallback()
-    --      end
-    --      end, { "i", "s" }),
-    --    ["<S-Tab>"] = cmp.mapping(function(fallback)
-    --      if cmp.visible() then
-    -- cmp.select_prev_item()
-    --      elseif luasnip.locally_jumpable(-1) then
-    -- luasnip.jump(-1)
-    --      else
-    -- fallback()
-    --      end
-    --      end, { "i", "s" }),
   }),
   sources = {
     { name = "nvim_lsp" },
     { name = "luasnip" },
     { name = "path" },
+    { name = 'orgmode' }
   },
 })
 
