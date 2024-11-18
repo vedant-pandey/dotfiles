@@ -33,3 +33,4 @@ yabai -m rule --add app="^Emacs$" manage=on
 yabai -m rule --add app="^Emacs.*$" manage=on
 yabai -m rule --add app="^emacs$" manage=on
 yabai -m rule --add title=".*Emacs.*" manage=on
+yabai -m rule --add title=".*emacs.*" manage=on
