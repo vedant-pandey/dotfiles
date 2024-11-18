@@ -1,139 +1,213 @@
-##################### HOME MANAGER CONFIG COPY START ##############################################
-# Enable autosuggestions
-if [ -f /nix/store/*-zsh-autosuggestions*/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-    source /nix/store/*-zsh-autosuggestions*/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-fi
+# Profile zsh startup
+# zmodload zsh/zprof
 
-# Enable syntax highlighting
-if [ -f /nix/store/*-zsh-syntax-highlighting*/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
-    source /nix/store/*-zsh-syntax-highlighting*/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-fi
+# Skip global compinit on startup
+skip_global_compinit=1
 
-# Enable substring history search
-if [ -f /nix/store/*-zsh-history-substring-search*/share/zsh-history-substring-search/zsh-history-substring-search.zsh ]; then
-    source /nix/store/*-zsh-history-substring-search*/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+# Essential environment variables
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export GOPATH="$HOME/go"
+export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-18.jdk/Contents/Home"
+export HOMEBREW_NO_ANALYTICS=1
+export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/llvm/include -I/opt/homebrew/opt/openjdk@10/include"
+export DOOMDIR="$HOME/.config/doom"
+export EMACSDIR="$HOME/.config/emacs"
 
-fi
+# Early initialization of critical components
+typeset -U path
 
-# Enable completion
-autoload -U compinit && compinit
+# Define paths statically
+path=(
+    $HOME/.nix-profile/bin
+    /opt/homebrew/opt/openjdk@11/bin
+    /opt/homebrew/opt/llvm/bin
+    $HOME/Library/Android/sdk/platform-tools
+    $HOME/Library/Python/3.11/bin
+    $HOME/.flutter/bin
+    $HOME/.pub-cache/bin
+    $HOME/go/bin
+    $HOME/bin
+    $HOME/bin/zig
+    /usr/local/go/bin
+    $path
+    $HOME/.emacs.d/bin
+    $EMACSDIR/bin
+)
+export PATH
 
-# Enable autocd
-setopt autocd
 
-# Set keymap
-bindkey -e  # This sets emacs keymap
-
-# History settings
+# History configuration
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=10000
 SAVEHIST=10000
-setopt EXTENDED_HISTORY          # Write timestamps to history
-setopt HIST_EXPIRE_DUPS_FIRST   # Expire duplicate entries first when trimming history
-setopt HIST_IGNORE_ALL_DUPS     # Delete old recorded entry if new entry is a duplicate
-setopt HIST_FIND_NO_DUPS        # Do not display a line previously found
-setopt HIST_SAVE_NO_DUPS        # Don't write duplicate entries in the history file
-setopt SHARE_HISTORY            # Share history between all sessions
-
-##################### HOME MANAGER CONFIG COPY END ################################################
+setopt EXTENDED_HISTORY HIST_EXPIRE_DUPS_FIRST HIST_IGNORE_ALL_DUPS 
+setopt HIST_FIND_NO_DUPS HIST_SAVE_NO_DUPS SHARE_HISTORY autocd
 
 
-# Created by Zap installer
-[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
-plug "zap-zsh/supercharge"
-plug "zap-zsh/zap-prompt"
-plug "wintermi/zsh-lsd"
-plug "MAHcodes/distro-prompt"
-plug "chivalryq/git-alias"
-plug "zap-zsh/sudo"
-# Load and initialise completion system
-# autoload -Uz compinit
-# compinit
+# Lazy load fnm
+fnm() {
+    unset -f fnm
+    eval "$(command fnm env --use-on-cd)"
+    fnm "$@"
+}
 
+# Lazy load brew
+brew() {
+    unset -f brew
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+    brew "$@"
+}
+
+# Load essential Nix plugins with optimization flags
+if [ -f /nix/store/*-zsh-autosuggestions*/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+    source /nix/store/*-zsh-autosuggestions*/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+    ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+    ZSH_AUTOSUGGEST_USE_ASYNC=1
+fi
+
+# Load Zap and prompt-related plugins immediately
+if [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ]; then
+    source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
+fi
+
+# Defer syntax highlighting (it's one of the slowest)
+if [ -f /nix/store/*zsh-defer*/share/zsh-defer/zsh-defer.plugin.zsh ]; then
+    source /nix/store/*zsh-defer*/share/zsh-defer/zsh-defer.plugin.zsh
+    
+    # Defer syntax highlighting load
+    zsh-defer source /nix/store/*-zsh-syntax-highlighting*/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    
+    # Defer history substring search (depends on syntax highlighting)
+    zsh-defer source /nix/store/*-zsh-history-substring-search*/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+    
+    # Defer Zap loading
+fi
+
+source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
+plug 'zap-zsh/supercharge'
+plug 'chivalryq/git-alias'
+
+# Basic keybindings
 bindkey -e
-
-export ANDROID_HOME="$HOME/Library/Android/sdk"
-# PATH exports
-export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"
-export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
-export PATH="$PATH:/opt/apache-maven/bin"
-export PATH="$PATH:$(brew --prefix llvm)/bin"
-export PATH="$BUN_INSTALL/bin:$PATH"
-export PATH="$PATH:$HOME/bin"
-export PATH="$PATH:$HOME/bin/zig"
-export PATH="$PATH:$HOME/.flutter/bin"
-export PATH="$PATH":"$HOME/.pub-cache/bin"
-export PATH="$PATH":"/Users/vedant/Library/Python/3.11/bin"
-export PATH="$PATH":"/usr/local/go/bin"
-export PATH="$PATH":"$(which zig)"
-
-export GOPATH="$HOME/go"
-export PATH="$PATH:$GOPATH/bin"
-
-export CPPFLAGS="-I/opt/homebrew/opt/openjdk@11/include"
-export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home"
-
-export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
-export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
-
-# opam configuration
-[[ ! -r /Users/vedant/.opam/opam-init/init.zsh ]] || source /Users/vedant/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
-[[ ! -r '/Users/pandveda/.opam/opam-init/init.zsh' ]] || source '/Users/pandveda/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
-
-alias y="yarn"
-
-export HOMEBREW_NO_ANALYTICS=1
-
 bindkey -s "^f" "t-sesh\n"
 bindkey -s "^g" "nvim .\n"
 bindkey -s "^h" "home-manager switch --show-trace\n"
 
-eval "$(fnm env --use-on-cd)"
-
-[ -f "/Users/vedant/.ghcup/env" ] && source "/Users/vedant/.ghcup/env" # ghcup-env
-eval "$(/opt/homebrew/bin/brew shellenv)"
-if [ -e /home/pandveda/.nix-profile/etc/profile.d/nix.sh ]; then . /home/pandveda/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
-
-# You probably also want to add Nix to your path:
-export PATH=$HOME/.nix-profile/bin:$PATH
-
-# If you plan to use home-manager, it may also be required to set NIX_PATH
-export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/$USER/channels${NIX_PATH:+:$NIX_PATH}
-export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
-
-####################################### WORK DEPS START ###########################################
-
-if command -v ninja-dev-sync >/dev/null 2>&1; then
-    alias nds="ninja-dev-sync"
-fi
-
-if command -v brazil-build >/dev/null 2>&1; then
-    alias bb=brazil-build
-    alias bba='brazil-build apollo-pkg'
-    alias bre='brazil-runtime-exec'
-    alias brc='brazil-recursive-cmd'
-    alias bws='brazil ws'
-    alias bwsuse='bws use --gitMode -p'
-    alias bwscreate='bws create -n'
-fi
-
-if command -v brazil-recursive-cmd >/dev/null 2>&1; then
-    alias brc=brazil-recursive-cmd
-    alias bbr='brc brazil-build'
-    alias bball='brc --allPackages'
-    alias bbb='brc --allPackages brazil-build'
-    alias bbc='brc --allPackages brazil-build clean'
-    alias bbra='bbr apollo-pkg'
-fi
-
-if command -v tmux >/dev/null 2>&1; then
-    alias ta='tmux a'
-fi
-
-if command -v eda >/dev/null 2>&1; then
-    alias erg='eda run git'
-fi
-
+###################################################################################################
+alias y="yarn"
+alias ta='tmux a'
 alias dsk="ssh devdesk"
+alias emc="emacsclient -c -a 'emacs'"
+alias la="ls -la"
+alias nds="ninja-dev-sync"
+alias bb=brazil-build
+alias bba='brazil-build apollo-pkg'
+alias bre='brazil-runtime-exec'
+alias brc='brazil-recursive-cmd'
+alias bws='brazil ws'
+alias bwsuse='bws use --gitMode -p'
+alias bwscreate='bws create -n'
+alias erg='eda run git'
+alias bbr='brc brazil-build'
+alias bball='brc --allPackages'
+alias bbb='brc --allPackages brazil-build'
+alias bbc='brc --allPackages brazil-build clean'
+alias bbra='bbr apollo-pkg'
+###################################################################################################
 
-####################################### WORK DEPS END #############################################
+source <(fzf --zsh)
+
+# Defer OPAM initialization
+[[ ! -r $HOME/.opam/opam-init/init.zsh ]] || source $HOME/.opam/opam-init/init.zsh > /dev/null 2> /dev/null
+
+if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then 
+    . $HOME/.nix-profile/etc/profile.d/nix.sh
+fi
+
+export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/$USER/channels${NIX_PATH:+:$NIX_PATH}
+
+########################### PROMPT STYLE START ####################################################
+
+autoload -Uz vcs_info
+autoload -U colors && colors
+zstyle ':vcs_info:*' enable git 
+
+precmd_vcs_info() { vcs_info }
+precmd_functions+=( precmd_vcs_info )
+setopt prompt_subst
+
+
+zstyle ':vcs_info:git*+set-message:*' hooks git-untracked
++vi-git-untracked(){
+    if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
+        git status --porcelain | grep '??' &> /dev/null ; then
+        hook_com[staged]+='!' # signify new files with a bang
+    fi
+}
+
+zstyle ':vcs_info:*' check-for-changes true
+zstyle ':vcs_info:git:*' formats " %{$fg[blue]%}(%{$fg[red]%}%m%u%c%{$fg[yellow]%}%{$fg[magenta]%} %b%{$fg[blue]%})%{$reset_color%}"
+
+OS=$(uname -or)
+
+case $OS in
+    *Darwin*) ICON="" ;;
+    *Android*) ICON="" ;;
+    *microsoft*) ICON="" ;;
+    *BSD*) 
+      DISTRO=$(uname -s)
+      case $DISTRO in
+        *FreeBSD*) ICON="" ;;
+        *OpenBSD*) ICON="" ;;
+      esac
+    ;;
+    *Linux*) 
+      DISTRO=$(awk -F= '/^ID=/ {print $2}' /etc/os-release 2> /dev/null | sed 's/"//g')
+      case $DISTRO in
+        arch|archarm) ICON="" ;;
+        void) ICON="" ;;
+        centos) ICON="" ;;
+        ubuntu) ICON="" ;;
+        fedora) ICON="" ;;
+        alpine) ICON="" ;;
+        artix) ICON="" ;;
+        gentoo) ICON="" ;;
+        debian) ICON="" ;;
+        linuxmint) ICON="" ;;
+        manjaro) ICON="" ;;
+        pop) ICON="" ;;
+        parrot) ICON="" ;;
+        kali) ICON="" ;;
+        guix) ICON="" ;;
+        nixos) ICON="" ;;
+        endeavouros) ICON="" ;;
+        deepin) ICON="" ;;
+        archlabs) ICON="" ;;
+        almalinux) ICON="" ;;
+        raspbian) ICON="" ;;
+        rhel) ICON="" ;;
+        slackware) ICON="" ;;
+        zorin) ICON="" ;;
+        elementary) ICON="" ;;
+        solus) ICON="" ;;
+        rocky) ICON="" ;;
+        opensuse*) ICON="" ;;
+        *) ICON="" ;;
+      esac
+      ;;
+    *) ICON="" ;;
+esac
+
+
+PROMPT="%B%{$fg_bold[black]%} $ICON % %(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ )%{$fg[blue]%}%c%{$reset_color%}"
+PROMPT+="\$vcs_info_msg_0_ "
+########################### PROMPT STYLE END ######################################################
+
+
+########################### WORK PLUGINS START ####################################################
+# Set up mise for runtime management
+zsh-defer eval "$(mise activate zsh)"
+########################### WORK PLUGINS END ######################################################
+
+# zprof > /tmp/zsh_profile.log

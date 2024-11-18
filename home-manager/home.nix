@@ -13,13 +13,13 @@ in
     stateVersion = "24.05";
 
     packages = with pkgs; [
+      zsh-defer
       pandoc
       elixir
       qemu
       ansible
       stow
       graphviz
-      lsd
       fnm
       lazygit
       fd
@@ -37,6 +37,7 @@ in
       go
       cmake
       zig
+      tmux
 
       # ZSH config deps
       zsh-autosuggestions
@@ -46,7 +47,9 @@ in
 
     file = {
         ".config/nvim/init.lua".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/init.lua";
+        ".tmux.conf".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/.tmux.conf";
         ".zshrc".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/.zshrc";
+
     };
 
     sessionVariables = {
@@ -54,39 +57,6 @@ in
   };
 
   programs = {
-
-    # zsh = {
-    #     enable = true;
-    #     autosuggestion.enable = true;
-    #
-    #     enableCompletion = true;
-    #     autocd = true;
-    #     defaultKeymap = "emacs";
-    #     syntaxHighlighting.enable = true;
-    #     history = {
-    #         extended = true;
-    #         ignoreAllDups = true;
-    #         share = true;
-    #         expireDuplicatesFirst = true;
-    #     };
-    #     historySubstringSearch = {
-    #         enable = true;
-    #     };
-    # };
-    #
-    tmux = {
-        enable = true;
-        aggressiveResize = false;
-        mouse = true;
-        baseIndex = 1;
-        keyMode = "vi";
-        plugins = with pkgs; [
-            tmuxPlugins.sensible
-            tmuxPlugins.logging
-        ];
-        extraConfig = (builtins.readFile ./.tmux.conf);
-    };
-
     fzf = {
         enable = true;
         enableZshIntegration = true;
@@ -123,7 +93,7 @@ in
             contents = {
                 user = {
                     name = "Vedant Pandey";
-                    email = "vedantpandey46@gmail.com";
+                    email = userConfig.personalEmail;
                 };
                 github = {
                     user = "vedant-pandey";
@@ -138,14 +108,17 @@ in
             contents = {
                 user = {
                     name = userConfig.fullName;
-                    email = "";
+                    email = userConfig.email;
                 };
                 github = {
                     user = userConfig.githubUsername;
                 };
                 core = {
-                    sshCommand = "";
+                    sshCommand = "ssh";
                 };
+                url."ssh://git.amazon.com".insteadOf = "https://git.amazon.com";
+                ssh.variant = "ssh";
+                credential.helper = "osxkeychain";
             };
         }
         ];
