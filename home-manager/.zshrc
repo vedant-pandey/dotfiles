@@ -7,7 +7,7 @@ skip_global_compinit=1
 # Essential environment variables
 export ANDROID_HOME="$HOME/Library/Android/sdk"
 export GOPATH="$HOME/go"
-export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-18.jdk/Contents/Home"
+export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home"
 export HOMEBREW_NO_ANALYTICS=1
 export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
 export CPPFLAGS="-I/opt/homebrew/opt/llvm/include -I/opt/homebrew/opt/openjdk@10/include"
@@ -20,8 +20,6 @@ typeset -U path
 # Define paths statically
 path=(
     $HOME/.nix-profile/bin
-    /opt/homebrew/opt/openjdk@11/bin
-    /opt/homebrew/opt/llvm/bin
     $HOME/Library/Android/sdk/platform-tools
     $HOME/Library/Python/3.11/bin
     $HOME/.flutter/bin
@@ -33,6 +31,11 @@ path=(
     $path
     $HOME/.emacs.d/bin
     $EMACSDIR/bin
+    $HOME/.toolbox/bin
+    /opt/homebrew/opt/openjdk@11/bin
+    /opt/homebrew/opt/llvm/bin
+    /opt/homebrew/opt/grep/libexec/gnubin
+    $HOME/.
 )
 export PATH
 
@@ -46,11 +49,11 @@ setopt HIST_FIND_NO_DUPS HIST_SAVE_NO_DUPS SHARE_HISTORY autocd
 
 
 # Lazy load fnm
-fnm() {
-    unset -f fnm
+# fnm() {
+#     unset -f fnm
     eval "$(command fnm env --use-on-cd)"
-    fnm "$@"
-}
+#     fnm "$@"
+# }
 
 # Lazy load brew
 brew() {
@@ -114,6 +117,7 @@ alias bball='brc --allPackages'
 alias bbb='brc --allPackages brazil-build'
 alias bbc='brc --allPackages brazil-build clean'
 alias bbra='bbr apollo-pkg'
+alias eauth=' eauth'
 ###################################################################################################
 
 source <(fzf --zsh)
