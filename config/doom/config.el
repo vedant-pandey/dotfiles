@@ -47,39 +47,69 @@
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/personal/dotfiles/notes/orgmode/")
+(setq select-enable-clipboard nil)
+(setq! evil-want-Y-yank-to-eol nil)
+(setq doom-font (font-spec :family "FiraCode Nerd Font Mono" :size 13)
+      doom-big-font (font-spec :family "FiraCode Nerd Font Mono" :size 24))
 
-;; (setq doom-font (font-spec :family "Fira Code" :size 13)
-;;       doom-big-font (font-spec :family "Fira Code" :size 24))
+(defun evil-operator-paste-before-from-clipboard ()
+  :move-point nil
+  (evil-paste-before 1 ?+))
+(evil-define-operator evil-operator-paste-from-clipboard (beg end type)
+  :move-point nil
+  (evil-paste 1 ?+))
+(evil-define-operator evil-operator-copy-to-clipboard (beg end type)
+  "Copies text from BEG to END to system clipboard"
+  :move-point nil
+  (evil-yank beg end type ?+))
+(map! :leader :desc "Clipboard yank" "y" #'evil-operator-copy-to-clipboard)
+;; (map! :desc "Clipboard yank" "M-v" (defun temp (evil-paste-from-register ?+)))
+(map! :leader :desc "Clipboard paste" "p" #'evil-operator-paste-from-clipboard)
+(map! :leader :desc "Clipboard paste before" "P" #'evil-operator-paste-before-from-clipboard)
+
+(tab-bar-mode 1)
 
 (map! :n "C-p" #'previous-buffer)
 (map! :n "C-n" #'next-buffer)
 (map! :leader :desc "Save Buffer" "b w" #'save-buffer)
 (map! :after evil-org :map evil-org-mode-map :ni "M-<return>" #'org-insert-heading-respect-content)
-(map! :n "C-b C-n" #'+workspace/switch-right)
-(map! :n "C-b C-p" #'+workspace/switch-left)
-(map! :n "C-b C-b" #'+workspace/display)
-(map! :n "C-b ," #'+workspace/rename)
-(map! :n "C-b C-c" #'+workspace/new)
-(map! :n "C-b C-d" #'+workspace/kill)
-(map! :n "C-b C-w" #'+workspace/switch-to)
-(map! :n "C-b 1" #'+workspace/switch-to-0)
-(map! :n "C-b 2" #'+workspace/switch-to-1)
-(map! :n "C-b 3" #'+workspace/switch-to-2)
-(map! :n "C-b 4" #'+workspace/switch-to-3)
-(map! :n "C-b 5" #'+workspace/switch-to-4)
-(map! :n "C-b 6" #'+workspace/switch-to-5)
-(map! :n "C-b 7" #'+workspace/switch-to-6)
-(map! :n "C-b 8" #'+workspace/switch-to-7)
-(map! :n "C-b 9" #'+workspace/switch-to-8)
-(map! :n "C-b 0" #'+workspace/switch-to-final)
 (map! :leader :desc "Comment lines" :v "/" (cmd! (evilnc-comment-or-uncomment-region) (evil-visual-restore)))
 (map! :leader :desc "Comment lines" :n "/" #'evilnc-comment-or-uncomment-lines)
 (map! :n "C-z" #'recenter-top-bottom)
+;; (map! :leader :desc "Yank to clipboard" "y")
+;; (map! :nvig  "C-b" #'+workspace/display)
+(map! :prefix-map ("C-b" . "Workspace")
+      :desc "Switch workspace right" :nvig "C-n" #'+workspace/switch-right
+      :desc "Switch workspace right" :nvig "C-p" #'+workspace/switch-left
+      :desc "Display all workspaces" :nvig "C-b" #'+workspace/display
+      :desc "Rename current workspace" :nvig "," #'+workspace/rename
+      :desc "New workspace" :nvig "C-c" #'+workspace/new
+      :desc "Kill current workspace" :nvig "C-d" #'+workspace/kill
+      :desc "Workspace switcher" :nvig "C-w" #'+workspace/switch-to
+      :desc "Switch to 0 Workspace" :nvig "1" #'+workspace/switch-to-0
+      :desc "Switch to 1 Workspace" :nvig "2" #'+workspace/switch-to-1
+      :desc "Switch to 2 Workspace" :nvig "3" #'+workspace/switch-to-2
+      :desc "Switch to 3 Workspace" :nvig "4" #'+workspace/switch-to-3
+      :desc "Switch to 4 Workspace" :nvig "5" #'+workspace/switch-to-4
+      :desc "Switch to 5 Workspace" :nvig "6" #'+workspace/switch-to-5
+      :desc "Switch to 6 Workspace" :nvig "7" #'+workspace/switch-to-6
+      :desc "Switch to 7 Workspace" :nvig "8" #'+workspace/switch-to-7
+      :desc "Switch to 8 Workspace" :nvig "9" #'+workspace/switch-to-8
+      :desc "Switch to final Workspace" :nvig "0" #'+workspace/switch-to-final)
 
+
+(map! :n "C-h" #'evil-window-left)
 (map! :n "C-h" #'evil-window-left)
 (map! :n "C-j" #'evil-window-down)
 (map! :n "C-k" #'evil-window-up)
-(map! :n "C-l" #'evil-window-right)
+;; (map! :vin "M-v" #'evil-command-window-execute)
+(map!
+ :v "s-j" (cmd! (evil-ex-execute "'<,'>m '>+1"))
+ :v "s-k" (cmd! (evil-ex-execute "'<,'>m '<-2"))
+ :n "s-j" (cmd! (evil-ex-execute "m .+1"))
+ :n "s-k" (cmd! (evil-ex-execute "m .-2"))
+ )
+
 (map! :leader :desc "Quit window" :n "b q" #'evil-quit)
 (map! :leader :desc "Quit All" :n "b a" #'evil-quit-all)
 
@@ -97,8 +127,166 @@
        :desc "Use version set"         "u" #'amz-workspace-use-version-set
        :desc "Sync workspace"          "s" #'amz-workspace-sync-workspace))
 
+
 (after! doom-modeline
   (setq doom-modeline-persp-name t))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;;; -*- lexical-binding: t; -*-
+
+(require 'projectile)
+(require 'consult)
+(require 'orderless)
+
+(defvar project-dirs
+  (list (expand-file-name "~/work")
+        (expand-file-name "~/personal")
+        (expand-file-name "~/personal/opensource")
+        (expand-file-name "~/personal/onest"))
+  "List of root directories to search for projects.")
+
+(defvar create-new-project-text "Create New Project"
+  "Text displayed in completion to create new project.")
+
+;; Configure orderless for fuzzy matching
+(setq completion-styles '(orderless basic)
+      completion-category-defaults nil
+      completion-category-overrides '((file (styles . (partial-completion)))))
+
+;; Enhanced completion function with fuzzy matching
+(defun fuzzy-completing-read (prompt candidates)
+  "Read a string in the minibuffer with fuzzy matching."
+  (let ((completion-styles '(orderless)))
+    (completing-read prompt candidates
+                     nil t nil 'file-name-history)))
+
+(defun get-all-project-dirs ()
+  "Get all immediate subdirectories from project-dirs."
+  (let ((dirs '()))
+    (dolist (dir project-dirs)
+      (when (file-directory-p dir)
+        (dolist (subdir (directory-files dir t))
+          (when (and (file-directory-p subdir)
+                     (not (string-match "/\\.$" subdir))
+                     (not (string-match "/\\.\\.$" subdir)))
+            (push subdir dirs)))))
+    dirs))
+
+(defun create-new-project (root-dir project-name)
+  "Create a new project directory in ROOT-DIR with PROJECT-NAME."
+  (let ((project-path (expand-file-name project-name root-dir)))
+    (if (file-exists-p project-path)
+        (message "Directory already exists: %s" project-path)
+      (make-directory project-path t)
+      project-path)))
+
+(defun get-root-dir-selection ()
+  "Prompt user to select a root directory from project-dirs."
+  (fuzzy-completing-read
+   "Select root directory: "
+   (mapcar (lambda (dir)
+             (file-name-nondirectory (directory-file-name dir)))
+           project-dirs)))
+
+(defun switch-to-project-dir ()
+  (interactive)
+  (let* ((projects (sort (cons create-new-project-text (get-all-project-dirs))))
+         (selection (fuzzy-completing-read
+                     "Select project: "
+                     (mapcar (lambda (path)
+                               (if (stringp path)
+                                   (replace-regexp-in-string
+                                    (regexp-quote (expand-file-name "~/"))
+                                    "~/"
+                                    path)
+                                 path))
+                             projects))))
+    (if (string= selection create-new-project-text)
+        (let* ((root-dir-name (get-root-dir-selection))
+               (root-dir (car (cl-remove-if-not
+                               (lambda (dir)
+                                 (string= (file-name-nondirectory
+                                           (directory-file-name dir))
+                                          root-dir-name))
+                               project-dirs)))
+               (project-name (read-string "Project name: "))
+               (project-path (create-new-project root-dir project-name)))
+          (when project-path
+            (projectile-switch-project-by-name project-path)))
+      (let ((full-path (if (string-prefix-p "~/" selection)
+                           (expand-file-name selection)
+                         selection)))
+        (projectile-switch-project-by-name full-path)))))
+
+;; Bind the command to C-f
+;; (map! :leader
+;;       :desc "Switch/Create Project"
+;;       "p s" #'switch-to-project-dir)
+
+;; Optional: Also bind to C-f globally
+(map! :nvig "C-f" #'switch-to-project-dir)
+(setq doom-auto-restore-session t)
+
+(use-package orderless
+  :custom
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
+  ;; (orderless-component-separator #'orderless-escapable-split-on-space)
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
+
+;; Optional: Make the completion window more visually appealing
+(after! vertico
+  (setq vertico-count 20)
+  (setq vertico-cycle t))
+
+;; If you want to use vertico-posframe for a floating completion window
+;; (use-package! vertico-posframe
+;;   :config
+;;   (vertico-posframe-mode 1)
+;;   (setq vertico-posframe-parameters
+;;         '((left-fringe . 8)
+;;           (right-fringe . 8)))
+;;   (setq vertico-posframe-border-width 2)
+;;   (setq vertico-posframe-width 100)
+;;   (setq vertico-posframe-height 20))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; Optional: Also bind to C-f globally
+;; (map! :nvig "C-f" #'switch-to-project-dir)
+
+
 
 ;; Set env variables
 (setenv "JAVA_HOME" "/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home")
@@ -123,10 +311,12 @@
                           "-Xmx1G"
                           "-XX:+UseG1GC"
                           "-XX:+UseStringDeduplication"
-                          (concat "-javaagent:" (substitute-in-file-name "$HOME/bin/lombok.jar")))))
-
-;; Enable tab-bar-mode globally
-(tab-bar-mode 1)
+                          (concat "-javaagent:" (substitute-in-file-name "$HOME/bin/lombok.jar"))
+                          ;; Add these additional settings
+                          lsp-java-completion-overwrite t
+                          lsp-java-format-on-type-enabled t
+                          lsp-java-import-gradle-enabled t
+                          lsp-java-import-maven-enabled t)))
 
 ;; If you want to show all buffers in tabs
 (after! centaur-tabs

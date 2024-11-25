@@ -13,6 +13,7 @@ in
     stateVersion = "24.05";
 
     packages = with pkgs; [
+      lua
       zsh-defer
       pandoc
       elixir
@@ -49,7 +50,6 @@ in
         ".config/nvim/init.lua".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/init.lua";
         ".tmux.conf".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/.tmux.conf";
         ".zshrc".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/.zshrc";
-
     };
 
     sessionVariables = {
