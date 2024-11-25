@@ -52,12 +52,18 @@
 (package! vertico-posframe)
 
 (defmacro amazon-package! (name)
-  `(package! ,name
-     :recipe (:type git
-              :host nil
-              :build t
-              :post-build (copy-file "lisp/brazil-path-cache-artifacts" (straight--build-dir ,(symbol-name name)))
-              :repo "ssh://git.amazon.com:2222/pkg/EmacsAmazonLibs")))
+  `(when (ignore-errors 
+           (= 0 (call-process "ssh" nil nil nil 
+                             "-o" "BatchMode=yes" 
+                             "-o" "ConnectTimeout=5"
+                             "git.amazon.com" 
+                             "exit")))
+     (package! ,name
+       :recipe (:type git 
+                :host nil
+                :build t
+                :post-build (copy-file "lisp/brazil-path-cache-artifacts" (straight--build-dir ,(symbol-name name)))
+                :repo "ssh://git.amazon.com:2222/pkg/EmacsAmazonLibs"))))
 
 (amazon-package! smithy-mode)
 (amazon-package! amz-common)
