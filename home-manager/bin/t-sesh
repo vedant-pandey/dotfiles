@@ -7,7 +7,7 @@ work_dir="work"
 personal_dir="personal"
 oss_dir="personal/opensource"
 
-session_cmd=$(find ~/work ~/personal ~/personal/opensource ~/personal/onest \
+session_cmd=$(find ~/work ~/ws ~/personal ~/personal/opensource ~/personal/dotfiles \
     -maxdepth 1 2> /dev/null \
     | xargs echo "$create_cmd" \
     | tr " " "\n" \

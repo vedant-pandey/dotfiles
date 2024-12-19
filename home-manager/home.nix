@@ -47,9 +47,15 @@ in
     ];
 
     file = {
-        ".config/nvim/init.lua".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/init.lua";
-        ".tmux.conf".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/.tmux.conf";
-        ".zshrc".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/.zshrc";
+        ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/config/nvim";
+        ".config/yabai".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/config/yabai";
+        ".config/skhd".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/config/skhd";
+        ".config/doom".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/config/doom";
+        ".config/emacs".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/config/emacs";
+        ".tmux.conf".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/home/.tmux.conf";
+        ".zshrc".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/home/.zshrc";
+        "bin/t-sesh".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/bin/t-sesh";
+        "bin/cheet".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/bin/cheet";
     };
 
     sessionVariables = {
@@ -105,6 +111,24 @@ in
         }
         {
             condition = "gitdir:~/work/";
+            contents = {
+                user = {
+                    name = userConfig.fullName;
+                    email = userConfig.email;
+                };
+                github = {
+                    user = userConfig.githubUsername;
+                };
+                core = {
+                    sshCommand = "ssh";
+                };
+                url."ssh://git.amazon.com".insteadOf = "https://git.amazon.com";
+                ssh.variant = "ssh";
+                credential.helper = "osxkeychain";
+            };
+        }
+        {
+            condition = "gitdir:~/ws/";
             contents = {
                 user = {
                     name = userConfig.fullName;
