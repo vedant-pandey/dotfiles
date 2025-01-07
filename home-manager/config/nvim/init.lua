@@ -3,6 +3,7 @@
 ==================== GLOBAL INIT ====================================
 =====================================================================
 --]]
+
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
 
@@ -30,10 +31,11 @@ vim.opt.rtp:prepend(lazypath)
 ==================== PLUGIN CONFIGURATION ===========================
 =====================================================================
 --]]
+
 require("lazy").setup({
 	"tpope/vim-fugitive",
 	"tpope/vim-rhubarb",
-	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
+	"tpope/vim-sleuth",
 	{
 		"neovim/nvim-lspconfig",
 		dependencies = {
@@ -42,9 +44,6 @@ require("lazy").setup({
 
 			-- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
 			{ "j-hui/fidget.nvim",       opts = {} },
-
-			-- Additional lua configuration, makes nvim stuff amazing!
-			"folke/neodev.nvim",
 		},
 	},
 
@@ -299,10 +298,7 @@ require("lazy").setup({
 		ft = { "org" },
 		config = function()
 			-- Setup orgmode
-			local org = require('orgmode')
-
-			-- org.setup_ts_grammar()
-			org.setup({
+			require('orgmode').setup({
 				org_agenda_files = "~/personal/dotfiles/notes/orgmode/**/*",
 				org_default_notes_file = "~/personal/dotfiles/notes/orgmode/refile.org",
 				org_deadline_warning_days = 7,
@@ -363,42 +359,22 @@ require("lazy").setup({
 		}
 	},
 
+	'nvim-java/nvim-java',
+
+	-- Lua
 	{
-		"nvim-orgmode/telescope-orgmode.nvim",
-		event = "VeryLazy",
-		dependencies = {
-			"nvim-orgmode/orgmode",
-			"nvim-telescope/telescope.nvim",
+		"folke/zen-mode.nvim",
+		opts = {
+			window = {
+				width = 180,
+				options = {
+				},
+			},
+			plugins = {
+				options = {},
+			},
 		},
-		config = function()
-			require("telescope").load_extension("orgmode")
-
-			vim.keymap.set("n", "<leader>or", require("telescope").extensions.orgmode.refile_heading)
-			vim.keymap.set("n", "<leader>ofh", function()
-					require("telescope").extensions.orgmode.search_headings({ max_depth = 3 })
-				end,
-				{ desc = 'Find org heading' }
-			)
-			vim.keymap.set("n", "<leader>off", function()
-					require("telescope").extensions.orgmode.search_headings({ mode = 'orgfiles' })
-				end,
-				{ desc = 'Find org files' }
-			)
-			vim.keymap.set("n", "<leader>oli", require("telescope").extensions.orgmode.insert_link)
-		end,
 	},
-	-- Doesn't work with auto sessions
-	-- {
-	--     'stevearc/oil.nvim',
-	--     ---@module 'oil'
-	--     ---@type oil.SetupOpts
-	--     opts = {},
-	--     -- Optional dependencies
-	--     dependencies = { { "echasnovski/mini.icons", opts = {} } },
-	--     -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if prefer nvim-web-devicons
-	-- }
-
-	'mfussenegger/nvim-jdtls',
 
 	{
 		url = "pandveda@git.amazon.com:pkg/NinjaHooks",
@@ -406,8 +382,6 @@ require("lazy").setup({
 		lazy = false,
 		config = function(plugin)
 			vim.opt.rtp:prepend(plugin.dir .. "/configuration/vim/amazon/brazil-config")
-			-- Make my own filetype thing to override neovim applying ".conf" file type.
-			-- You may or may not need this depending on your setup.
 			vim.filetype.add({
 				filename = {
 					['Config'] = function()
@@ -418,6 +392,9 @@ require("lazy").setup({
 			})
 		end,
 	},
+
+	"tpope/vim-abolish",
+	"tpope/vim-repeat",
 }, {})
 
 --[[
@@ -425,6 +402,7 @@ require("lazy").setup({
 ==================== SETTING OPTIONS ================================
 =====================================================================
 --]]
+
 vim.opt.listchars = {
 	eol = '¬',
 	tab = '>-',
@@ -444,7 +422,6 @@ local tabLen = 4
 vim.o.tabstop = tabLen
 vim.o.softtabstop = tabLen
 vim.o.shiftwidth = tabLen
--- vim.o.expandtab = true
 vim.o.smartindent = true
 vim.o.wrap = true
 vim.o.whichwrap = "h,l"
@@ -485,11 +462,17 @@ vim.o.completeopt = "menuone,noselect"
 ==================== PERSONAL CONFIGURATION =========================
 =====================================================================
 --]]
+
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 
 -- Remap for dealing with word wrap
 vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+vim.keymap.set("n", "<leader>mz", "<cmd>ZenMode<cr>", { desc = "[M]ode [Z]en" })
+vim.keymap.set('n', '<leader>ml', function()
+	vim.opt.list = not vim.opt.list:get()
+	vim.notify('List mode: ' .. (vim.opt.list:get() and 'ON' or 'OFF'))
+end, { desc = '[M]ode [L]ist' })
 
 -- Diagnostic keymaps
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic message" })
@@ -500,7 +483,6 @@ vim.keymap.set("n", "<leader>qt", "<cmd>TodoTrouble<cr>", { desc = "Open [T]odo 
 vim.keymap.set("n", "<leader>st", "<cmd>TodoTelescope<cr>", { desc = "Open [T]odo list" })
 
 -- [[ Highlight on yank ]]
--- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
 vim.api.nvim_create_autocmd("TextYankPost", {
 	callback = function()
@@ -548,14 +530,19 @@ require("render-markdown").setup({
 -- Disable zig.vim autoformat as it pauses the buffer
 vim.g.zig_fmt_autosave = 0
 
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = { "org", "orgagenda" },
-	callback = function()
-		-- vim.opt_local.wrap = false
-	end
-})
+-- vim.api.nvim_create_autocmd("FileType", {
+-- 	pattern = { "org", "orgagenda" },
+-- 	callback = function()
+-- 		-- vim.opt_local.wrap = false
+-- 	end
+-- })
 
 -- require("oil").setup()
+-- require('java').setup()
+-- local dap = require("dap")
+-- dap.configuration.java = {
+-- 	type = 'java'
+-- }
 
 --[[
 =====================================================================
@@ -635,6 +622,10 @@ require("telescope").setup({
 			},
 		},
 		path_display = { "smart" },
+		file_ignore_patterns = {
+			"node_modules",
+			"**/build/*",
+		}
 	},
 })
 local default_pickers = {
@@ -1059,7 +1050,7 @@ local servers = {
 	},
 	-- pyright = {},
 	rust_analyzer = {},
-	-- jdtls = {},
+	jdtls = {},
 	barium = {},
 	zls = {},
 	ocamllsp = {
@@ -1085,12 +1076,6 @@ local servers = {
 		},
 	},
 }
-
--- Enable elixir support
--- require("elixir").setup()
-
--- Setup neovim lua configuration
-require("neodev").setup()
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -1118,83 +1103,6 @@ mason_lspconfig.setup_handlers({
 		})
 	end,
 })
-
---[[
-=====================================================================
-================== JAVA CONFIG ======================================
-=====================================================================
---]]
-
--- Ensure you have nvim-lspconfig installed
--- Assuming using packer.nvim or similar plugin manager
--- Make sure you have installed jdtls on your system
-
--- local nvim_lsp = require('lspconfig')
---
--- -- Java LSP configuration
--- nvim_lsp.jdtls.setup({
--- 	-- Server configuration
--- 	cmd = {
--- 		'jdtls',                                     -- assuming jdtls is in your PATH
--- 		'-data', vim.fn.expand('~/.cache/jdtls-workspace') -- workspace dir
--- 	},
--- 	-- Language server settings
--- 	settings = {
--- 		java = {
--- 			signatureHelp = { enabled = true },
--- 			contentProvider = { preferred = 'fernflower' },
--- 			completion = {
--- 				favoriteStaticMembers = {
--- 					"org.junit.Assert.*",
--- 					"org.junit.Assume.*",
--- 					"org.junit.jupiter.api.Assertions.*",
--- 					"org.junit.jupiter.api.Assumptions.*",
--- 					"org.junit.jupiter.api.DynamicContainer.*",
--- 					"org.junit.jupiter.api.DynamicTest.*",
--- 					"java.util.Objects.requireNonNull",
--- 					"java.util.Objects.requireNonNullElse"
--- 				},
--- 				filteredTypes = {
--- 					"com.sun.*",
--- 					"io.micrometer.shaded.*",
--- 					"java.awt.*",
--- 					"jdk.*",
--- 					"sun.*",
--- 				},
--- 			},
--- 			sources = {
--- 				organizeImports = {
--- 					starThreshold = 9999,
--- 					staticStarThreshold = 9999,
--- 				},
--- 			},
--- 			codeGeneration = {
--- 				toString = {
--- 					template =
--- 					"${object.className}{${member.name()}=${member.value}, ${otherMembers}}"
--- 				},
--- 				useBlocks = true,
--- 			},
--- 			configuration = {
--- 				runtimes = {
--- 					{
--- 						name = "JavaSE-17",
--- 						path =
--- 						"/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home",
--- 					},
--- 					{
--- 						name = "JavaSE-11",
--- 						path =
--- 						"/Library/Java/JavaVirtualMachines/amazon-corretto-11.jdk/Contents/Home",
--- 					},
--- 				}
--- 			},
--- 		}
--- 	},
---
--- 	capabilities = capabilities,
--- 	on_attach = on_attach,
--- })
 
 --[[
 =====================================================================
@@ -1226,10 +1134,10 @@ require("conform").setup({
 		},
 	},
 	-- Format on save
-	format_on_save = {
-		timeout_ms = 500,
-		lsp_fallback = true,
-	},
+	-- format_on_save = {
+	-- 	timeout_ms = 500,
+	-- 	lsp_fallback = true,
+	-- },
 })
 
 vim.api.nvim_create_user_command("FormatDisable", function(args)
@@ -1299,23 +1207,6 @@ cmp.setup({
 local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
--- require('nvim-cursorline').setup {
--- 	cursorline = {
--- 		enable = true,
--- 		timeout = 1000,
--- 		number = false,
--- 	},
--- 	cursorword = {
--- 		enable = true,
--- 		min_length = 3,
--- 		hl = { underline = true },
--- 	}
--- }
-
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
-
-
 --[[
 =====================================================================
 ==================== Amazon Config ==================================
@@ -1352,9 +1243,7 @@ local function bemol()
 	-- Find bemol directory based on current working directory, not parent directory of current buffer.
 	local bemol_dir = vim.fs.find({ '.bemol' }, { upward = true, type = 'directory' })[1]
 	local ws_folders_lsp = {}
-	if not bemol_dir then
-		vim.notify(".bemol directory not found! Not in a Brazil workspace?", vim.log.levels.WARN)
-	else
+	if bemol_dir then
 		vim.notify(".bemol directory found: " .. bemol_dir, vim.log.levels.INFO)
 		local file = io.open(bemol_dir .. '/ws_root_folders', 'r')
 		if file then

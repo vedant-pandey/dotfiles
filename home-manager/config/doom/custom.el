@@ -4,7 +4,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages nil)
+ '(package-selected-packages '(eglot))
  '(safe-local-variable-directories
    '("/Users/pandveda/personal/dotfiles/config/emacs/.local/straight/repos/projectile/"
      "/Users/pandveda/.config/doom/" "/Users/pandveda/.config/emacs")))
