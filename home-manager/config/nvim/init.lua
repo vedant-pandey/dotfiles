@@ -77,7 +77,8 @@ require("lazy").setup({
 
 	{ "folke/which-key.nvim", opts = {} },
 
-	{ "catppuccin/nvim",      name = "catppuccin", priority = 1000 },
+	-- { "catppuccin/nvim",      name = "catppuccin", priority = 1000 },
+	{ "sainnhe/everforest",   name = "everforest", priority = 1000 },
 
 	{
 		-- Set lualine as statusline
@@ -352,7 +353,7 @@ require("lazy").setup({
 		cmd = { "OrgExecute", "OrgTangle" },
 		opts = {
 			-- by default, none are enabled
-			langs = { "python", "lua", 'shell' },
+			langs = { "python", "lua", 'shell', 'java', 'ocaml', 'go', 'latex' },
 
 			-- paths to emacs packages to additionally load
 			load_paths = {}
@@ -366,7 +367,7 @@ require("lazy").setup({
 		"folke/zen-mode.nvim",
 		opts = {
 			window = {
-				width = 180,
+				width = 130,
 				options = {
 				},
 			},
@@ -395,6 +396,37 @@ require("lazy").setup({
 
 	"tpope/vim-abolish",
 	"tpope/vim-repeat",
+
+	{
+		'stevearc/oil.nvim',
+		---@module 'oil'
+		---@type oil.SetupOpts
+		opts = {
+			view_options = {
+				show_hidden = true,
+			}
+		},
+		-- Optional dependencies
+		dependencies = { { "echasnovski/mini.icons", opts = {} } },
+		-- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if prefer nvim-web-devicons
+	},
+
+	'akinsho/org-bullets.nvim',
+
+	{
+		"lervag/vimtex",
+		lazy = false, -- we don't want to lazy load VimTeX
+		-- tag = "v2.15", -- uncomment to pin to a specific release
+		init = function()
+			-- VimTeX configuration goes here, e.g.
+			vim.g.vimtex_view_method = "skim"
+			vim.g.vimtex_compiler_method = 'tectonic'
+
+		end
+	},
+
+	'kshenoy/vim-signature',
+
 }, {})
 
 --[[
@@ -414,6 +446,7 @@ vim.opt.listchars = {
 	lead = '␣',
 	leadmultispace = '␣',
 }
+vim.o.background = 'dark'
 vim.o.scrolloff = 16
 vim.o.relativenumber = true
 vim.o.colorcolumn = "100,120"
@@ -437,7 +470,7 @@ vim.o.foldlevel = 99
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
 
-vim.cmd.colorscheme("catppuccin")
+vim.cmd.colorscheme("everforest")
 
 vim.loader.enable()
 
@@ -530,19 +563,9 @@ require("render-markdown").setup({
 -- Disable zig.vim autoformat as it pauses the buffer
 vim.g.zig_fmt_autosave = 0
 
--- vim.api.nvim_create_autocmd("FileType", {
--- 	pattern = { "org", "orgagenda" },
--- 	callback = function()
--- 		-- vim.opt_local.wrap = false
--- 	end
--- })
-
--- require("oil").setup()
--- require('java').setup()
--- local dap = require("dap")
--- dap.configuration.java = {
--- 	type = 'java'
--- }
+require("oil").setup()
+require("java").setup()
+require("org-bullets").setup()
 
 --[[
 =====================================================================
@@ -799,6 +822,7 @@ vim.defer_fn(function()
 			"markdown",
 			"ocaml",
 			"org",
+			"latex",
 		},
 
 		fold = { enable = true },
@@ -1000,41 +1024,32 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- document existing key chains
-require("which-key").register({
-	["<leader>b"] = { name = "[B]uffer", _ = "which_key_ignore" },
-	["<leader>c"] = { name = "[C]ode", _ = "which_key_ignore" },
-	["<leader>d"] = { name = "[D]ocument", _ = "which_key_ignore" },
-	["<leader>g"] = { name = "[G]it", _ = "which_key_ignore" },
-	["<leader>h"] = { name = "Git [H]unk", _ = "which_key_ignore" },
-	["<leader>r"] = { name = "[R]ename", _ = "which_key_ignore" },
-	["<leader>s"] = { name = "[S]earch", _ = "which_key_ignore" },
-	["<leader>t"] = { name = "[T]oggle", _ = "which_key_ignore" },
-	["<leader>v"] = { name = "[V]edant's Config", _ = "which_key_ignore" },
-	["<leader>w"] = { name = "[W]orkspace", _ = "which_key_ignore" },
-	["<leader>z"] = { name = "[Z] Telekasten", _ = "which_key_ignore" },
-	["<leader>q"] = { name = "[Q]uickfix", _ = "which_key_ignore" },
+require("which-key").add({
+	{ "<leader>b", group = "[B]uffer" },
+	{ "<leader>c", group = "[C]ode" },
+	{ "<leader>d", group = "[D]ocument" },
+	{ "<leader>g", group = "[G]it" },
+	{ "<leader>h", group = "Git [H]unk" },
+	{ "<leader>r", group = "[R]ename" },
+	{ "<leader>s", group = "[S]earch" },
+	{ "<leader>t", group = "[T]oggle" },
+	{ "<leader>v", group = "[V]edant's Config" },
+	{ "<leader>w", group = "[W]orkspace" },
+	{ "<leader>z", group = "[Z] Telekasten" },
+	{ "<leader>q", group = "[Q]uickfix" },
 })
 -- register which-key VISUAL mode
 -- required for visual <leader>hs (hunk stage) to work
-require("which-key").register({
-	["<leader>"] = { name = "VISUAL <leader>" },
-	["<leader>h"] = { "Git [H]unk" },
-	["<leader>v"] = { "[V]edant's Config" },
+require("which-key").add({
+	{ "<leader>",  group = "VISUAL <leader>" },
+	{ "<leader>h", group = "Git [H]unk" },
+	{ "<leader>v", group = "[V]edant's Config" },
 }, { mode = "v" })
 
--- mason-lspconfig requires that these setup functions are called in this order
 -- before setting up the servers.
 require("mason").setup()
 require("mason-lspconfig").setup()
 
--- Enable the following language servers
---  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
---
---  Add any additional override configuration in the following tables. They will be passed to
---  the `settings` field of the server config. You must look up that documentation yourself.
---
---  If you want to override the default filetypes that your language server will attach to you can
---  define the property 'filetypes' to the map in question.
 vim.filetype.add({ extension = { templ = "templ" } })
 local servers = {
 	clangd = {},
@@ -1051,7 +1066,6 @@ local servers = {
 	-- pyright = {},
 	rust_analyzer = {},
 	jdtls = {},
-	barium = {},
 	zls = {},
 	ocamllsp = {
 		filetypes = { "ocaml", "ocaml.menhir", "ocaml.interface", "ocaml.ocamllex", "reason", "dune" },
@@ -1199,7 +1213,7 @@ cmp.setup({
 		{ name = "nvim_lsp" },
 		{ name = "luasnip" },
 		{ name = "path" },
-		{ name = 'orgmode' }
+		{ name = 'orgmode' },
 	},
 })
 
@@ -1219,14 +1233,14 @@ local configs = require('lspconfig.configs')
 
 -- https://w.amazon.com/bin/view/Barium/#HVimandNeovim
 -- Remove hyphen because it breaks vim/neovim
-vim.filetype.add({ filename = { Config = "brazilconfig" } })
+-- vim.filetype.add({ filename = { Config = "brazilconfig" } })
 
 -- Check if the config is already defined (useful when reloading this file)
 if not configs.barium then
 	configs.barium = {
 		default_config = {
 			cmd = { 'barium' },
-			filetypes = { 'brazilconfig' },
+			filetypes = { 'brazil-config' },
 			root_dir = function(fname)
 				return lspconfig.util.find_git_ancestor(fname)
 			end,
@@ -1235,7 +1249,8 @@ if not configs.barium then
 	}
 end
 
-lspconfig.barium.setup({})
+lspconfig.barium.setup {}
+
 
 -- [[ Add support for Bemol folders ]]
 -- https://w.amazon.com/bin/view/Bemol/#HnvimbuiltinLSP28withlsp-configand2Forlsp-zero29
@@ -1404,21 +1419,19 @@ vim.keymap.set("n", "<leader>vx", "<cmd>!chmod +x %<cr>", { desc = "Make current
 vim.keymap.set("n", "<leader>vh", "<cmd>!home-manager switch --show-trace<CR>", { desc = "[H]ome manager switch" })
 vim.keymap.set("n", "<leader>va", "ggVG", { desc = "Select [A]ll text" })
 
-vim.keymap.set("n", "<leader>zf", ":Telekasten find_notes<CR>", { desc = "[F]ind notes" })
-vim.keymap.set("n", "<leader>zd", ":Telekasten find_daily_notes<CR>", { desc = "Find [D]aily notes" })
-vim.keymap.set("n", "<leader>zg", ":Telekasten search_notes<CR>", { desc = "[G] Search notes" })
-vim.keymap.set("n", "<leader>zz", ":Telekasten follow_link<CR>", { desc = "[Z] Follow link" })
-vim.keymap.set("n", "<leader>zx", ":silent !tmux new-window glow % -p<CR>", { desc = "[X] Visualize current file" })
-vim.keymap.set("n", "<leader>zT", ":Telekasten goto_today<CR>", { desc = "Goto [T]oday" })
-vim.keymap.set("n", "<leader>zW", ":Telekasten goto_thisweek<CR>", { desc = "Goto this [W]eek" })
-vim.keymap.set("n", "<leader>zn", ":Telekasten new_note<CR>", { desc = "[N]ew note" })
-vim.keymap.set("n", "<leader>zt", ":Telekasten toggle_todo<CR>", { desc = "Toggle [T]odo" })
-vim.keymap.set("n", "<leader>zb", ":Telekasten show_backlinks<CR>", { desc = "Show [B]acklinks" })
-vim.keymap.set("n", "<leader>zr", ":Telekasten rename_note<CR>", { desc = "[R]ename note" })
-vim.keymap.set("n", "<leader>zC", ":CalendarT<CR>", { desc = "Open [C]alendar" })
-
 vim.keymap.set("n", "<leader>ga", ":Git blame<CR>", { desc = "[G]it bl[A]me" })
 vim.keymap.set("n", "<leader>gb", ":GBrowse<CR>", { desc = "[G]it [B]rowse" })
 vim.keymap.set("n", "<leader>gc", ":GBrowse!<CR>", { desc = "[G]it [C]opy link" })
 vim.keymap.set("v", "<leader>gc", ":'<,'>GBrowse!<CR>", { desc = "[G]it [C]opy link" })
 vim.keymap.set("n", "<leader>gg", ":Git<CR>", { desc = "[G]it [G]o" })
+vim.keymap.set("n", "<F8>", "<cmd>DapNew<cr>", { desc = "Run debugger" })
+vim.keymap.set("n", "<F6>", "<cmd>DapStepInto<cr>", { desc = "Run debugger" })
+vim.keymap.set("n", "<S-F6>", "<cmd>DapStepOut<cr>", { desc = "Run debugger" })
+vim.keymap.set("n", "<F7>", "<cmd>DapStepOver<cr>", { desc = "Run debugger" })
+vim.keymap.set("n", "<F5>", "<cmd>DapToggleBreakpoint<cr>", { desc = "Run debugger" })
+
+vim.keymap.set("n", "<leader>zr", "<cmd>SessionRestore<cr>", { desc = "Session Restore" })
+vim.keymap.set("n", "<leader>zs", "<cmd>SessionSave<cr>", { desc = "Session Save" })
+vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "File explorer" })
+vim.keymap.set({ "v", "n" }, "<S-home>", "<cmd>lua require('orgmode').action('org_mappings.org_babel_tangle')<CR>",
+	{ desc = "File explorer" })
