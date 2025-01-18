@@ -421,7 +421,6 @@ require("lazy").setup({
 			-- VimTeX configuration goes here, e.g.
 			vim.g.vimtex_view_method = "skim"
 			vim.g.vimtex_compiler_method = 'tectonic'
-
 		end
 	},
 
@@ -636,6 +635,45 @@ vim.keymap.set("n", "<leader>sx", search_command_history, { desc = "[S]earch e[X
 ==================== CONFIGURE TELESCOPE ============================
 =====================================================================
 --]]
+
+-- Custom function to find the project root
+local function custom_find_root(startpath)
+	local function get_parent_dir_contains(startpath, target)
+		local current = vim.fn.fnamemodify(startpath, ':p')
+		while current ~= '/' do
+			local check_path = current .. '/' .. target
+			if vim.fn.isdirectory(check_path) == 1 then
+				return current
+			end
+			current = vim.fn.fnamemodify(current, ':h')
+		end
+
+		-- Check root directory as well
+		if vim.fn.isdirectory('/' .. target) == 1 then
+			return '/'
+		end
+
+		return nil
+	end
+	-- Custom function to find directory containing target up the tree
+	startpath = startpath or vim.fn.getcwd()
+
+	-- First try to find .bemol directory
+	local bemol_root = get_parent_dir_contains('release-info', startpath)
+	if bemol_root then
+		return bemol_root
+	end
+
+	-- Fallback to .git directory
+	local git_root = get_parent_dir_contains('.git', startpath)
+	if git_root then
+		return git_root
+	end
+
+	-- If neither is found, return the current directory
+	return startpath
+end
+
 require("telescope").setup({
 	defaults = {
 		mappings = {
@@ -700,7 +738,8 @@ local theme_mapping = {
 	-- ["^git"] = "dropdown",  -- All git-related pickers
 	-- ["grep$"] = "ivy",      -- All pickers ending with 'grep'
 	-- Default theme (used if no other matches are found)
-	default = "ivy",
+	-- default = "ivy",
+	default = "dropdown",
 }
 
 local function get_all_picker_names()
@@ -750,6 +789,7 @@ for _, picker_name in ipairs(all_pickers) do
 	else
 		pickers_config[picker_name] = { theme = get_theme_for_picker(picker_name) }
 	end
+	pickers_config[picker_name]["opts"] = { cwd = custom_find_root() }
 end
 
 require("telescope").setup({
@@ -1056,6 +1096,7 @@ local servers = {
 	nextls = {},
 	elixirls = {},
 	gopls = {},
+	pylsp = {},
 	templ = {},
 	html = { filetypes = { "html", "templ" } },
 	htmx = { filetypes = { "html", "templ" } },
