@@ -426,6 +426,31 @@ require("lazy").setup({
 
 	'kshenoy/vim-signature',
 
+
+	{ 'kevinhwang91/nvim-ufo', dependencies = { 'kevinhwang91/promise-async' } },
+
+	{
+		"chentoast/marks.nvim",
+		event = "VeryLazy",
+		opts = {},
+	},
+
+	'lewis6991/gitsigns.nvim',
+
+	{
+		"oysandvik94/curl.nvim",
+		cmd = { "CurlOpen" },
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+		config = true,
+	},
+
+	{
+		'stevearc/dressing.nvim',
+		opts = {},
+	},
+
 }, {})
 
 --[[
@@ -446,9 +471,9 @@ vim.opt.listchars = {
 	leadmultispace = '␣',
 }
 vim.o.background = 'dark'
-vim.o.scrolloff = 16
+vim.o.scrolloff = 30
 vim.o.relativenumber = true
-vim.o.colorcolumn = "100,120"
+vim.o.colorcolumn = "120,150"
 vim.o.number = true
 local tabLen = 4
 vim.o.tabstop = tabLen
@@ -459,11 +484,11 @@ vim.o.wrap = true
 vim.o.whichwrap = "h,l"
 vim.o.termguicolors = true
 vim.o.ignorecase = true
-
+--
 vim.wo.foldmethod = "expr"
 vim.wo.foldexpr = "nvim_treesitter#foldexpr()"
 
-vim.o.foldcolumn = "1" -- '0' is not bad
+vim.o.foldcolumn = "0" -- '0' is not bad
 -- Using ufo provider need a large value, feel free to decrease the value
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = 99
@@ -510,7 +535,7 @@ end, { desc = '[M]ode [L]ist' })
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic message" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic message" })
 vim.keymap.set("n", "<leader>E", vim.diagnostic.open_float, { desc = "Open floating diagnostic message" })
-vim.keymap.set("n", "<leader>qd", vim.diagnostic.setloclist, { desc = "Open diagnostics list" })
+vim.keymap.set("n", "<leader>qd", vim.diagnostic.setqflist, { desc = "Open diagnostics list" })
 vim.keymap.set("n", "<leader>qt", "<cmd>TodoTrouble<cr>", { desc = "Open [T]odo list" })
 vim.keymap.set("n", "<leader>st", "<cmd>TodoTelescope<cr>", { desc = "Open [T]odo list" })
 
@@ -565,6 +590,44 @@ vim.g.zig_fmt_autosave = 0
 require("oil").setup()
 require("java").setup()
 require("org-bullets").setup()
+
+require('gitsigns').setup()
+
+require 'marks'.setup {
+	default_mappings = true,
+	-- which builtin marks to show. default {}
+	builtin_marks = { ".", "<", ">", "^" },
+	-- whether movements cycle back to the beginning/end of buffer. default true
+	cyclic = true,
+	-- whether the shada file is updated after modifying uppercase marks. default false
+	force_write_shada = false,
+	-- how often (in ms) to redraw signs/recompute mark positions.
+	-- higher values will have better performance but may cause visual lag,
+	-- while lower values may cause performance penalties. default 150.
+	refresh_interval = 250,
+	-- sign priorities for each type of mark - builtin marks, uppercase marks, lowercase
+	-- marks, and bookmarks.
+	-- can be either a table with all/none of the keys, or a single number, in which case
+	-- the priority applies to all marks.
+	-- default 10.
+	sign_priority = { lower = 10, upper = 15, builtin = 8, bookmark = 20 },
+	-- disables mark tracking for specific filetypes. default {}
+	excluded_filetypes = {},
+	-- disables mark tracking for specific buftypes. default {}
+	excluded_buftypes = {},
+	-- marks.nvim allows you to configure up to 10 bookmark groups, each with its own
+	-- sign/virttext. Bookmarks can be used to group together positions and quickly move
+	-- across multiple buffers. default sign is '!@#$%^&*()' (from 0 to 9), and
+	-- default virt_text is "".
+	bookmark_0 = {
+		sign = "⚑",
+		virt_text = "hello world",
+		-- explicitly prompt for a virtual line annotation when setting a bookmark from this group.
+		-- defaults to false.
+		annotate = false,
+	},
+	mappings = {}
+}
 
 --[[
 =====================================================================
@@ -686,6 +749,9 @@ require("telescope").setup({
 		file_ignore_patterns = {
 			"node_modules",
 			"**/build/*",
+			".bemol/*",
+			".idea/*",
+			"tmp/*"
 		}
 	},
 })
@@ -863,11 +929,12 @@ vim.defer_fn(function()
 			"ocaml",
 			"org",
 			"latex",
+			"java",
 		},
 
 		fold = { enable = true },
 		-- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
-		auto_install = false,
+		auto_install = true,
 		-- Install languages synchronously (only applied to `ensure_installed`)
 		sync_install = false,
 		-- List of parsers to ignore installing
@@ -897,6 +964,9 @@ vim.defer_fn(function()
 					["if"] = "@function.inner",
 					["ac"] = "@class.outer",
 					["ic"] = "@class.inner",
+
+					["as"] = { query = "@local.scope", query_group = "locals", desc = "Select language scope" },
+					["is"] = { query = "@local.scope.inner", query_group = "locals", desc = "Select language scope" },
 
 					-- Bindings for ocaml
 					["al"] = "@let_binding.outer",
@@ -955,15 +1025,15 @@ vim.defer_fn(function()
 					["[T"] = "@type_definition.outer",
 				},
 			},
-			swap = {
-				enable = true,
-				swap_next = {
-					["<leader>a"] = "@parameter.inner",
-				},
-				swap_previous = {
-					["<leader>A"] = "@parameter.inner",
-				},
-			},
+			-- swap = {
+			-- 	enable = true,
+			-- 	swap_next = {
+			-- 		["<leader>a"] = "@parameter.inner",
+			-- 	},
+			-- 	swap_previous = {
+			-- 		["<leader>A"] = "@parameter.inner",
+			-- 	},
+			-- },
 		},
 	})
 end, 0)
@@ -1019,9 +1089,9 @@ local on_attach = function(_, bufnr)
 	end
 
 	nmap("<leader>lr", vim.lsp.buf.rename, "[R]e[n]ame")
-	nmap("<leader>ca", function()
+	nmap("<leader>lc", function()
 		vim.lsp.buf.code_action({ context = { only = { "quickfix", "refactor", "source" } } })
-	end, "[C]ode [A]ction")
+	end, "Lsp: [C]ode Action")
 
 	nmap("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
 	nmap("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
@@ -1065,18 +1135,27 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- document existing key chains
 require("which-key").add({
-	{ "<leader>b", group = "[B]uffer" },
-	{ "<leader>c", group = "[C]ode" },
-	{ "<leader>d", group = "[D]ocument" },
-	{ "<leader>g", group = "[G]it" },
-	{ "<leader>h", group = "Git [H]unk" },
-	{ "<leader>r", group = "[R]ename" },
-	{ "<leader>s", group = "[S]earch" },
-	{ "<leader>t", group = "[T]oggle" },
-	{ "<leader>v", group = "[V]edant's Config" },
-	{ "<leader>w", group = "[W]orkspace" },
-	{ "<leader>z", group = "[Z] Telekasten" },
-	{ "<leader>q", group = "[Q]uickfix" },
+	{ "<leader>a",  group = "t[A]b" },
+	{ "<leader>b",  group = "[B]uffer" },
+	{ "<leader>d",  group = "[D]ocument" },
+	{ "<leader>g",  group = "[G]it" },
+	{ "<leader>h",  group = "Git [H]unk" },
+	{ "<leader>r",  group = "[R]ename" },
+	{ "<leader>s",  group = "[S]earch" },
+	{ "<leader>t",  group = "[T]oggle" },
+	{ "<leader>v",  group = "[V]edant's Config" },
+	{ "<leader>w",  group = "[W]orkspace" },
+	{ "<leader>z",  group = "[Z] Session" },
+	{ "<leader>q",  group = "[Q]uickfix" },
+	{ "<leader>l",  group = "[L]SP" },
+	{ "<leader>m",  group = "[M]odes" },
+	{ "<leader>o",  group = "[M]odes" },
+	{ "<leader>n",  group = "[N] Org Roam" },
+	{ "<leader>na", group = "[A]lias" },
+	{ "<leader>nd", group = "[D]ate" },
+	{ "<leader>no", group = "[O]rigin" },
+	{ "<leader>c",  group = "[C]url" },
+	{ "<leader>cc", group = "[C]url [C]ollection" },
 })
 -- register which-key VISUAL mode
 -- required for visual <leader>hs (hunk stage) to work
@@ -1096,6 +1175,8 @@ local servers = {
 	nextls = {},
 	elixirls = {},
 	gopls = {},
+	nil_ls = {},
+	bashls = {},
 	pylsp = {},
 	templ = {},
 	html = { filetypes = { "html", "templ" } },
@@ -1226,14 +1307,14 @@ end, { desc = "[L]ang [F]ormat" })
 =====================================================================
 --]]
 local cmp = require("cmp")
-local luasnip = require("luasnip")
+local ls = require("luasnip")
 require("luasnip.loaders.from_vscode").lazy_load()
-luasnip.config.setup({})
+ls.config.setup({})
 
 cmp.setup({
 	snippet = {
 		expand = function(args)
-			luasnip.lsp_expand(args.body)
+			ls.lsp_expand(args.body)
 		end,
 	},
 	completion = {
@@ -1261,6 +1342,44 @@ cmp.setup({
 -- If you want insert `(` after select function or method item
 local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+
+local s = ls.snippet
+local t = ls.text_node
+local i = ls.insert_node
+local f = ls.function_node
+
+vim.keymap.set({ "i" }, "<C-K>", function() ls.expand() end, { silent = true })
+vim.keymap.set({ "i", "s" }, "<Tab>", function() ls.jump(1) end, { silent = true })
+vim.keymap.set({ "i", "s" }, "<S-Tab>", function() ls.jump(-1) end, { silent = true })
+
+vim.keymap.set({ "i", "s" }, "<C-E>", function()
+	if ls.choice_active() then
+		ls.change_choice(1)
+	end
+end, { silent = true })
+
+ls.add_snippets("java", {
+	s("cc", {
+		t({ "import java.util.Scanner;", "", "" }),
+		t("public class "),
+		f(function (_, snip)
+			return snip.env.TM_FILENAME_BASE or {}
+		end),
+		t({ " {", "\t" }),
+		t({ "public static void main(String[] args) {", "\t\t" }),
+		t({ "Scanner sc = new Scanner(System.in);", "\t\t" }),
+		i(1, "int"),
+		t(" "),
+		i(2, "n"),
+		t(" = sc."),
+		i(3, "nextInt"),
+		t({ "();", "\t\t" }),
+		i(0),
+		t({"", "\t\t"}),
+		t({ "sc.close();", "\t" }),
+		t({ "}", "}" })
+	}),
+})
 
 --[[
 =====================================================================
@@ -1341,6 +1460,8 @@ vim.api.nvim_create_autocmd('LspAttach',
 	}
 )
 
+require('ufo').setup()
+
 
 vim.cmd([[
 " ============================================================================
@@ -1419,6 +1540,9 @@ vim.keymap.set("n", "<M-j>", ":m .+1<CR>", { desc = "Move text down" })
 vim.keymap.set("n", "<M-k>", ":m .-2<CR>", { desc = "Move text up" })
 vim.keymap.set("v", "<M-J>", ":t '><CR>gv=gv", { desc = "Copy text down" })
 vim.keymap.set("v", "<M-K>", ":t '<-1<CR>", { desc = "Copy text up" })
+vim.keymap.set("n", "<M-k>", ":m .-2<CR>", { desc = "Move text up" })
+vim.keymap.set("v", "<M-J>", ":t '><CR>gv=gv", { desc = "Copy text down" })
+vim.keymap.set("v", "<M-K>", ":t '<-1<CR>V'.", { desc = "Copy text up" })
 vim.keymap.set("n", "<M-J>", ":t .<CR>", { desc = "Copy text down" })
 vim.keymap.set("n", "<M-K>", ":t .-1<CR>", { desc = "Copy text up" })
 vim.keymap.set("n", "<", "<<", { desc = "Indent down" })
@@ -1434,6 +1558,8 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Window up" })
 vim.keymap.set("n", "<M-W>", "<C-w>=", { desc = "Window equalize" })
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Move down" })
 vim.keymap.set("n", "<C-b>", "<C-b>zz", { desc = "Move up" })
+vim.keymap.set("n", "<leader>ax", "<cmd>tabclose<cr>", { desc = "t[A]b [X] close" })
+vim.keymap.set("n", "<leader>an", "<cmd>tabnew<cr>", { desc = "t[A]b [N]ew" })
 vim.keymap.set("n", "n", "nzzzv", { desc = "Next search" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search" })
 vim.keymap.set("n", "<leader>/", "<Plug>(comment_toggle_linewise_current)", { desc = "[/] Comment selection" })
@@ -1476,3 +1602,13 @@ vim.keymap.set("n", "<leader>zs", "<cmd>SessionSave<cr>", { desc = "Session Save
 vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "File explorer" })
 vim.keymap.set({ "v", "n" }, "<S-home>", "<cmd>lua require('orgmode').action('org_mappings.org_babel_tangle')<CR>",
 	{ desc = "File explorer" })
+
+local curl = require("curl")
+curl.setup({})
+
+vim.keymap.set("n", "<leader>ct", curl.open_curl_tab, { desc = "Directory scoped Curl tab" })
+vim.keymap.set("n", "<leader>cg", curl.open_global_tab, { desc = "Global scoped Curl tab" })
+vim.keymap.set("n", "<leader>cct", curl.create_scoped_collection, { desc = "Create or open a collection" })
+vim.keymap.set("n", "<leader>ccg", curl.create_global_collection, { desc = "Create or open a global collection" })
+vim.keymap.set("n", "<leader>ccT", curl.pick_scoped_collection, { desc = "Select a scoped collection and open it" })
+vim.keymap.set("n", "<leader>ccG", curl.pick_global_collection, { desc = "Select a global collection and open it" })

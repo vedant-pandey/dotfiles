@@ -123,6 +123,41 @@ alias bbb='brc --allPackages brazil-build'
 alias bbc='brc --allPackages brazil-build clean'
 alias bbra='bbr apollo-pkg'
 alias eauth=' eauth'
+tunnel_dsk() {
+    ssh devdesk -v -N -L "$1":localhost:"$1"
+} 
+ddir() {
+    echo $1 | tr '/' ' ' | cut -d' ' -f3,5 | tr ' ' '/' | awk '{print "/local/home/"$1}'
+}
+dpwd() {
+    pwd | tr '/' ' ' | cut -d' ' -f3,5 | tr ' ' '/' | awk '{print "/local/home/"$1}'
+}
+synconce() {
+    simulation_mode=false
+
+    while getopts ":n" opt; do
+        case ${opt} in
+            n )
+                simulation_mode=true
+                ;;
+        esac
+    done
+
+    if [[ "$simulation_mode" = true ]]; then
+        echo "NOT ACTUALLY SYNCING"
+        rsync -rlzptvn --exclude '**/build/' --exclude 'tmp' --exclude 'logs' --exclude 'env' --exclude '.idea' --exclude '.bemol' --exclude '.brazil*' ./ pandveda@devdesk:$(dpwd)
+    else
+        echo "ACTUALLY SYNCING"
+        rsync -rlzptvn --exclude '**/build/' --exclude 'tmp' --exclude 'logs' --exclude 'env' --exclude '.idea' --exclude '.bemol' --exclude '.brazil*' ./ pandveda@devdesk:$(dpwd)
+    fi
+
+}
+
+
+export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
+zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+source <(carapace _carapace)
+    
 ###################################################################################################
 
 source <(fzf --zsh)

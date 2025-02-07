@@ -39,6 +39,8 @@ in
       cmake
       zig
       tmux
+      nushell
+      carapace
 
       # ZSH config deps
       zsh-autosuggestions
