@@ -263,13 +263,6 @@ require("lazy").setup({
 		opts = {},
 	},
 
-	{
-		"tjdevries/ocaml.nvim",
-		build = function()
-			require("ocaml").update()
-		end,
-	},
-
 	"yamatsum/nvim-cursorline",
 
 	{
@@ -451,6 +444,7 @@ require("lazy").setup({
 		opts = {},
 	},
 
+	'tpope/vim-tbone',
 }, {})
 
 --[[
@@ -485,7 +479,7 @@ vim.o.whichwrap = "h,l"
 vim.o.termguicolors = true
 vim.o.ignorecase = true
 --
-vim.wo.foldmethod = "expr"
+vim.wo.foldmethod = "manual"
 vim.wo.foldexpr = "nvim_treesitter#foldexpr()"
 
 vim.o.foldcolumn = "0" -- '0' is not bad
@@ -903,7 +897,6 @@ vim.keymap.set("n", "<leader>sr", require("telescope.builtin").resume, { desc = 
 =====================================================================
 --]]
 
-require("ocaml").setup()
 
 -- Defer Treesitter setup after first render to improve startup time of 'nvim {filename}'
 vim.defer_fn(function()
@@ -1169,12 +1162,16 @@ require("which-key").add({
 require("mason").setup()
 require("mason-lspconfig").setup()
 
+vim.g['go_fmt_autosave'] = 0
+
 vim.filetype.add({ extension = { templ = "templ" } })
 local servers = {
 	clangd = {},
 	nextls = {},
 	elixirls = {},
-	gopls = {},
+	gopls = {
+		formatting = false,
+	},
 	nil_ls = {},
 	bashls = {},
 	pylsp = {},
@@ -1250,7 +1247,7 @@ require("conform").setup({
 		lua = { "stylua" },
 		ocaml = { "ocamlformat" },
 		-- sh = { "beautysh" },
-		go = { "gofmt", "golines", "goimports" }
+		-- go = { "gofmt", "golines", "goimports" }
 	},
 
 	formatters = {
@@ -1269,11 +1266,6 @@ require("conform").setup({
 			},
 		},
 	},
-	-- Format on save
-	-- format_on_save = {
-	-- 	timeout_ms = 500,
-	-- 	lsp_fallback = true,
-	-- },
 })
 
 vim.api.nvim_create_user_command("FormatDisable", function(args)
@@ -1336,9 +1328,21 @@ cmp.setup({
 		{ name = "luasnip" },
 		{ name = "path" },
 		{ name = 'orgmode' },
+		{ name = "go_pkgs" },
 	},
+	matching = { disallow_symbol_nonprefix_matching = false },
+	enabled = function()
+		-- disable completion in comments
+		local context = require 'cmp.config.context'
+		-- keep command mode completion enabled when cursor is in a comment
+		if vim.api.nvim_get_mode().mode == 'c' then
+			return true
+		else
+			return not context.in_treesitter_capture("comment")
+				and not context.in_syntax_group("Comment")
+		end
+	end
 })
-
 -- If you want insert `(` after select function or method item
 local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
@@ -1362,7 +1366,7 @@ ls.add_snippets("java", {
 	s("cc", {
 		t({ "import java.util.Scanner;", "", "" }),
 		t("public class "),
-		f(function (_, snip)
+		f(function(_, snip)
 			return snip.env.TM_FILENAME_BASE or {}
 		end),
 		t({ " {", "\t" }),
@@ -1374,10 +1378,11 @@ ls.add_snippets("java", {
 		t(" = sc."),
 		i(3, "nextInt"),
 		t({ "();", "\t\t" }),
+		i(4, ""),
+		t({ "", "\t\t" }),
+		t({ "sc.close();", "\t\t" }),
 		i(0),
-		t({"", "\t\t"}),
-		t({ "sc.close();", "\t" }),
-		t({ "}", "}" })
+		t({ "", "\t}", "}" }),
 	}),
 })
 

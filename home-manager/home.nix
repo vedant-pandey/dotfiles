@@ -41,6 +41,7 @@ in
       tmux
       nushell
       carapace
+      lsd
 
       # ZSH config deps
       zsh-autosuggestions
