@@ -33,15 +33,14 @@ in
       parallel
       bat
       du-dust
-      zig
       postgresql
       go
       cmake
-      zig
       tmux
       nushell
       carapace
       lsd
+      minisign
 
       # ZSH config deps
       zsh-autosuggestions

@@ -317,14 +317,12 @@ require("lazy").setup({
 				org_agenda_span = 'day',
 				org_startup_folded = 'showeverything',
 				mappings = {
-					org_return_uses_meta_return = true,
 					org = {
 						org_todo = 'gl',
 						org_todo_prev = 'gh',
 						org_priority_up = 'gk',
 						org_priority_down = 'gj',
-						org_meta_return = '<CR>',
-						org_toggle_checkbox = '<Leader><CR>',
+						org_toggle_checkbox = '<Leader>x',
 						org_open_at_point = 'gd',
 					},
 					agenda = {
@@ -368,23 +366,6 @@ require("lazy").setup({
 				options = {},
 			},
 		},
-	},
-
-	{
-		url = "pandveda@git.amazon.com:pkg/NinjaHooks",
-		branch = "mainline",
-		lazy = false,
-		config = function(plugin)
-			vim.opt.rtp:prepend(plugin.dir .. "/configuration/vim/amazon/brazil-config")
-			vim.filetype.add({
-				filename = {
-					['Config'] = function()
-						vim.b.brazil_package_Config = 1
-						return 'brazil-config'
-					end,
-				},
-			})
-		end,
 	},
 
 	"tpope/vim-abolish",
@@ -465,7 +446,7 @@ vim.opt.listchars = {
 	leadmultispace = '␣',
 }
 vim.o.background = 'dark'
-vim.o.scrolloff = 30
+vim.o.scrolloff = 20
 vim.o.relativenumber = true
 vim.o.colorcolumn = "120,150"
 vim.o.number = true
@@ -475,17 +456,19 @@ vim.o.softtabstop = tabLen
 vim.o.shiftwidth = tabLen
 vim.o.smartindent = true
 vim.o.wrap = true
+vim.o.linebreak = true
+vim.o.cul = true
 vim.o.whichwrap = "h,l"
 vim.o.termguicolors = true
 vim.o.ignorecase = true
 --
-vim.wo.foldmethod = "manual"
-vim.wo.foldexpr = "nvim_treesitter#foldexpr()"
+-- vim.wo.foldmethod = "manual"
+-- vim.wo.foldexpr = "nvim_treesitter#foldexpr()"
 
-vim.o.foldcolumn = "0" -- '0' is not bad
+vim.o.foldcolumn = "1" -- '0' is not bad
 -- Using ufo provider need a large value, feel free to decrease the value
-vim.o.foldlevel = 99
-vim.o.foldlevelstart = 99
+-- vim.o.foldlevel = 99
+vim.o.foldlevelstart = 3
 vim.o.foldenable = true
 
 vim.cmd.colorscheme("everforest")
@@ -517,8 +500,8 @@ vim.o.completeopt = "menuone,noselect"
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 
 -- Remap for dealing with word wrap
-vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
-vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+-- vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+-- vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 vim.keymap.set("n", "<leader>mz", "<cmd>ZenMode<cr>", { desc = "[M]ode [Z]en" })
 vim.keymap.set('n', '<leader>ml', function()
 	vim.opt.list = not vim.opt.list:get()
@@ -622,6 +605,16 @@ require 'marks'.setup {
 	},
 	mappings = {}
 }
+
+vim.api.nvim_create_autocmd('FileType', {
+	pattern = 'org',
+	callback = function()
+		vim.keymap.set('i', '<leader><CR>', '<cmd>lua require("orgmode").action("org_mappings.meta_return")<CR>', {
+			silent = true,
+			buffer = true,
+		})
+	end,
+})
 
 --[[
 =====================================================================
@@ -1041,7 +1034,7 @@ require("nvim-treesitter.configs").setup({
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.foldenable = false
-vim.opt.foldlevel = 99
+-- vim.opt.foldlevel = 3
 
 vim.treesitter.query.set(
 	"ocaml",
@@ -1057,15 +1050,6 @@ vim.treesitter.query.set(
   (match_expression body: (_) @match_expression.inner)
 ]]
 )
-
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = "ocaml",
-	callback = function()
-		vim.opt_local.foldmethod = "expr"
-		vim.opt_local.foldexpr = "nvim_treesitter#foldexpr()"
-		vim.opt_local.foldnestmax = 3
-	end,
-})
 
 --[[
 =====================================================================
@@ -1186,9 +1170,9 @@ local servers = {
 	rust_analyzer = {},
 	jdtls = {},
 	zls = {},
-	ocamllsp = {
-		filetypes = { "ocaml", "ocaml.menhir", "ocaml.interface", "ocaml.ocamllex", "reason", "dune" },
-	},
+	-- ocamllsp = {
+	-- 	filetypes = { "ocaml", "ocaml.menhir", "ocaml.interface", "ocaml.ocamllex", "reason", "dune" },
+	-- },
 
 	lua_ls = {
 		Lua = {
@@ -1212,12 +1196,17 @@ local servers = {
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 local capabilities = vim.lsp.protocol.make_client_capabilities()
--- Give nvim-ufo ability to create folds using LSP
-capabilities.textDocument.foldingRange = {
-	dynamicRegistration = false,
-	lineFoldingOnly = true,
-}
 capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+
+require('lspconfig').ocamllsp.setup{
+	capabilities = capabilities,
+	on_attach = on_attach
+}
+
+require('lspconfig').zls.setup{
+	capabilities = capabilities,
+	on_attach = on_attach
+}
 
 -- Ensure the servers above are installed
 local mason_lspconfig = require("mason-lspconfig")
@@ -1246,8 +1235,8 @@ require("conform").setup({
 	formatters_by_ft = {
 		lua = { "stylua" },
 		ocaml = { "ocamlformat" },
-		-- sh = { "beautysh" },
-		-- go = { "gofmt", "golines", "goimports" }
+		sh = { "beautysh" },
+		go = { "gofmt", "golines", "goimports" }
 	},
 
 	formatters = {
@@ -1385,6 +1374,38 @@ ls.add_snippets("java", {
 		t({ "", "\t}", "}" }),
 	}),
 })
+
+ls.add_snippets("go", {
+	s("iferr", {
+		t({ "if err != nil {", "\t" }),
+		i(1, "log.Fatalf(\"Error - %v\", err)"),
+		t({ "", "}", "" }),
+		i(0)
+	}),
+})
+
+ls.add_snippets("go", {
+	s("pacman", {
+		t({ "package main", "", "func main() {", "\t" }),
+		i(0),
+		t({ "", "}" }),
+	}),
+})
+
+ls.add_snippets("go", {
+	s("cc", {
+		t({
+			"package main", "", "func main() {",
+			"\tscanner := bufio.NewReader(os.Stdin)",
+			"\tlineBytes, _, _ := scanner.ReadLine()",
+			"\tn, _ := strconv.Atoi(string(lineBytes))",
+			"\t"
+		}),
+		i(0),
+		t({ "", "}" })
+	}),
+})
+
 
 --[[
 =====================================================================
@@ -1562,7 +1583,7 @@ vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Window down" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Window up" })
 vim.keymap.set("n", "<M-W>", "<C-w>=", { desc = "Window equalize" })
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Move down" })
-vim.keymap.set("n", "<C-b>", "<C-b>zz", { desc = "Move up" })
+vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Move up" })
 vim.keymap.set("n", "<leader>ax", "<cmd>tabclose<cr>", { desc = "t[A]b [X] close" })
 vim.keymap.set("n", "<leader>an", "<cmd>tabnew<cr>", { desc = "t[A]b [N]ew" })
 vim.keymap.set("n", "n", "nzzzv", { desc = "Next search" })
