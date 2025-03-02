@@ -36,6 +36,7 @@ path=(
     /opt/homebrew/opt/llvm/bin
     /opt/homebrew/opt/grep/libexec/gnubin
     $HOME/.
+    /opt/homebrew/opt/openjdk@17/bin
 )
 export PATH
 
@@ -254,7 +255,7 @@ PROMPT+="\$vcs_info_msg_0_ "
 
 ########################### WORK PLUGINS START ####################################################
 # Set up mise for runtime management
-zsh-defer eval "$(mise activate zsh)"
+# zsh-defer eval "$(mise activate zsh)"
 ########################### WORK PLUGINS END ######################################################
 
 # zprof > /tmp/zsh_profile.log
