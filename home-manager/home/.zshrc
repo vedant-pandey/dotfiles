@@ -10,7 +10,7 @@ export GOPATH="$HOME/go"
 export JAVA_HOME="/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home"
 export HOMEBREW_NO_ANALYTICS=1
 export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
-export CPPFLAGS="-I/opt/homebrew/opt/llvm/include -I/opt/homebrew/opt/openjdk@10/include"
+export CPPFLAGS="-I/opt/homebrew/opt/llvm/include -I/opt/homebrew/opt/openjdk@17/include"
 export DOOMDIR="$HOME/.config/doom"
 export EMACSDIR="$HOME/.config/emacs"
 
@@ -37,6 +37,7 @@ path=(
     /opt/homebrew/opt/grep/libexec/gnubin
     $HOME/.
     /opt/homebrew/opt/openjdk@17/bin
+    $HOME/personal/opensource/Odin
 )
 export PATH
 

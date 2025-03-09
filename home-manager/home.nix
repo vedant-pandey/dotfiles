@@ -35,13 +35,13 @@ in
             du-dust
             postgresql
             go
-            cmake
             tmux
             nil
             nushell
             carapace
             lsd
             minisign
+            gnupg
 
             # ZSH config deps
             zsh-autosuggestions
@@ -101,7 +101,7 @@ in
                     condition = "gitdir:~/personal/";
                     contents = {
                         user = {
-                            name = "Vedant Pandey";
+                            name = "vedant-pandey";
                             email = userConfig.personalEmail;
                         };
                         github = {

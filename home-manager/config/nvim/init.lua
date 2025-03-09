@@ -507,8 +507,8 @@ vim.o.linebreak = true
 
 vim.o.foldcolumn = "1" -- '0' is not bad
 -- Using ufo provider need a large value, feel free to decrease the value
--- vim.o.foldlevel = 99
-vim.o.foldlevelstart = 3
+vim.o.foldlevel = 99
+-- vim.o.foldlevelstart = 3
 vim.o.foldenable = true
 
 vim.cmd.colorscheme("everforest")
@@ -1185,7 +1185,6 @@ vim.g["go_fmt_autosave"] = 0
 
 vim.filetype.add({ extension = { templ = "templ" } })
 local servers = {
-  clangd = {},
   nextls = {},
   elixirls = {},
   gopls = {
@@ -1204,7 +1203,7 @@ local servers = {
   -- pyright = {},
   rust_analyzer = {},
   jdtls = {},
-  zls = {},
+  -- zls = {},
   -- ocamllsp = {
   -- 	filetypes = { "ocaml", "ocaml.menhir", "ocaml.interface", "ocaml.ocamllex", "reason", "dune" },
   -- },
@@ -1248,6 +1247,11 @@ require("lspconfig").nil_ls.setup({
   on_attach = on_attach,
 })
 
+require("lspconfig").clangd.setup({
+  capabilities = capabilities,
+  on_attach = on_attach,
+})
+
 -- Ensure the servers above are installed
 local mason_lspconfig = require("mason-lspconfig")
 
@@ -1277,6 +1281,7 @@ require("conform").setup({
     ocaml = { "ocamlformat" },
     sh = { "beautysh" },
     go = { "gofmt", "golines", "goimports" },
+    c = {"clang-format"}
   },
 
   formatters = {
@@ -1296,6 +1301,13 @@ require("conform").setup({
     },
   },
 })
+
+require("conform").formatters["clang-format"] = {
+  args = {
+    -- "--Werror",
+    "--style={BasedOnStyle: llvm, IndentWidth: 4, ColumnLimit: 120}",
+  }
+}
 
 vim.api.nvim_create_user_command("FormatDisable", function(args)
   if args.bang then
@@ -1354,7 +1366,7 @@ cmp.setup({
   }),
   sources = {
     { name = "nvim_lsp" },
-    { name = "luasnip" },
+    -- { name = "luasnip" },
     { name = "path" },
     { name = "orgmode" },
     { name = "go_pkgs" },
