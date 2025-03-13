@@ -24,7 +24,7 @@ rm ./nix.sh
 echo "NIX INSTALLED"
 
 echo "ENABLING NIX FLAKES"
-echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
+sudo nix echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
 
 source /etc/profile # reload shell
 
