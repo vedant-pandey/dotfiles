@@ -34,7 +34,6 @@ in
             bat
             du-dust
             postgresql
-            go
             tmux
             nil
             nushell
@@ -50,15 +49,13 @@ in
         ];
 
         file = {
-            ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/config/nvim";
-            ".config/yabai".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/config/yabai";
-            ".config/skhd".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/config/skhd";
-            ".config/doom".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/config/doom";
-            ".config/emacs".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/config/emacs";
-            ".tmux.conf".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/home/.tmux.conf";
-            ".zshrc".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/home/.zshrc";
-            "bin/t-sesh".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/bin/t-sesh";
-            "bin/cheet".source = config.lib.file.mkOutOfStoreSymlink "/Users/${userConfig.user}/personal/dotfiles/home-manager/bin/cheet";
+            ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${userConfig.home}/personal/dotfiles/home-manager/config/nvim";
+            ".config/yabai".source = config.lib.file.mkOutOfStoreSymlink "${userConfig.home}/personal/dotfiles/home-manager/config/yabai";
+            ".config/skhd".source = config.lib.file.mkOutOfStoreSymlink "${userConfig.home}/personal/dotfiles/home-manager/config/skhd";
+            ".tmux.conf".source = config.lib.file.mkOutOfStoreSymlink "${userConfig.home}/personal/dotfiles/home-manager/home/.tmux.conf";
+            ".zshrc".source = config.lib.file.mkOutOfStoreSymlink "${userConfig.home}/personal/dotfiles/home-manager/home/.zshrc";
+            "bin/t-sesh".source = config.lib.file.mkOutOfStoreSymlink "${userConfig.home}/personal/dotfiles/home-manager/bin/t-sesh";
+            "bin/cheet".source = config.lib.file.mkOutOfStoreSymlink "${userConfig.home}/personal/dotfiles/home-manager/bin/cheet";
         };
 
         sessionVariables = {

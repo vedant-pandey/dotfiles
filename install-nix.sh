@@ -6,7 +6,7 @@ if [[ -d "~/personal" ]]; then
     echo "Personal directory exists"
 else
     echo "Creating personal directory"
-    mkdir ~/personal
+    mkdir -p ~/personal/opensource
 fi
 
 if [[ -d "~/work" ]]; then

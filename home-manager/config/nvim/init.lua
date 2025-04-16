@@ -1281,7 +1281,8 @@ require("conform").setup({
     ocaml = { "ocamlformat" },
     sh = { "beautysh" },
     go = { "gofmt", "golines", "goimports" },
-    c = {"clang-format"}
+    c = { "clang-format" },
+    templ = { "templ" },
   },
 
   formatters = {
@@ -1306,7 +1307,7 @@ require("conform").formatters["clang-format"] = {
   args = {
     -- "--Werror",
     "--style={BasedOnStyle: llvm, IndentWidth: 4, ColumnLimit: 120}",
-  }
+  },
 }
 
 vim.api.nvim_create_user_command("FormatDisable", function(args)

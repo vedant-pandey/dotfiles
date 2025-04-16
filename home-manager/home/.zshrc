@@ -128,6 +128,8 @@ alias bbb='brc --allPackages brazil-build'
 alias bbc='brc --allPackages brazil-build clean'
 alias bbra='bbr apollo-pkg'
 alias eauth=' eauth'
+alias pbclear='pbcopy < /dev/null'
+alias pbpaste='PASTE=$(/usr/bin/pbpaste);pbclear;echo $PASTE' # Modify to paste and forget, this could get irritating at times
 tunnel_dsk() {
     ssh devdesk -v -N -L "$1":localhost:"$1"
 } 
