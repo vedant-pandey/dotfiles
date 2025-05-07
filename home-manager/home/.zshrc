@@ -70,11 +70,11 @@ brew() {
 }
 
 # Load essential Nix plugins with optimization flags
-if [ -f /nix/store/*-zsh-autosuggestions*/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+# if [ -f /nix/store/*-zsh-autosuggestions*/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
     source /nix/store/*-zsh-autosuggestions*/share/zsh-autosuggestions/zsh-autosuggestions.zsh
     ZSH_AUTOSUGGEST_MANUAL_REBIND=1
     ZSH_AUTOSUGGEST_USE_ASYNC=1
-fi
+# fi
 
 # Load Zap and prompt-related plugins immediately
 if [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ]; then
@@ -82,7 +82,7 @@ if [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ]; then
 fi
 
 # Defer syntax highlighting (it's one of the slowest)
-if [ -f /nix/store/*zsh-defer*/share/zsh-defer/zsh-defer.plugin.zsh ]; then
+# if [ -f /nix/store/*zsh-defer*/share/zsh-defer/zsh-defer.plugin.zsh ]; then
     source /nix/store/*zsh-defer*/share/zsh-defer/zsh-defer.plugin.zsh
     
     # Defer syntax highlighting load
@@ -92,7 +92,7 @@ if [ -f /nix/store/*zsh-defer*/share/zsh-defer/zsh-defer.plugin.zsh ]; then
     zsh-defer source /nix/store/*-zsh-history-substring-search*/share/zsh-history-substring-search/zsh-history-substring-search.zsh
     
     # Defer Zap loading
-fi
+# fi
 
 source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
 plug 'zap-zsh/supercharge'

@@ -1,0 +1,18 @@
+[user]
+	name = Vedant
+	name = vedant-pandey
+	email = vedantpandey46@gmail.com
+[init]
+	defaultBranch = main
+[push]
+	autoSetupRemote = true
+[rerere]
+	enabled = true
+[column]
+	ui = auto
+[branch]
+	sort = -committerdate
+[core]
+	sshCommand = ssh
+[credential]
+	helper = osxkeychain

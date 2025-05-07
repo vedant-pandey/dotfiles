@@ -1,14 +1,11 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
-let 
-    userConfig = builtins.fromTOML (builtins.readFile ./user.toml);
-in
-    {
+{
     # Home Manager needs a bit of information about you and the paths it should
     # manage.
     home = {
-        username = userConfig.user;
-        homeDirectory = userConfig.home;
+        username = "vedant";
+        homeDirectory = "/Users/vedant";
 
         stateVersion = "24.11";
 
@@ -17,30 +14,25 @@ in
             zsh-defer
             pandoc
             elixir
-            qemu
             ansible
             stow
             graphviz
             fnm
-            lazygit
             fd
-            protobuf
             fswatch
             ripgrep
             gh
             glow
             jq
             parallel
-            bat
-            du-dust
             postgresql
             tmux
-            nil
             nushell
             carapace
             lsd
             minisign
             gnupg
+            git
 
             # ZSH config deps
             zsh-autosuggestions
@@ -48,18 +40,6 @@ in
             zsh-history-substring-search
         ];
 
-        file = {
-            ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "${userConfig.home}/personal/dotfiles/home-manager/config/nvim";
-            ".config/yabai".source = config.lib.file.mkOutOfStoreSymlink "${userConfig.home}/personal/dotfiles/home-manager/config/yabai";
-            ".config/skhd".source = config.lib.file.mkOutOfStoreSymlink "${userConfig.home}/personal/dotfiles/home-manager/config/skhd";
-            ".tmux.conf".source = config.lib.file.mkOutOfStoreSymlink "${userConfig.home}/personal/dotfiles/home-manager/home/.tmux.conf";
-            ".zshrc".source = config.lib.file.mkOutOfStoreSymlink "${userConfig.home}/personal/dotfiles/home-manager/home/.zshrc";
-            "bin/t-sesh".source = config.lib.file.mkOutOfStoreSymlink "${userConfig.home}/personal/dotfiles/home-manager/bin/t-sesh";
-            "bin/cheet".source = config.lib.file.mkOutOfStoreSymlink "${userConfig.home}/personal/dotfiles/home-manager/bin/cheet";
-        };
-
-        sessionVariables = {
-        };
     };
 
     programs = {
@@ -67,85 +47,6 @@ in
             enable = true;
             enableZshIntegration = true;
             fileWidgetCommand = "fd --type f";
-        };
-
-        git = {
-            enable = true;
-            delta = {
-                enable = true;
-            };
-            ignores = [
-                "vedanttest/"
-                "out"
-            ];
-            includes = [
-                {
-                    contents = {
-                        push = {
-                            autoSetupRemote = true;
-                        };
-                        rerere = {
-                            enabled = true;
-                        };
-                        column.ui = "auto";
-                        branch.sort = "-committerdate";
-                        init = {
-                            defaultBranch = "main";
-                        };
-                    };
-                }
-                {
-                    condition = "gitdir:~/personal/";
-                    contents = {
-                        user = {
-                            name = "vedant-pandey";
-                            email = userConfig.personalEmail;
-                        };
-                        github = {
-                            user = "vedant-pandey";
-                        };
-                        core = {
-                            sshCommand = "ssh -i ~/.ssh/github-personal";
-                        };
-                    };
-                }
-                {
-                    condition = "gitdir:~/work/";
-                    contents = {
-                        user = {
-                            name = userConfig.fullName;
-                            email = userConfig.email;
-                        };
-                        github = {
-                            user = userConfig.githubUsername;
-                        };
-                        core = {
-                            sshCommand = "ssh";
-                        };
-                        url."ssh://git.amazon.com".insteadOf = "https://git.amazon.com";
-                        ssh.variant = "ssh";
-                        credential.helper = "osxkeychain";
-                    };
-                }
-                {
-                    condition = "gitdir:~/ws/";
-                    contents = {
-                        user = {
-                            name = userConfig.fullName;
-                            email = userConfig.email;
-                        };
-                        github = {
-                            user = userConfig.githubUsername;
-                        };
-                        core = {
-                            sshCommand = "ssh";
-                        };
-                        url."ssh://git.amazon.com".insteadOf = "https://git.amazon.com";
-                        ssh.variant = "ssh";
-                        credential.helper = "osxkeychain";
-                    };
-                }
-            ];
         };
 
         neovim = {

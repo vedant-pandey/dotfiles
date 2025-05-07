@@ -272,11 +272,9 @@ require("lazy").setup({
 
   {
     "chipsenkbeil/org-roam.nvim",
-    tag = "0.1.0",
     dependencies = {
       {
         "nvim-orgmode/orgmode",
-        tag = "0.3.4",
       },
     },
     config = function()
@@ -948,7 +946,6 @@ vim.defer_fn(function()
       "heex",
       "markdown",
       "ocaml",
-      "org",
       "latex",
       "java",
     },
@@ -1194,7 +1191,7 @@ local servers = {
   bashls = {},
   pylsp = {},
   templ = {},
-  html = { filetypes = { "html", "templ" } },
+  html = { filetypes = { "html", "templ", "heex" } },
   htmx = { filetypes = { "html", "templ" } },
   tailwindcss = {
     filetypes = { "templ", "astro", "javascript", "typescript", "react" },
@@ -1228,6 +1225,8 @@ local servers = {
   },
 }
 
+vim.lsp.set_log_level("debug")
+
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
@@ -1238,11 +1237,6 @@ require("lspconfig").ocamllsp.setup({
 })
 
 require("lspconfig").zls.setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-})
-
-require("lspconfig").nil_ls.setup({
   capabilities = capabilities,
   on_attach = on_attach,
 })
@@ -1661,6 +1655,7 @@ vim.keymap.set("n", "<leader>'", "<cmd>split %<CR>", { desc = "['] Split horizon
 vim.keymap.set("n", "<leader>vx", "<cmd>!chmod +x %<cr>", { desc = "Make current file e[X]ecutable" })
 vim.keymap.set("n", "<leader>vh", "<cmd>!home-manager switch --show-trace<CR>", { desc = "[H]ome manager switch" })
 vim.keymap.set("n", "<leader>va", "ggVG", { desc = "Select [A]ll text" })
+vim.keymap.set("n", "<leader>v.", "<cmd>!echo %<cr>", { desc = "[.]Where am I?" })
 
 vim.keymap.set("n", "<leader>ga", ":Git blame<CR>", { desc = "[G]it bl[A]me" })
 vim.keymap.set("n", "<leader>gb", ":GBrowse<CR>", { desc = "[G]it [B]rowse" })
