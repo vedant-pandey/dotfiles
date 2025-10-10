@@ -8,10 +8,12 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = ","
 
 -- Optional: Add some Netrw configuration
-vim.g.netrw_banner = 0 -- Disable banner
-vim.g.netrw_browse_split = 4 -- Open in previous window
-vim.g.netrw_altv = 1 -- Open splits to the right
-vim.g.netrw_liststyle = 1 -- Tree view
+-- vim.g.netrw_banner = 1 -- Disable banner
+-- vim.g.netrw_browse_split = 4 -- Open in previous window
+-- vim.g.netrw_altv = 1 -- Open splits to the right
+-- vim.g.netrw_liststyle = 1 -- Tree view
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -42,9 +44,14 @@ require("lazy").setup({
       { "williamboman/mason.nvim", config = true },
       "williamboman/mason-lspconfig.nvim",
 
-      -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
       { "j-hui/fidget.nvim", opts = {} },
     },
+  },
+  {
+    "folke/tokyonight.nvim",
+    lazy = false,
+    priority = 1000,
+    opts = {},
   },
 
   {
@@ -77,9 +84,6 @@ require("lazy").setup({
 
   { "folke/which-key.nvim", opts = {} },
 
-  -- { "catppuccin/nvim",      name = "catppuccin", priority = 1000 },
-  { "sainnhe/everforest", name = "everforest", priority = 1000 },
-
   {
     -- Set lualine as statusline
     "nvim-lualine/lualine.nvim",
@@ -103,7 +107,55 @@ require("lazy").setup({
     opts = {},
   },
 
-  { "numToStr/Comment.nvim", opts = {} },
+  {
+    "numToStr/Comment.nvim",
+    opts = {
+      ---Add a space b/w comment and the line
+      padding = true,
+      ---Whether the cursor should stay at its position
+      sticky = true,
+      ---Lines to be ignored while (un)comment
+      ignore = nil,
+      ---LHS of toggle mappings in NORMAL mode
+      toggler = {
+        -- ---Line-comment toggle keymap
+        -- line = "gcc",
+        -- ---Block-comment toggle keymap
+        -- block = "gbc",
+        ---Line-comment toggle keymap
+        line = "<leader>/",
+        ---Block-comment toggle keymap
+        block = "<localleader>/",
+      },
+      ---LHS of operator-pending mappings in NORMAL and VISUAL mode
+      opleader = {
+        ---Line-comment keymap
+        line = "<leader>/",
+        ---Block-comment keymap
+        block = "<localleader>/",
+      },
+      ---LHS of extra mappings
+      extra = {
+        ---Add comment on the line above
+        above = "<localleader>[",
+        ---Add comment on the line below
+        below = "<localleader>]",
+        ---Add comment at the end of line
+        eol = "<localleader>,",
+      },
+      ---Enable keybindings
+      mappings = {
+        ---Operator-pending mapping; `gcc` `gbc` `gc[count]{motion}` `gb[count]{motion}`
+        basic = true,
+        ---Extra mapping; `gco`, `gcO`, `gcA`
+        extra = true,
+      },
+      ---Function to call before (un)comment
+      pre_hook = nil,
+      ---Function to call after (un)comment
+      post_hook = nil,
+    },
+  },
 
   {
     "nvim-telescope/telescope.nvim",
@@ -144,8 +196,6 @@ require("lazy").setup({
     }, -- this is equalent to setup({}) function
   },
 
-  "ThePrimeagen/vim-be-good",
-
   {
     "nacro90/numb.nvim",
     opts = {},
@@ -165,7 +215,14 @@ require("lazy").setup({
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     opts = {
-      DONE = { icon = "✅", color = "hint", alt = { "NOTE" } },
+      keywords = {
+        DONE = { icon = "✅", color = "hint", alt = { "NOTE" } },
+        STEP = { icon = "➡️", color = "step", alt = { "STEP 1" } },
+      },
+      colors = {
+        step = { "Identifier", "#FFFFFF" },
+      },
+
       -- your configuration comes here
       -- or leave it empty to use the default settings
       -- refer to the configuration section below
@@ -177,63 +234,13 @@ require("lazy").setup({
     -- version = "*",
     dependencies = "nvim-tree/nvim-web-devicons",
     opts = {},
-  },
-
-  "moll/vim-bbye",
-  "kevinhwang91/nvim-bqf",
-
-  {
-    "renerocksai/telekasten.nvim",
-    dependencies = {
-      "nvim-telescope/telescope.nvim",
+    keys = {
+      { "<C-n>", "<cmd>BufferLineCycleNext<CR>", desc = "Goto next buffer" },
+      { "<C-p>", "<cmd>BufferLineCyclePrev<CR>", desc = "Goto prev buffer" },
+      { "<leader>bo", "<cmd>BufferLineCloseOthers<CR>", desc = "Close other buffers" },
+      { "<leader>bh", "<cmd>BufferLineCloseLeft<CR>", desc = "Close all buffers to the left" },
+      { "<leader>bl", "<cmd>BufferLineCloseRight<CR>", desc = "Close all buffers to the right" },
     },
-    opts = {
-      home = vim.fn.expand("~/personal/notes/telekasten"),
-    },
-  },
-
-  {
-    "iamcco/markdown-preview.nvim",
-    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-    build = "cd app && yarn install",
-    init = function()
-      vim.g.mkdp_filetypes = { "markdown" }
-    end,
-    ft = { "markdown" },
-  },
-
-  {
-    "kevinhwang91/nvim-ufo",
-    dependencies = {
-      "kevinhwang91/promise-async",
-    },
-    opts = {},
-  },
-
-  "ziglang/zig.vim",
-
-  "tpope/vim-dadbod",
-  -- 'vrischmann/tree-sitter-templ',
-  -- 'github/copilot.vim',
-
-  {
-    "ray-x/go.nvim",
-    dependencies = { -- optional packages
-      "ray-x/guihua.lua",
-      "neovim/nvim-lspconfig",
-      "nvim-treesitter/nvim-treesitter",
-    },
-    config = function()
-      require("go").setup()
-    end,
-    event = { "CmdlineEnter" },
-    ft = { "go", "gomod" },
-  },
-
-  {
-    "pmizio/typescript-tools.nvim",
-    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-    opts = {},
   },
 
   {
@@ -248,26 +255,66 @@ require("lazy").setup({
       suppressed_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
       -- log_level = 'debug',
     },
-  },
+    keys = {
 
-  {
-    "MeanderingProgrammer/render-markdown.nvim",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      "echasnovski/mini.nvim",
-      "nvim-treesitter/nvim-treesitter",
-      "echasnovski/mini.icons",
-      "nvim-treesitter/nvim-treesitter",
-      "nvim-tree/nvim-web-devicons",
-    }, -- if you prefer nvim-web-devicons
-    opts = {},
+      { "<leader>zr", "<cmd>Autosession restore<cr>", desc = "Session Restore" },
+      { "<leader>zs", "<cmd>Autosession save<cr>", desc = "Session Save" },
+      { "<leader>zz", "<cmd>Autosession search<cr>", desc = "Session Search" },
+    },
   },
-
-  "yamatsum/nvim-cursorline",
 
   {
     "stevearc/conform.nvim",
-    opts = {},
+    config = function()
+      require("conform").setup({
+        formatters_by_ft = {
+          lua = { "stylua" },
+          ocaml = { "ocamlformat" },
+          sh = { "beautysh" },
+          go = { "gofmt", "golines", "goimports" },
+          c = { "clang-format" },
+          cpp = { "clang-format" },
+          templ = { "templ" },
+        },
+
+        formatters = {
+          stylua = {
+            prepend_args = {
+              "--indent-type=Spaces",
+              "--indent-width=2",
+              "--quote-style=AutoPreferDouble",
+              "--column-width=120",
+            },
+          },
+          ocamlformat = {
+            -- Using Jane Street profile with minimal overrides
+            prepend_args = {
+              "--profile=janestreet",
+            },
+          },
+        },
+      })
+
+      -- require("conform").formatters["clang-format"] = {
+      --   args = {
+      --     -- "--Werror",
+      --     "--style={BasedOnStyle: llvm, IndentWidth: 4, ColumnLimit: 120}",
+      --   },
+      -- }
+    end,
+    keys = {
+      {
+        "<leader>lf",
+        function()
+          require("conform").format({
+            async = true,
+            lsp_fallback = true,
+          })
+        end,
+        mode = { "n", "v" },
+        desc = "[L]ang [F]ormat",
+      },
+    },
   },
 
   {
@@ -288,48 +335,45 @@ require("lazy").setup({
     "nvim-orgmode/orgmode",
     event = "VeryLazy",
     ft = { "org" },
-    config = function()
-      -- Setup orgmode
-      require("orgmode").setup({
-        org_agenda_files = "~/personal/dotfiles/notes/orgmode/**/*",
-        org_default_notes_file = "~/personal/dotfiles/notes/orgmode/refile.org",
-        org_deadline_warning_days = 7,
-        org_todo_keywords = {
-          "Unplanned(u)",
-          "Todo(t)",
-          "InProgress(i)",
-          "|",
-          "Reassigned(r)",
-          "Deprioritised(d)",
-          "Finished(f)",
+    opts = {
+      org_agenda_files = "~/personal/dotfiles/notes/orgmode/**/*",
+      org_default_notes_file = "~/personal/dotfiles/notes/orgmode/refile.org",
+      org_deadline_warning_days = 7,
+      org_todo_keywords = {
+        "Unplanned(u)",
+        "Todo(t)",
+        "InProgress(i)",
+        "|",
+        "Reassigned(r)",
+        "Deprioritised(d)",
+        "Finished(f)",
+      },
+      org_todo_keyword_faces = {
+        Unplanned = ":foreground #333333 :background #E5E5E5",
+        Todo = ":background #FFE5E5 :foreground #CC0000",
+        InProgress = ":background #E5F2FF :foreground #0066CC",
+        Reassigned = ":background #FFF3E5 :foreground #CC6600",
+        Deprioritised = ":background #F2E5FF :foreground #6600CC",
+        Finished = ":background #E5FFE5 :foreground #006600",
+      },
+      calendar_week_start_day = 0,
+      org_agenda_span = "day",
+      org_startup_folded = "showeverything",
+      mappings = {
+        org = {
+          org_todo = "gl",
+          org_todo_prev = "gh",
+          org_priority_up = "gk",
+          org_priority_down = "gj",
+          org_toggle_checkbox = "<Leader>x",
+          org_open_at_point = "gd",
         },
-        org_todo_keyword_faces = {
-          Unplanned = ":foreground #333333 :background #E5E5E5",
-          Todo = ":background #FFE5E5 :foreground #CC0000",
-          InProgress = ":background #E5F2FF :foreground #0066CC",
-          Reassigned = ":background #FFF3E5 :foreground #CC6600",
-          Deprioritised = ":background #F2E5FF :foreground #6600CC",
-          Finished = ":background #E5FFE5 :foreground #006600",
+        agenda = {
+          org_agenda_priority_up = "gk",
+          org_agenda_priority_down = "gj",
         },
-        calendar_week_start_day = 0,
-        org_agenda_span = "day",
-        org_startup_folded = "showeverything",
-        mappings = {
-          org = {
-            org_todo = "gl",
-            org_todo_prev = "gh",
-            org_priority_up = "gk",
-            org_priority_down = "gj",
-            org_toggle_checkbox = "<Leader>x",
-            org_open_at_point = "gd",
-          },
-          agenda = {
-            org_agenda_priority_up = "gk",
-            org_agenda_priority_down = "gj",
-          },
-        },
-      })
-    end,
+      },
+    },
   },
 
   "dhruvasagar/vim-table-mode",
@@ -349,7 +393,10 @@ require("lazy").setup({
     },
   },
 
-  "nvim-java/nvim-java",
+  {
+    "nvim-java/nvim-java",
+    opts = {},
+  },
 
   -- Lua
   {
@@ -363,9 +410,11 @@ require("lazy").setup({
         options = {},
       },
     },
+    keys = {
+      { "<leader>mz", "<cmd>ZenMode<cr>", { desc = "[M]ode [Z]en" } },
+    },
   },
 
-  "tpope/vim-abolish",
   "tpope/vim-repeat",
 
   {
@@ -373,16 +422,27 @@ require("lazy").setup({
     ---@module 'oil'
     ---@type oil.SetupOpts
     opts = {
+      default_file_explorer = true,
+      columns = {
+        "icon",
+        "size",
+      },
       view_options = {
         show_hidden = true,
       },
     },
     -- Optional dependencies
+    keys = {
+      { "-", "<cmd>Oil<cr>", { desc = "[-] File explorer" } },
+    },
     dependencies = { { "echasnovski/mini.icons", opts = {} } },
-    -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if prefer nvim-web-devicons
+    lazy = false,
   },
 
-  "akinsho/org-bullets.nvim",
+  {
+    "akinsho/org-bullets.nvim",
+    opts = {},
+  },
 
   {
     "lervag/vimtex",
@@ -395,17 +455,10 @@ require("lazy").setup({
     end,
   },
 
-  "kshenoy/vim-signature",
-
-  { "kevinhwang91/nvim-ufo", dependencies = { "kevinhwang91/promise-async" } },
-
   {
-    "chentoast/marks.nvim",
-    event = "VeryLazy",
+    "lewis6991/gitsigns.nvim",
     opts = {},
   },
-
-  "lewis6991/gitsigns.nvim",
 
   {
     "oysandvik94/curl.nvim",
@@ -414,6 +467,17 @@ require("lazy").setup({
       "nvim-lua/plenary.nvim",
     },
     config = true,
+    keys = function(_, _)
+      local curl = require("curl")
+      return {
+        { "<leader>ct", curl.open_curl_tab, { desc = "Directory scoped Curl tab" } },
+        { "<leader>cg", curl.open_global_tab, { desc = "Global scoped Curl tab" } },
+        { "<leader>cct", curl.create_scoped_collection, { desc = "Create or open a collection" } },
+        { "<leader>ccg", curl.create_global_collection, { desc = "Create or open a global collection" } },
+        { "<leader>ccT", curl.pick_scoped_collection, { desc = "Select a scoped collection and open it" } },
+        { "<leader>ccG", curl.pick_global_collection, { desc = "Select a global collection and open it" } },
+      }
+    end,
   },
 
   {
@@ -423,45 +487,42 @@ require("lazy").setup({
 
   "tpope/vim-tbone",
 
+  -- {
   {
-    {
-      "folke/lazydev.nvim",
-      ft = "lua", -- only load on lua files
-      opts = {
-        library = {
-          -- See the configuration section for more details
-          -- Load luvit types when the `vim.uv` word is found
-          { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-        },
+    "folke/lazydev.nvim",
+    ft = "lua", -- only load on lua files
+    opts = {
+      library = {
+        -- See the configuration section for more details
+        -- Load luvit types when the `vim.uv` word is found
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
       },
     },
-    { -- optional cmp completion source for require statements and module annotations
-      "hrsh7th/nvim-cmp",
-      opts = function(_, opts)
-        opts.sources = opts.sources or {}
-        table.insert(opts.sources, {
-          name = "lazydev",
-          group_index = 0, -- set group index to 0 to skip loading LuaLS completions
-        })
-      end,
+  },
+
+  {
+    "hasansujon786/super-kanban.nvim",
+    dependencies = {
+      "folke/snacks.nvim", -- [required]
+      "nvim-orgmode/orgmode", -- [optional] Org format support
     },
-    -- { -- optional blink completion source for require statements and module annotations
-    --   "saghen/blink.cmp",
-    --   opts = {
-    --     sources = {
-    --       -- add lazydev to your completion providers
-    --       default = { "lazydev", "lsp", "path", "snippets", "buffer" },
-    --       providers = {
-    --         lazydev = {
-    --           name = "LazyDev",
-    --           module = "lazydev.integrations.blink",
-    --           -- make lazydev completions top priority (see `:h blink.cmp`)
-    --           score_offset = 100,
-    --         },
-    --       },
-    --     },
-    --   },
-    -- },
+    opts = {
+      orgmode = {
+        notes_dir = "~/personal/dotfiles/notes/orgmode",
+        default_template = {
+          "** 💭 Backlog\n",
+          "** 🖋 Todo\n",
+          "** 🛠 Work in progress\n",
+          "** 🏁 Completed\n",
+          "*Complete*",
+        },
+      },
+      mappings = {
+        ["<cr>"] = "open_note",
+        ["gD"] = "delete_card",
+        ["<C-t>"] = "toggle_complete",
+      },
+    },
   },
 }, {})
 
@@ -483,7 +544,7 @@ vim.opt.listchars = {
   leadmultispace = "␣",
 }
 vim.o.background = "dark"
-vim.o.scrolloff = 20
+vim.o.scrolloff = 30
 vim.o.relativenumber = true
 vim.o.colorcolumn = "120,150"
 vim.o.number = true
@@ -493,6 +554,8 @@ vim.o.softtabstop = tabLen
 vim.o.shiftwidth = tabLen
 vim.o.smartindent = true
 vim.o.wrap = true
+vim.o.splitright = true
+vim.o.splitbelow = true
 vim.o.linebreak = true
 vim.o.cul = true
 vim.o.whichwrap = "h,l"
@@ -503,13 +566,10 @@ vim.o.linebreak = true
 -- vim.wo.foldmethod = "manual"
 -- vim.wo.foldexpr = "nvim_treesitter#foldexpr()"
 
-vim.o.foldcolumn = "1" -- '0' is not bad
--- Using ufo provider need a large value, feel free to decrease the value
-vim.o.foldlevel = 99
--- vim.o.foldlevelstart = 3
+vim.o.foldcolumn = "0" -- '0' is not bad
 vim.o.foldenable = true
 
-vim.cmd.colorscheme("everforest")
+vim.cmd.colorscheme("tokyonight-night")
 
 vim.loader.enable()
 
@@ -526,7 +586,6 @@ vim.wo.signcolumn = "yes"
 vim.o.updatetime = 250
 vim.o.timeoutlen = 300
 
--- Set completeopt to have a better completion experience
 vim.o.completeopt = "menuone,noselect"
 
 --[[
@@ -537,10 +596,6 @@ vim.o.completeopt = "menuone,noselect"
 
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 
--- Remap for dealing with word wrap
--- vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
--- vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
-vim.keymap.set("n", "<leader>mz", "<cmd>ZenMode<cr>", { desc = "[M]ode [Z]en" })
 vim.keymap.set("n", "<leader>ml", function()
   vim.opt.list = not vim.opt.list:get()
   vim.notify("List mode: " .. (vim.opt.list:get() and "ON" or "OFF"))
@@ -564,84 +619,16 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   pattern = "*",
 })
 
-local format_sync_grp = vim.api.nvim_create_augroup("GoImport", {})
-vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = "*.go",
-  callback = function()
-    require("go.format").goimport()
-  end,
-  group = format_sync_grp,
-})
-
-local function debug_keymap(key)
-  local modes = { "n", "v", "x", "s", "o", "i", "l", "c", "t" }
-  for _, mode in ipairs(modes) do
-    local map = vim.fn.maparg(key, mode, false, true)
-    if map and not vim.tbl_isempty(map) then
-      print(string.format("Mode %s: %s -> %s (defined in %s)", mode, key, map.rhs, map.scriptfile or "Unknown"))
-    end
-  end
-end
-
--- Usage example:
--- debug_keymap('<space>s')
-
 -- You can also create a user command for easier debugging:
 vim.api.nvim_create_user_command("DebugKeymap", function(opts)
-  debug_keymap(opts.args)
+  local modes = { "n", "v", "x", "s", "o", "i", "l", "c", "t" }
+  for _, mode in ipairs(modes) do
+    local map = vim.fn.maparg(opts.args, mode, false, true)
+    if map and not vim.tbl_isempty(map) then
+      print(string.format("Mode %s: %s -> %s (defined in %s)", mode, opts.args, map.rhs, map.scriptfile or "Unknown"))
+    end
+  end
 end, { nargs = 1 })
-
-require("render-markdown").setup({
-  file_types = { "markdown", "quatro", "org", "orgagenda" },
-  render_modes = { "n", "v", "i", "c" },
-  heading = { position = "inline" },
-  debounce = 100,
-})
-
--- Disable zig.vim autoformat as it pauses the buffer
-vim.g.zig_fmt_autosave = 0
-
-require("oil").setup()
-require("java").setup()
-require("org-bullets").setup()
-
-require("gitsigns").setup()
-
-require("marks").setup({
-  default_mappings = true,
-  -- which builtin marks to show. default {}
-  builtin_marks = { ".", "<", ">", "^" },
-  -- whether movements cycle back to the beginning/end of buffer. default true
-  cyclic = true,
-  -- whether the shada file is updated after modifying uppercase marks. default false
-  force_write_shada = false,
-  -- how often (in ms) to redraw signs/recompute mark positions.
-  -- higher values will have better performance but may cause visual lag,
-  -- while lower values may cause performance penalties. default 150.
-  refresh_interval = 250,
-  -- sign priorities for each type of mark - builtin marks, uppercase marks, lowercase
-  -- marks, and bookmarks.
-  -- can be either a table with all/none of the keys, or a single number, in which case
-  -- the priority applies to all marks.
-  -- default 10.
-  sign_priority = { lower = 10, upper = 15, builtin = 8, bookmark = 20 },
-  -- disables mark tracking for specific filetypes. default {}
-  excluded_filetypes = {},
-  -- disables mark tracking for specific buftypes. default {}
-  excluded_buftypes = {},
-  -- marks.nvim allows you to configure up to 10 bookmark groups, each with its own
-  -- sign/virttext. Bookmarks can be used to group together positions and quickly move
-  -- across multiple buffers. default sign is '!@#$%^&*()' (from 0 to 9), and
-  -- default virt_text is "".
-  bookmark_0 = {
-    sign = "⚑",
-    virt_text = "hello world",
-    -- explicitly prompt for a virtual line annotation when setting a bookmark from this group.
-    -- defaults to false.
-    annotate = false,
-  },
-  mappings = {},
-})
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "org",
@@ -659,7 +646,8 @@ vim.api.nvim_create_autocmd("FileType", {
 =====================================================================
 --]]
 
-local function search_command_history()
+-- Create a user command to trigger the search
+vim.api.nvim_create_user_command("SearchCommandHistory", function()
   local history = vim.api.nvim_exec("history cmd", true)
 
   local lines = {}
@@ -710,12 +698,9 @@ local function search_command_history()
       end,
     })
     :find()
-end
+end, {})
 
--- Create a user command to trigger the search
-vim.api.nvim_create_user_command("SearchCommandHistory", search_command_history, {})
-
-vim.keymap.set("n", "<leader>sx", search_command_history, { desc = "[S]earch e[X]ecuted commands" })
+vim.keymap.set("n", "<leader>sx", "<cmd>SearchCommandHistory<CR>", { desc = "[S]earch e[X]ecuted commands" })
 
 --[[
 =====================================================================
@@ -828,7 +813,7 @@ local theme_mapping = {
   -- ["grep$"] = "ivy",      -- All pickers ending with 'grep'
   -- Default theme (used if no other matches are found)
   -- default = "ivy",
-  default = "dropdown",
+  default = "ivy",
 }
 
 local function get_all_picker_names()
@@ -867,10 +852,8 @@ local function get_theme_for_picker(picker_name)
   return theme_mapping.default
 end
 
-local all_pickers = get_all_picker_names()
-
 local pickers_config = {}
-for _, picker_name in ipairs(all_pickers) do
+for _, picker_name in ipairs(get_all_picker_names()) do
   pickers_config[picker_name] = default_pickers[picker_name]
 
   if not pickers_config[picker_name] == nil then
@@ -914,6 +897,9 @@ end, { desc = "Search [F]iles" })
 vim.keymap.set("n", "<leader>sh", require("telescope.builtin").help_tags, { desc = "[S]earch [H]elp" })
 vim.keymap.set("n", "<leader>sw", require("telescope.builtin").grep_string, { desc = "[S]earch current [W]ord" })
 vim.keymap.set("n", "<leader>sg", require("telescope.builtin").live_grep, { desc = "[S]earch by [G]rep" })
+vim.keymap.set("n", "<leader>s.", function()
+  require("telescope.builtin").live_grep({ opts = { settings = { search_dirs = vim.fn.getcwd(-1, 0) } } })
+end, { desc = "[S]earch by grep [.]current dir" })
 vim.keymap.set("n", "<leader>sG", ":LiveGrepGitRoot<cr>", { desc = "[S]earch by [G]rep on Git Root" })
 vim.keymap.set("n", "<leader>sd", require("telescope.builtin").diagnostics, { desc = "[S]earch [D]iagnostics" })
 vim.keymap.set("n", "<leader>sr", require("telescope.builtin").resume, { desc = "[S]earch [R]esume" })
@@ -1068,20 +1054,20 @@ vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.foldenable = false
 -- vim.opt.foldlevel = 3
 
-vim.treesitter.query.set(
-  "ocaml",
-  "textobjects",
-  [[
-  (let_binding) @let_binding.outer
-  (let_binding body: (_) @let_binding.inner)
-
-  (module_binding) @module_binding.outer
-  (module_binding body: (_) @module_binding.inner)
-
-  (match_expression) @match_expression.outer
-  (match_expression body: (_) @match_expression.inner)
-]]
-)
+-- vim.treesitter.query.set(
+--   "ocaml",
+--   "textobjects",
+--   [[
+--   (let_binding) @let_binding.outer
+--   (let_binding body: (_) @let_binding.inner)
+--
+--   (module_binding) @module_binding.outer
+--   (module_binding body: (_) @module_binding.inner)
+--
+--   (match_expression) @match_expression.outer
+--   (match_expression body: (_) @match_expression.inner)
+-- ]]
+-- )
 
 --[[
 =====================================================================
@@ -1127,18 +1113,15 @@ local on_attach = function(_, bufnr)
   end, { desc = "Format current buffer with LSP" })
 end
 
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "ocaml",
-  callback = function()
-    -- Disable the switch mappings
-    vim.keymap.set("n", "<LocalLeader>s", "<Nop>", { buffer = true })
-    vim.keymap.set("n", "<LocalLeader>S", "<Nop>", { buffer = true })
-    -- Disable the type printing mappings
-    vim.keymap.set("n", "<LocalLeader>t", "<Nop>", { buffer = true })
-    vim.keymap.set("x", "<LocalLeader>t", "<Nop>", { buffer = true })
-    -- Optionally, set your own mappings here
-    -- For example:
-    -- vim.keymap.set('n', '<LocalLeader>x', YourCustomFunction, { buffer = true })
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("LspConfig", {}),
+  callback = function(ev)
+    -- Check if 'gd' is already mapped
+    local gd_mapping = vim.fn.maparg("gd", "n")
+    if gd_mapping == "" then
+      -- Only map if 'gd' is not already defined
+      vim.keymap.set("n", "gd", "<C-]>", { buffer = ev.buf, desc = "Go to definition (fallback)" })
+    end
   end,
 })
 
@@ -1183,33 +1166,30 @@ vim.g["go_fmt_autosave"] = 0
 vim.filetype.add({ extension = { templ = "templ" } })
 local servers = {
   nextls = {},
-  elixirls = {},
   gopls = {
     formatting = false,
   },
   -- nil_ls = {},
   bashls = {},
-  pylsp = {},
-  templ = {},
+  -- templ = {},
   html = { filetypes = { "html", "templ", "heex" } },
-  htmx = { filetypes = { "html", "templ" } },
+  -- htmx = { filetypes = { "html", "templ" } },
   tailwindcss = {
     filetypes = { "templ", "astro", "javascript", "typescript", "react" },
     init_options = { userLanguages = { templ = "html" } },
   },
   -- pyright = {},
   rust_analyzer = {},
-  jdtls = {},
+  -- jdtls = {},
   -- zls = {},
-  -- ocamllsp = {
-  -- 	filetypes = { "ocaml", "ocaml.menhir", "ocaml.interface", "ocaml.ocamllex", "reason", "dune" },
-  -- },
+  gdscript = {
+    filetypes = { "gd", "gdscript", "gdscript3" },
+  },
 
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
       telemetry = { enable = false },
-      -- NOTE: toggle below to ignore Lua_LS's noisy `missing-fields` warnings
       diagnostics = {
         globals = { "vim" },
       },
@@ -1225,16 +1205,11 @@ local servers = {
   },
 }
 
-vim.lsp.set_log_level("debug")
+-- vim.lsp.set_log_level("debug")
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
-
-require("lspconfig").ocamllsp.setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-})
 
 require("lspconfig").zls.setup({
   capabilities = capabilities,
@@ -1244,7 +1219,34 @@ require("lspconfig").zls.setup({
 require("lspconfig").clangd.setup({
   capabilities = capabilities,
   on_attach = on_attach,
+  -- cmd = {
+  --   "clangd",
+  --   "--background-index",
+  --   "--clang-tidy",
+  --   "--header-insertion=iwyu",
+  --   "--completion-style=detailed",
+  --   "--function-arg-placeholders",
+  --   "--fallback-style=llvm",
+  --   "--header-insertion-decorators=0",
+  --   "-j=4", -- Adjust based on your CPU
+  --   "--pch-storage=memory", -- Important for Unreal's PCH usage
+  -- },
 })
+require("lspconfig").gdscript.setup({
+  -- You might need to specify the port if it's not the default 6005
+  -- cmd = { "nc", "localhost", "6005" }, -- For Linux/macOS
+  -- For Windows, you might need a netcat alternative like ncat or napap
+  -- cmd = { 'ncat', 'localhost', '6005' },
+  -- Ensure you have the necessary capabilities for full LSP features
+  filetypes = { "gd", "gdscript", "gdscript3" },
+  capabilities = capabilities,
+  on_attach = on_attach,
+})
+
+-- require("lspconfig").pylsp.setup({
+--   capabilities = capabilities,
+--   on_attach = on_attach,
+-- })
 
 -- Ensure the servers above are installed
 local mason_lspconfig = require("mason-lspconfig")
@@ -1253,15 +1255,17 @@ mason_lspconfig.setup({
   ensure_installed = vim.tbl_keys(servers),
 })
 
-mason_lspconfig.setup_handlers({
-  function(server_name)
-    require("lspconfig")[server_name].setup({
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
-    })
-  end,
+mason_lspconfig.setup({
+  handlers = {
+    function(server_name)
+      require("lspconfig")[server_name].setup({
+        capabilities = capabilities,
+        on_attach = on_attach,
+        settings = servers[server_name],
+        filetypes = (servers[server_name] or {}).filetypes,
+      })
+    end,
+  },
 })
 
 --[[
@@ -1269,40 +1273,34 @@ mason_lspconfig.setup_handlers({
 ==================== CONFIGURE FORMATTER ============================
 =====================================================================
 --]]
-require("conform").setup({
-  formatters_by_ft = {
-    lua = { "stylua" },
-    ocaml = { "ocamlformat" },
-    sh = { "beautysh" },
-    go = { "gofmt", "golines", "goimports" },
-    c = { "clang-format" },
-    templ = { "templ" },
-  },
 
-  formatters = {
-    stylua = {
-      prepend_args = {
-        "--indent-type=Spaces",
-        "--indent-width=2",
-        "--quote-style=AutoPreferDouble",
-        "--column-width=120",
-      },
-    },
-    ocamlformat = {
-      -- Using Jane Street profile with minimal overrides
-      prepend_args = {
-        "--profile=janestreet",
-      },
-    },
-  },
-})
+-- paths to check for project.godot file
+local paths_to_check = { "/" }
+local is_godot_project = false
+local godot_project_path = ""
+local cwd = vim.fn.getcwd()
 
-require("conform").formatters["clang-format"] = {
-  args = {
-    -- "--Werror",
-    "--style={BasedOnStyle: llvm, IndentWidth: 4, ColumnLimit: 120}",
-  },
-}
+-- iterate over paths and check
+for key, value in pairs(paths_to_check) do
+  if vim.uv.fs_stat(cwd .. value .. "project.godot") then
+    is_godot_project = true
+    godot_project_path = cwd .. value
+    break
+  end
+end
+
+-- check if server is already running in godot project path
+local is_server_running = vim.uv.fs_stat(godot_project_path .. "/server.pipe")
+-- start server, if not already running
+if is_godot_project and not is_server_running then
+  vim.fn.serverstart(godot_project_path .. "/server.pipe")
+end
+
+--[[
+=====================================================================
+==================== CONFIGURE FORMATTER ============================
+=====================================================================
+--]]
 
 vim.api.nvim_create_user_command("FormatDisable", function(args)
   if args.bang then
@@ -1322,13 +1320,6 @@ end, {
   desc = "Re-enable autoformat-on-save",
 })
 
-vim.keymap.set({ "n", "v" }, "<leader>lf", function()
-  require("conform").format({
-    async = true,
-    lsp_fallback = true,
-  })
-end, { desc = "[L]ang [F]ormat" })
-
 --[[
 =====================================================================
 ==================== CONFIGURE NVIM-CMP =============================
@@ -1345,9 +1336,9 @@ cmp.setup({
       ls.lsp_expand(args.body)
     end,
   },
-  completion = {
-    completeopt = "menu,menuone,noinsert",
-  },
+  -- completion = {
+  --   completeopt = "menu,menuone,noinsert",
+  -- },
   mapping = cmp.mapping.preset.insert({
     ["<C-n>"] = cmp.mapping.select_next_item(),
     ["<C-p>"] = cmp.mapping.select_prev_item(),
@@ -1462,137 +1453,6 @@ ls.add_snippets("go", {
 
 --[[
 =====================================================================
-==================== Amazon Config ==================================
-=====================================================================
---]]
-
--- [[ Barium support ]]
-local lspconfig = require("lspconfig")
-local configs = require("lspconfig.configs")
-
--- https://w.amazon.com/bin/view/Barium/#HVimandNeovim
--- Remove hyphen because it breaks vim/neovim
--- vim.filetype.add({ filename = { Config = "brazilconfig" } })
-
--- Check if the config is already defined (useful when reloading this file)
-if not configs.barium then
-  configs.barium = {
-    default_config = {
-      cmd = { "barium" },
-      filetypes = { "brazil-config" },
-      root_dir = function(fname)
-        return lspconfig.util.find_git_ancestor(fname)
-      end,
-      settings = {},
-    },
-  }
-end
-
-lspconfig.barium.setup({})
-
--- [[ Add support for Bemol folders ]]
--- https://w.amazon.com/bin/view/Bemol/#HnvimbuiltinLSP28withlsp-configand2Forlsp-zero29
-local function bemol()
-  -- Find bemol directory based on current working directory, not parent directory of current buffer.
-  local bemol_dir = vim.fs.find({ ".bemol" }, { upward = true, type = "directory" })[1]
-  local ws_folders_lsp = {}
-  if bemol_dir then
-    vim.notify(".bemol directory found: " .. bemol_dir, vim.log.levels.INFO)
-    local file = io.open(bemol_dir .. "/ws_root_folders", "r")
-    if file then
-      for line in file:lines() do
-        table.insert(ws_folders_lsp, line)
-      end
-      file:close()
-    end
-  end
-
-  for _, line in ipairs(ws_folders_lsp) do
-    vim.lsp.buf.add_workspace_folder(line)
-  end
-
-  return ws_folders_lsp
-end
-
--- Should be rarely needed because of auto command defined below
-vim.api.nvim_create_user_command("BemolAdditions", bemol, {
-  desc = "Add bemol detected workspace folders",
-})
-
-vim.api.nvim_create_autocmd("LspAttach", {
-  -- Should stack with existing autogroup for defining keymaps, etc.
-  group = vim.api.nvim_create_augroup("UserLspConfig", { clear = false }),
-
-  -- bemol supports multiple workspace roots for Java, Python, and Ruby Brazil workspaces.
-  -- https://w.amazon.com/bin/view/Bemol/#HBrazilPlugins
-  pattern = { "*.java", "*.py", "*.rb" },
-
-  callback = function(args)
-    bemol()
-  end,
-})
-
-require("ufo").setup()
-
-vim.cmd([[
-" ============================================================================
-" File:        fugitive-gitfarm.vim
-" Maintainer:  Benoît Taine <btaine@amazon.com>
-" ============================================================================
-
-function! s:function(name) abort
-  return function(substitute(a:name,'^s:',matchstr(expand('<sfile>'), '<SNR>\d\+_'),''))
-endfunction
-
-function! s:gitfarm_url(opts) abort
-  if a:0 || type(a:opts) != type({})
-    return ''
-  endif
-  let default_domain = 'git\.amazon\.com'
-  let domain = exists('g:fugitive_gitfarm_domain') ? g:fugitive_gitfarm_domain : default_domain
-  let repo = matchstr(get(a:opts, 'remote'), '^ssh://\(\w\+@\)\?' . domain . '\(:\d\+\)\?/pkg/\w\+$')
-  if repo ==# ''
-    return ''
-  endif
-  let package = split(repo, '/')[4]
-  let path = substitute(a:opts.path, '^/', '', '')
-  let root = 'https://code.amazon.com/packages/' . package
-  if path =~# '^\.git/\%(config$\|hooks\>\)'
-    return root . '/repo-info'
-  elseif path =~# '^\.git\>'
-    return root
-  endif
-  if a:opts.commit =~# '^\d\=$'
-    let commit = a:opts.repo.rev_parse('HEAD')
-  else
-    let commit = a:opts.commit
-  endif
-  if get(a:opts, 'type', '') ==# 'tree' || a:opts.path =~# '/$'
-    let url = substitute(root . '/trees/' . commit . '/--/' . path, '/$', '', 'g')
-  elseif get(a:opts, 'type', '') ==# 'blob' || a:opts.path =~# '[^/]$'
-    let url = root . '/blobs/' . commit . '/--/' . path
-    if get(a:opts, 'line2')
-      let url .= '#L' . a:opts.line1
-      " Linking a range of lines
-      if a:opts.line1 != a:opts.line2
-        let url .= '-L' . a:opts.line2
-      endif
-    endif
-  else
-    let url = root . '/commits/' . commit
-  endif
-  return url
-endfunction
-
-if !exists('g:fugitive_browse_handlers')
-  let g:fugitive_browse_handlers = []
-endif
-
-call insert (g:fugitive_browse_handlers, s:function('s:gitfarm_url'))
-]])
-
---[[
-=====================================================================
 ==================== PERSONAL KEYMAPS ===============================
 =====================================================================
 --]]
@@ -1628,26 +1488,22 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Window up" })
 vim.keymap.set("n", "<M-W>", "<C-w>=", { desc = "Window equalize" })
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Move down" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Move up" })
+-- vim.keymap.set("n", "j", "jzz", { desc = "Move up" })
+-- vim.keymap.set("n", "k", "kzz", { desc = "Move up" })
 vim.keymap.set("n", "<leader>ax", "<cmd>tabclose<cr>", { desc = "t[A]b [X] close" })
 vim.keymap.set("n", "<leader>an", "<cmd>tabnew<cr>", { desc = "t[A]b [N]ew" })
 vim.keymap.set("n", "n", "nzzzv", { desc = "Next search" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search" })
-vim.keymap.set("n", "<leader>/", "<Plug>(comment_toggle_linewise_current)", { desc = "[/] Comment selection" })
-vim.keymap.set("v", "<leader>/", "<Plug>(comment_toggle_linewise_visual)", { desc = "[/] Comment selection" })
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww t-sesh<CR>", { desc = "t-sesh find projects" })
 --
 -- -- set after plugin installs
-vim.keymap.set("n", "<C-n>", "<cmd>BufferLineCycleNext<CR>", { desc = "Goto next buffer" })
-vim.keymap.set("n", "<C-p>", "<cmd>BufferLineCyclePrev<CR>", { desc = "Goto prev buffer" })
 vim.keymap.set("n", "<leader>bq", ":q<cr>", { desc = "[B]uffer [Q]uit" })
 vim.keymap.set("n", "<leader>ba", ":qa<cr>", { desc = "[B]uffer quit [A]ll" })
+vim.keymap.set("n", "<leader>bA", ":qa!<cr>", { desc = "[B]uffer quit [A]ll!" })
 vim.keymap.set("n", "<leader>bw", ":w<cr>", { desc = "[B]uffer [W]rite" })
-vim.keymap.set("n", "<leader>bx", ":Bdelete<CR>", { desc = "[B]uffer e[X]it" })
-vim.keymap.set("n", "<leader>bX", ":Bdelete!<CR>", { desc = "[B]uffer e[X]it" })
+vim.keymap.set("n", "<leader>bx", ":bd<CR>", { desc = "[B]uffer e[X]it" })
+vim.keymap.set("n", "<leader>bX", ":bd!<CR>", { desc = "[B]uffer e[X]it!!" })
 vim.keymap.set("n", "<leader>bn", ":ene<CR>", { desc = "[B]uffer [N]ew" })
-vim.keymap.set("n", "<leader>bo", "<cmd>BufferLineCloseOthers<CR>", { desc = "Close other buffers" })
-vim.keymap.set("n", "<leader>bh", "<cmd>BufferLineCloseLeft<CR>", { desc = "Close all buffers to the left" })
-vim.keymap.set("n", "<leader>bl", "<cmd>BufferLineCloseRight<CR>", { desc = "Close all buffers to the right" })
 vim.keymap.set("n", "<leader>br", "<cmd>e<CR>zz", { desc = "Refresh current buffer" })
 --
 vim.keymap.set("n", "<leader>;", "<cmd>vsplit %<CR>", { desc = "[;] Split vertical" })
@@ -1668,22 +1524,4 @@ vim.keymap.set("n", "<S-F6>", "<cmd>DapStepOut<cr>", { desc = "Run debugger" })
 vim.keymap.set("n", "<F7>", "<cmd>DapStepOver<cr>", { desc = "Run debugger" })
 vim.keymap.set("n", "<F5>", "<cmd>DapToggleBreakpoint<cr>", { desc = "Run debugger" })
 
-vim.keymap.set("n", "<leader>zr", "<cmd>SessionRestore<cr>", { desc = "Session Restore" })
-vim.keymap.set("n", "<leader>zs", "<cmd>SessionSave<cr>", { desc = "Session Save" })
-vim.keymap.set("n", "-", "<cmd>Oil<cr>", { desc = "File explorer" })
-vim.keymap.set(
-  { "v", "n" },
-  "<S-home>",
-  "<cmd>lua require('orgmode').action('org_mappings.org_babel_tangle')<CR>",
-  { desc = "File explorer" }
-)
-
-local curl = require("curl")
-curl.setup({})
-
-vim.keymap.set("n", "<leader>ct", curl.open_curl_tab, { desc = "Directory scoped Curl tab" })
-vim.keymap.set("n", "<leader>cg", curl.open_global_tab, { desc = "Global scoped Curl tab" })
-vim.keymap.set("n", "<leader>cct", curl.create_scoped_collection, { desc = "Create or open a collection" })
-vim.keymap.set("n", "<leader>ccg", curl.create_global_collection, { desc = "Create or open a global collection" })
-vim.keymap.set("n", "<leader>ccT", curl.pick_scoped_collection, { desc = "Select a scoped collection and open it" })
-vim.keymap.set("n", "<leader>ccG", curl.pick_global_collection, { desc = "Select a global collection and open it" })
+vim.keymap.set("t", "<ESC><ESC>", "<C-\\")

@@ -7,7 +7,7 @@
         username = "vedant";
         homeDirectory = "/Users/vedant";
 
-        stateVersion = "24.11";
+        stateVersion = "25.05";
 
         packages = with pkgs; [
             lua
@@ -33,6 +33,7 @@
             minisign
             gnupg
             git
+            uv
 
             # ZSH config deps
             zsh-autosuggestions

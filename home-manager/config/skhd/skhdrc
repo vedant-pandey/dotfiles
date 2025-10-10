@@ -50,7 +50,26 @@ fn + shift + cmd - k : yabai -m window --display north; yabai -m display --focus
 # # stop/start/restart yabai
 # ctrl + alt - q : brew services stop yabai
 # ctrl + alt - s : brew services start yabai
-# ctrl + alt - r : brew services restart yabai
+fn + cmd - r : yabai --restart-service
+fn + cmd - t : /Applications/iTerm.app/Contents/MacOS/iTerm2
+fn + cmd - d : /Applications/iTerm.app/Contents/MacOS/iTerm2 --command=t-sesh
+
+# Enter iTerm mode
+#
+# # iTerm mode bindings
+# fn + cmd - t : skhd -m iterm_mode
+# iterm_mode; t : open -a iTerm; skhd -k "escape"
+
+# iterm < n : osascript -e 'tell application "iTerm2" to create window with default profile command "cd ~/Projects && nvim"'; skhd -k "escape"
+# iterm < h : osascript -e 'tell application "iTerm2" to create window with default profile command "htop"'; skhd -k "escape"
+# iterm < g : osascript -e 'tell application "iTerm2" to create window with default profile command "lazygit"'; skhd -k "escape"
+# iterm < r : osascript -e 'tell application "iTerm2" to create window with default profile command "ranger"'; skhd -k "escape"
+# iterm < p : osascript -e 'tell application "iTerm2" to create window with default profile command "python3"'; skhd -k "escape"
+#
+# # Exit iTerm mode
+# iterm < escape ; default
+# iterm < return ; default
+
 
 # flip along y-axis
 # shift + alt - y : yabai -m space --mirror y-axis

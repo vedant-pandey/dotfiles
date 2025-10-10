@@ -7,28 +7,49 @@ work_dir="work"
 personal_dir="personal"
 oss_dir="personal/opensource"
 
-session_cmd=$(find ~/work ~/ws ~/personal ~/personal/opensource ~/personal/dotfiles \
-    -maxdepth 1 2> /dev/null \
-    | xargs echo "$create_cmd" \
-    | tr " " "\n" \
-    | fzf)
+# Check if argument was provided
+arg="$1"
 
-# Exit if fzf was interrupted
-if [ $? -ne 0 ]; then
-    exit
-fi
-
-if [ "$session_cmd" = "$create_cmd" ]; then
-    dest=$(echo "$work_dir $personal_dir $oss_dir" | tr " " "\n" | fzf)
-    read -p "Project Name: " proj_dir
-
-    session_dir="$HOME/$dest/$proj_dir"
-
-    if [ ! -d "session_dir" ]; then
-        mkdir "$session_dir" 
+# If argument is provided and is an existing directory, use it directly
+if [ -n "$arg" ]; then
+    # Expand to absolute path
+    session_dir=$(realpath "$arg")
+    if [ $? -ne 0 ]; then
+        session_dir=$(realpath "$arg")
     fi
+    echo "Using existing directory: $session_dir"
 else
-    session_dir="$session_cmd"
+    # Original flow: show fzf menu
+    session_cmd=$(find ~/work ~/ws ~/personal ~/personal/opensource ~/personal/dotfiles \
+            -maxdepth 1 2> /dev/null \
+            | xargs echo "$create_cmd" \
+            | tr " " "\n" \
+        | fzf)
+
+    # Exit if fzf was interrupted
+    if [ $? -ne 0 ]; then
+        exit
+    fi
+
+    if [ "$session_cmd" = "$create_cmd" ]; then
+        dest=$(echo "$work_dir $personal_dir $oss_dir" | tr " " "\n" | fzf)
+
+        # Use argument as project name if provided (and wasn't an existing dir)
+        if [ -n "$arg" ]; then
+            proj_dir="$arg"
+            echo "Using project name: $proj_dir"
+        else
+            read -p "Project Name: " proj_dir
+        fi
+
+        session_dir="$HOME/$dest/$proj_dir"
+
+        if [ ! -d "$session_dir" ]; then
+            mkdir "$session_dir"
+        fi
+    else
+        session_dir="$session_cmd"
+    fi
 fi
 
 session=$(basename "$session_dir" | tr . -)
@@ -42,4 +63,3 @@ if [ "$TERM_PROGRAM" = tmux ]; then
 else
     tmux a -t "$session"
 fi
-

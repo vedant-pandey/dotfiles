@@ -2,7 +2,7 @@
 # zmodload zsh/zprof
 
 # Skip global compinit on startup
-skip_global_compinit=1
+# skip_global_compinit=1
 
 # Essential environment variables
 export ANDROID_HOME="$HOME/Library/Android/sdk"
@@ -13,6 +13,7 @@ export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
 export CPPFLAGS="-I/opt/homebrew/opt/llvm/include -I/opt/homebrew/opt/openjdk@17/include"
 export DOOMDIR="$HOME/.config/doom"
 export EMACSDIR="$HOME/.config/emacs"
+export HOMEBREW_NO_AUTO_UPDATE=1
 
 # Early initialization of critical components
 typeset -U path
@@ -55,12 +56,7 @@ setopt EXTENDED_HISTORY HIST_EXPIRE_DUPS_FIRST HIST_IGNORE_ALL_DUPS
 setopt HIST_FIND_NO_DUPS HIST_SAVE_NO_DUPS SHARE_HISTORY autocd
 
 
-# Lazy load fnm
-# fnm() {
-#     unset -f fnm
-    eval "$(command fnm env --use-on-cd)"
-#     fnm "$@"
-# }
+eval "$(command fnm env --use-on-cd)"
 
 # Lazy load brew
 brew() {
@@ -68,6 +64,28 @@ brew() {
     eval "$(/opt/homebrew/bin/brew shellenv)"
     brew "$@"
 }
+
+# Custom backward-kill-word that stops at forward slashes and dots
+backward-kill-word-boundaries() {
+    local WORDCHARS_ORIGINAL="$WORDCHARS"
+    # Remove '/' and '.' from WORDCHARS so they're treated as word boundaries
+    WORDCHARS="${WORDCHARS//\//}"
+    WORDCHARS="${WORDCHARS//\./}"
+    zle backward-kill-word
+    WORDCHARS="$WORDCHARS_ORIGINAL"
+}
+
+# Register the custom function as a zle widget
+zle -N backward-kill-word-boundaries
+
+# Bind Option+Backspace to the custom function (stops at / and .)
+bindkey '^[^H' backward-kill-word-boundaries
+bindkey '^[^?' backward-kill-word-boundaries
+
+# Bind Option+Shift+Backspace to original backward-kill-word (whole words)
+# Option+Shift+Backspace typically sends different sequences
+
+bindkey '^W' backward-kill-word
 
 # Load essential Nix plugins with optimization flags
 # if [ -f /nix/store/*-zsh-autosuggestions*/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
@@ -130,6 +148,10 @@ alias bbra='bbr apollo-pkg'
 alias eauth=' eauth'
 alias pbclear='pbcopy < /dev/null'
 alias pbpaste='PASTE=$(/usr/bin/pbpaste);pbclear;echo $PASTE' # Modify to paste and forget, this could get irritating at times
+alias kvim='NVIM_APPNAME="nvim-kickstart" nvim'
+gomodauto() {
+    echo "$(grv | head -1 | awk '{print $2}' | cut -d'@' -f2 | tr ':' '/' | cut -d'.' -f-2)/$(git rev-parse --show-prefix)" | sed 's:/*$::' | xargs -I{} go mod init {}
+}
 tunnel_dsk() {
     ssh devdesk -v -N -L "$1":localhost:"$1"
 } 
@@ -177,6 +199,9 @@ if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
 fi
 
 export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/$USER/channels${NIX_PATH:+:$NIX_PATH}
+
+eval "$(direnv hook zsh)"
+export GOEXPERIMENT=jsonv2
 
 ########################### PROMPT STYLE START ####################################################
 
@@ -258,7 +283,7 @@ PROMPT+="\$vcs_info_msg_0_ "
 
 ########################### WORK PLUGINS START ####################################################
 # Set up mise for runtime management
-# zsh-defer eval "$(mise activate zsh)"
+eval "$(mise activate zsh)"
 ########################### WORK PLUGINS END ######################################################
 
 # zprof > /tmp/zsh_profile.log
