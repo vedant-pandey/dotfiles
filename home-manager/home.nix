@@ -34,6 +34,7 @@
             gnupg
             git
             uv
+            llvm
 
             # ZSH config deps
             zsh-autosuggestions

@@ -28,4 +28,4 @@ yabai -m config mouse_action2 resize
 yabai -m mouse_drop_action swap
 
 # yabai -m rule --add app="^Karabiner-Elements$"manage=off
-yabai -m rule --add app="^(System Settings|Calculator|Calendar|Clock|Dictionary|Karabiner-Elements|ACME|Cisco AnyConnect Secure Mobility Client|Activity Monitor)$" manage=off
+yabai -m rule --add app="^(IPEVO Annotator|Calculator|Calendar|Clock|Dictionary|Karabiner-Elements|Stickies)$" manage=off

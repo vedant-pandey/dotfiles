@@ -37,7 +37,7 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   "tpope/vim-fugitive",
   "tpope/vim-rhubarb",
-  "tpope/vim-sleuth",
+  "tikhomirov/vim-glsl",
   {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -52,6 +52,13 @@ require("lazy").setup({
     lazy = false,
     priority = 1000,
     opts = {},
+  },
+
+  { "rafamadriz/friendly-snippets" },
+
+  {
+    "L3MON4D3/LuaSnip",
+    dependencies = { "rafamadriz/friendly-snippets" },
   },
 
   {
@@ -190,7 +197,7 @@ require("lazy").setup({
       check_ts = true, -- enable treesitter
       ts_config = {
         lua = { "string" }, -- don't add pairs in lua string treesitter nodes
-        javascript = { "template_string" }, -- don't add pairs in javscript template_string treesitter nodes
+        -- javascript = { "template_string" }, -- don't add pairs in javscript template_string treesitter nodes
         -- java = false, -- don't check treesitter on java
       },
     }, -- this is equalent to setup({}) function
@@ -244,23 +251,19 @@ require("lazy").setup({
   },
 
   {
-    "rmagatti/auto-session",
-    lazy = false,
-    dependencies = {
-      -- Only needed if you want to use session lens
-      "nvim-telescope/telescope.nvim",
-    },
+    "windwp/nvim-ts-autotag",
+    ft = { "html", "javascriptreact", "typescriptreact", "svelte", "vue" },
+    config = function()
+      require("nvim-ts-autotag").setup()
+    end,
+  },
 
-    opts = {
-      suppressed_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
-      -- log_level = 'debug',
-    },
-    keys = {
-
-      { "<leader>zr", "<cmd>Autosession restore<cr>", desc = "Session Restore" },
-      { "<leader>zs", "<cmd>Autosession save<cr>", desc = "Session Save" },
-      { "<leader>zz", "<cmd>Autosession search<cr>", desc = "Session Search" },
-    },
+  {
+    "brianhuster/live-preview.nvim",
+    ft = { "markdown", "html", "asciidoc", "svg" },
+    config = function()
+      require("live-preview").setup()
+    end,
   },
 
   {
@@ -275,6 +278,13 @@ require("lazy").setup({
           c = { "clang-format" },
           cpp = { "clang-format" },
           templ = { "templ" },
+          javascript = { "prettier" },
+          typescript = { "prettier" },
+          json = { "prettier" },
+          markdown = { "prettier" },
+          yaml = { "prettier" },
+          ["*"] = { "codespell" },
+          ["_"] = { "trim_whitespace" },
         },
 
         formatters = {
@@ -294,13 +304,6 @@ require("lazy").setup({
           },
         },
       })
-
-      -- require("conform").formatters["clang-format"] = {
-      --   args = {
-      --     -- "--Werror",
-      --     "--style={BasedOnStyle: llvm, IndentWidth: 4, ColumnLimit: 120}",
-      --   },
-      -- }
     end,
     keys = {
       {
@@ -393,12 +396,6 @@ require("lazy").setup({
     },
   },
 
-  {
-    "nvim-java/nvim-java",
-    opts = {},
-  },
-
-  -- Lua
   {
     "folke/zen-mode.nvim",
     opts = {
@@ -524,6 +521,33 @@ require("lazy").setup({
       },
     },
   },
+
+  {
+    "hasansujon786/super-kanban.nvim",
+    dependencies = {
+      "folke/snacks.nvim",
+      "nvim-orgmode/orgmode",
+    },
+    opts = {}, -- optional: pass your config table here
+  },
+
+  "kLabz/haxe.vim",
+  "jdonaldson/vaxe",
+
+  {
+    "dense-analysis/ale",
+    config = function()
+      -- Configuration goes here.
+      local g = vim.g
+
+      g.ale_ruby_rubocop_auto_correct_all = 1
+
+      g.ale_linters = {
+        ruby = { "rubocop", "ruby" },
+        lua = { "lua_language_server" },
+      }
+    end,
+  },
 }, {})
 
 --[[
@@ -637,6 +661,14 @@ vim.api.nvim_create_autocmd("FileType", {
       silent = true,
       buffer = true,
     })
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+  callback = function()
+    vim.bo.tabstop = 4
+    vim.bo.shiftwidth = 4
   end,
 })
 
@@ -910,6 +942,28 @@ vim.keymap.set("n", "<leader>sr", require("telescope.builtin").resume, { desc = 
 =====================================================================
 --]]
 
+vim.filetype.add({
+  extension = {
+    hx = "haxe",
+  },
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "haxe",
+  callback = function()
+    vim.opt_local.autowrite = true
+    -- Or auto-save on text change:
+    vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+      buffer = 0,
+      callback = function()
+        if vim.bo.modified then
+          vim.cmd("silent! write")
+        end
+      end,
+    })
+  end,
+})
+
 -- Defer Treesitter setup after first render to improve startup time of 'nvim {filename}'
 vim.defer_fn(function()
   require("nvim-treesitter.configs").setup({
@@ -934,6 +988,7 @@ vim.defer_fn(function()
       "ocaml",
       "latex",
       "java",
+      "haxe",
     },
 
     fold = { enable = true },
@@ -944,7 +999,7 @@ vim.defer_fn(function()
     -- List of parsers to ignore installing
     ignore_install = {},
     -- You can specify additional Treesitter modules here: -- For example: -- playground = {--enable = true,-- },
-    modules = {},
+    modules = { playground = { enable = true } },
     highlight = { enable = true },
     indent = { enable = true },
     incremental_selection = {
@@ -962,8 +1017,15 @@ vim.defer_fn(function()
         lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
         keymaps = {
           -- You can use the capture groups defined in textobjects.scm
-          ["aa"] = "@parameter.outer",
+          ["i/"] = "@comment.inner",
+          ["a/"] = "@comment.outer",
+          ["ip"] = "@conditional.inner",
+          ["ap"] = "@conditional.outer",
+          ["ir"] = "@loop.inner",
+          ["ar"] = "@loop.outer",
           ["ia"] = "@parameter.inner",
+          ["aa"] = "@parameter.outer",
+
           ["af"] = "@function.outer",
           ["if"] = "@function.inner",
           ["ac"] = "@class.outer",
@@ -977,14 +1039,14 @@ vim.defer_fn(function()
           ["am"] = "@module_binding.outer",
           ["ax"] = "@match_expression.outer",
           ["av"] = "@value_definition.outer",
-          ["at"] = "@type_definition.outer",
+          ["aT"] = "@type_definition.outer",
           ["aC"] = "@class_definition.outer",
           ["aF"] = "@method_definition.outer",
           ["il"] = "@let_binding.inner",
           ["im"] = "@module_binding.inner",
           ["ix"] = "@match_expression.inner",
           ["iv"] = "@value_definition.inner",
-          ["it"] = "@type_definition.inner",
+          ["iT"] = "@type_definition.inner",
           ["iC"] = "@class_definition.inner",
           ["iF"] = "@method_definition.inner",
         },
@@ -1048,6 +1110,17 @@ require("nvim-treesitter.configs").setup({
     additional_vim_regex_highlighting = false,
   },
 })
+
+local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+parser_config.haxe = {
+  install_info = {
+    url = "https://github.com/vantreeseba/tree-sitter-haxe",
+    files = { "src/parser.c", "src/scanner.c" },
+    -- optional entries:
+    branch = "main",
+  },
+  filetype = "haxe",
+}
 
 vim.opt.foldmethod = "manual"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
@@ -1125,6 +1198,21 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local bufnr = args.buf
+    local opts = { buffer = bufnr }
+
+    vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+    vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
+    vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+  end,
+})
+
 -- document existing key chains
 require("which-key").add({
   { "<leader>a", group = "t[A]b" },
@@ -1166,25 +1254,17 @@ vim.g["go_fmt_autosave"] = 0
 vim.filetype.add({ extension = { templ = "templ" } })
 local servers = {
   nextls = {},
-  gopls = {
-    formatting = false,
-  },
-  -- nil_ls = {},
+  glsl_analyzer = {},
+  gopls = {},
   bashls = {},
-  -- templ = {},
-  html = { filetypes = { "html", "templ", "heex" } },
-  -- htmx = { filetypes = { "html", "templ" } },
+  html = {},
   tailwindcss = {
     filetypes = { "templ", "astro", "javascript", "typescript", "react" },
     init_options = { userLanguages = { templ = "html" } },
   },
-  -- pyright = {},
   rust_analyzer = {},
-  -- jdtls = {},
-  -- zls = {},
-  gdscript = {
-    filetypes = { "gd", "gdscript", "gdscript3" },
-  },
+  ts_ls = {},
+  -- vtsls = {},
 
   lua_ls = {
     Lua = {
@@ -1214,24 +1294,28 @@ capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 require("lspconfig").zls.setup({
   capabilities = capabilities,
   on_attach = on_attach,
+  cmd = {
+    "zls",
+  },
 })
 
 require("lspconfig").clangd.setup({
   capabilities = capabilities,
   on_attach = on_attach,
-  -- cmd = {
-  --   "clangd",
-  --   "--background-index",
-  --   "--clang-tidy",
-  --   "--header-insertion=iwyu",
-  --   "--completion-style=detailed",
-  --   "--function-arg-placeholders",
-  --   "--fallback-style=llvm",
-  --   "--header-insertion-decorators=0",
-  --   "-j=4", -- Adjust based on your CPU
-  --   "--pch-storage=memory", -- Important for Unreal's PCH usage
-  -- },
+  cmd = {
+    "/opt/homebrew/opt/llvm/bin/clangd",
+    "--background-index",
+    "--clang-tidy",
+    "--header-insertion=iwyu",
+    "--completion-style=detailed",
+    "--function-arg-placeholders",
+    "--fallback-style=llvm",
+    "--header-insertion-decorators=0",
+    -- "-j=4", -- Adjust based on your CPU
+    -- "--pch-storage=memory", -- Important for Unreal's PCH usage
+  },
 })
+
 require("lspconfig").gdscript.setup({
   -- You might need to specify the port if it's not the default 6005
   -- cmd = { "nc", "localhost", "6005" }, -- For Linux/macOS
@@ -1243,12 +1327,37 @@ require("lspconfig").gdscript.setup({
   on_attach = on_attach,
 })
 
--- require("lspconfig").pylsp.setup({
---   capabilities = capabilities,
---   on_attach = on_attach,
--- })
+local lspconfig = require("lspconfig")
+local configs = require("lspconfig.configs")
 
--- Ensure the servers above are installed
+-- Check if the config already exists to avoid errors
+if not configs.haxe_language_server then
+  configs.haxe_language_server = {
+    default_config = {
+      cmd = { "haxe-language-server" },
+      filetypes = { "haxe" },
+      root_dir = function(fname)
+        return lspconfig.util.root_pattern("*.hxml", ".git")(fname)
+      end,
+      settings = {},
+    },
+  }
+end
+
+-- Now setup the server
+lspconfig.haxe_language_server.setup({
+  cmd = { "haxe-language-server" },
+  filetypes = { "haxe" },
+  capabilities = require("cmp_nvim_lsp").default_capabilities(),
+  root_markers = { "project.xml", "build.hxml", "*.hxproj" },
+  settings = {
+    haxe = {
+      executable = "haxe",
+      displayArguments = { "build.hxml" }, -- Add this
+    },
+  },
+})
+
 local mason_lspconfig = require("mason-lspconfig")
 
 mason_lspconfig.setup({
@@ -1258,6 +1367,11 @@ mason_lspconfig.setup({
 mason_lspconfig.setup({
   handlers = {
     function(server_name)
+      -- Skip haxe_language_server since we configure it manually
+      if server_name == "haxe_language_server" then
+        return
+      end
+
       require("lspconfig")[server_name].setup({
         capabilities = capabilities,
         on_attach = on_attach,
@@ -1266,6 +1380,12 @@ mason_lspconfig.setup({
       })
     end,
   },
+})
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    vim.bo[args.buf].tagfunc = nil -- Disable buggy tagfunc
+  end,
 })
 
 --[[
@@ -1281,7 +1401,7 @@ local godot_project_path = ""
 local cwd = vim.fn.getcwd()
 
 -- iterate over paths and check
-for key, value in pairs(paths_to_check) do
+for _, value in pairs(paths_to_check) do
   if vim.uv.fs_stat(cwd .. value .. "project.godot") then
     is_godot_project = true
     godot_project_path = cwd .. value
@@ -1327,8 +1447,21 @@ end, {
 --]]
 local cmp = require("cmp")
 local ls = require("luasnip")
-require("luasnip.loaders.from_vscode").lazy_load()
+require("luasnip.loaders.from_vscode").load({})
 ls.config.setup({})
+
+vim.lsp.config.haxe_language_server = {
+  cmd = { "haxe-language-server" },
+  filetypes = { "haxe" },
+  root_markers = { "project.xml", "build.hxml", "*.hxproj" },
+  capabilities = require("cmp_nvim_lsp").default_capabilities(),
+  settings = {
+    haxe = {
+      executable = "haxe",
+      displayArguments = { "build.hxml" },
+    },
+  },
+}
 
 cmp.setup({
   snippet = {
@@ -1351,8 +1484,8 @@ cmp.setup({
     }),
   }),
   sources = {
-    { name = "nvim_lsp" },
-    -- { name = "luasnip" },
+    { name = "nvim_lsp", priority = 1000 },
+    { name = "luasnip", priority = 750 },
     { name = "path" },
     { name = "orgmode" },
     { name = "go_pkgs" },
@@ -1425,17 +1558,11 @@ ls.add_snippets("go", {
     t({ "", "}", "" }),
     i(0),
   }),
-})
-
-ls.add_snippets("go", {
   s("pacman", {
     t({ "package main", "", "func main() {", "\t" }),
     i(0),
     t({ "", "}" }),
   }),
-})
-
-ls.add_snippets("go", {
   s("cc", {
     t({
       "package main",
@@ -1448,6 +1575,41 @@ ls.add_snippets("go", {
     }),
     i(0),
     t({ "", "}" }),
+  }),
+})
+
+local function fn(args, parent, user_args)
+  return args[1][1]
+end
+
+-- /**
+--  * @param {Type} paramName - Description
+--  * @returns {Type} Message
+--  */
+-- function funcName(paramName) {
+--
+-- }
+
+ls.add_snippets("javascript", {
+  s("tfunc", {
+    t({ "/** ", "* @param {" }),
+    i(3, "type"),
+    t("} "),
+    f(function(args, _, _)
+      return args[1][1]
+    end, { 2 }, {}),
+    t({ "", "*/", "function " }),
+    i(1),
+    t("("),
+    i(2),
+    t({ ") {", "" }),
+    i(4),
+    t({ "", "}" }),
+  }),
+  s("type", {
+    t("/** @type {"),
+    i(1),
+    t("} */"),
   }),
 })
 
@@ -1518,10 +1680,6 @@ vim.keymap.set("n", "<leader>gb", ":GBrowse<CR>", { desc = "[G]it [B]rowse" })
 vim.keymap.set("n", "<leader>gc", ":GBrowse!<CR>", { desc = "[G]it [C]opy link" })
 vim.keymap.set("v", "<leader>gc", ":'<,'>GBrowse!<CR>", { desc = "[G]it [C]opy link" })
 vim.keymap.set("n", "<leader>gg", ":Git<CR>", { desc = "[G]it [G]o" })
-vim.keymap.set("n", "<F8>", "<cmd>DapNew<cr>", { desc = "Run debugger" })
-vim.keymap.set("n", "<F6>", "<cmd>DapStepInto<cr>", { desc = "Run debugger" })
-vim.keymap.set("n", "<S-F6>", "<cmd>DapStepOut<cr>", { desc = "Run debugger" })
-vim.keymap.set("n", "<F7>", "<cmd>DapStepOver<cr>", { desc = "Run debugger" })
-vim.keymap.set("n", "<F5>", "<cmd>DapToggleBreakpoint<cr>", { desc = "Run debugger" })
+vim.keymap.set("n", "<C-s>", 'yiw:s/<C-r>"/', { desc = "Replace" })
 
 vim.keymap.set("t", "<ESC><ESC>", "<C-\\")
