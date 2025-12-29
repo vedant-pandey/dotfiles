@@ -35,6 +35,7 @@
             git
             uv
             llvm
+			go
 
             # ZSH config deps
             zsh-autosuggestions

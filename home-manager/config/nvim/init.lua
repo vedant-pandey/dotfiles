@@ -62,31 +62,37 @@ require("lazy").setup({
   },
 
   {
-    -- Autocompletion
-    "hrsh7th/nvim-cmp",
-    dependencies = {
-      -- Snippet Engine & its associated nvim-cmp source
-      {
-        "L3MON4D3/LuaSnip",
-        build = (function()
-          -- Build Step is needed for regex support in snippets
-          -- This step is not supported in many windows environments
-          -- Remove the below condition to re-enable on windows
-          if vim.fn.has("win32") == 1 then
-            return
-          end
-          return "make install_jsregexp"
-        end)(),
+    "saghen/blink.cmp",
+    -- optional: provides snippets for the snippet source
+    dependencies = { "rafamadriz/friendly-snippets" },
+
+    -- use a release tag to download pre-built binaries
+    version = "1.*",
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
+    opts = {
+      keymap = { preset = "default", ["<CR>"] = { "select_and_accept", "fallback" } },
+
+      appearance = {
+        nerd_font_variant = "mono",
       },
-      "saadparwaiz1/cmp_luasnip",
 
-      -- Adds LSP completion capabilities
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-path",
+      completion = { documentation = { auto_show = true } },
 
-      -- Adds a number of user-friendly snippets
-      "rafamadriz/friendly-snippets",
+      -- Default list of enabled providers defined so that you can extend it
+      -- elsewhere in your config, without redefining it, due to `opts_extend`
+      sources = {
+        default = { "lsp", "path", "snippets", "buffer" },
+      },
+
+      -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
+      -- You may use a lua implementation instead by using `implementation = "lua"` or fallback to the lua implementation,
+      -- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
+      --
+      -- See the fuzzy documentation for more information
+      fuzzy = { implementation = "prefer_rust_with_warning" },
     },
+    opts_extend = { "sources.default" },
   },
 
   { "folke/which-key.nvim", opts = {} },
@@ -283,8 +289,7 @@ require("lazy").setup({
           json = { "prettier" },
           markdown = { "prettier" },
           yaml = { "prettier" },
-          ["*"] = { "codespell" },
-          ["_"] = { "trim_whitespace" },
+          zig = { "zigfmt" },
         },
 
         formatters = {
@@ -548,6 +553,8 @@ require("lazy").setup({
       }
     end,
   },
+
+  "tommcdo/vim-exchange",
 }, {})
 
 --[[
@@ -835,69 +842,12 @@ end
 
 vim.api.nvim_create_user_command("LiveGrepGitRoot", live_grep_git_root, {})
 
--- Define theme mapping
-local theme_mapping = {
-  -- Specific picker names
-  -- find_files = "ivy",
-  -- live_grep = "ivy",
-  -- -- Patterns (will be checked with string.match)
-  -- ["^git"] = "dropdown",  -- All git-related pickers
-  -- ["grep$"] = "ivy",      -- All pickers ending with 'grep'
-  -- Default theme (used if no other matches are found)
-  -- default = "ivy",
-  default = "ivy",
-}
-
-local function get_all_picker_names()
-  local pickers = default_pickers
-
-  -- Get built-in pickers
-  for picker_name, _ in pairs(require("telescope.builtin")) do
-    if type(require("telescope.builtin")[picker_name]) == "function" then
-      table.insert(pickers, picker_name)
-    end
-  end
-
-  -- Get custom pickers
-  for picker_name, _ in pairs(require("telescope").extensions) do
-    table.insert(pickers, picker_name)
-  end
-
-  -- Add any other custom pickers that might not be in extensions
-  -- For example, if you have a custom picker named 'my_custom_picker':
-  -- table.insert(pickers, 'my_custom_picker')
-  return pickers
-end
-
-local function get_theme_for_picker(picker_name)
-  -- Check for exact matches first
-  if theme_mapping[picker_name] then
-    return theme_mapping[picker_name]
-  end
-  -- Check for pattern matches
-  for pattern, theme_name in pairs(theme_mapping) do
-    if picker_name:match(pattern) then
-      return theme_name
-    end
-  end
-  -- Return default theme if no matches found
-  return theme_mapping.default
-end
-
-local pickers_config = {}
-for _, picker_name in ipairs(get_all_picker_names()) do
-  pickers_config[picker_name] = default_pickers[picker_name]
-
-  if not pickers_config[picker_name] == nil then
-    pickers_config[picker_name]["theme"] = get_theme_for_picker(picker_name)
-  else
-    pickers_config[picker_name] = { theme = get_theme_for_picker(picker_name) }
-  end
-  pickers_config[picker_name]["opts"] = { cwd = custom_find_root() }
-end
-
 require("telescope").setup({
-  pickers = pickers_config,
+  pickers = {
+    find_files = { theme = "ivy" },
+    live_grep = { theme = "ivy" },
+    -- Add manual overrides here if needed
+  },
 })
 
 -- See `:help telescope.builtin`
@@ -1256,12 +1206,10 @@ local servers = {
   nextls = {},
   glsl_analyzer = {},
   gopls = {},
+  pylsp = {},
+  wgsl_analyzer = {},
   bashls = {},
   html = {},
-  tailwindcss = {
-    filetypes = { "templ", "astro", "javascript", "typescript", "react" },
-    init_options = { userLanguages = { templ = "html" } },
-  },
   rust_analyzer = {},
   ts_ls = {},
   -- vtsls = {},
@@ -1288,8 +1236,12 @@ local servers = {
 -- vim.lsp.set_log_level("debug")
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
+-- local capabilities = vim.lsp.protocol.make_client_capabilities()
+-- capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+-- local capabilities = require("blink.cmp").get_lsp_capabilities()
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+
+capabilities = vim.tbl_deep_extend("force", capabilities, require("blink.cmp").get_lsp_capabilities({}, false))
 
 require("lspconfig").zls.setup({
   capabilities = capabilities,
@@ -1317,45 +1269,9 @@ require("lspconfig").clangd.setup({
 })
 
 require("lspconfig").gdscript.setup({
-  -- You might need to specify the port if it's not the default 6005
-  -- cmd = { "nc", "localhost", "6005" }, -- For Linux/macOS
-  -- For Windows, you might need a netcat alternative like ncat or napap
-  -- cmd = { 'ncat', 'localhost', '6005' },
-  -- Ensure you have the necessary capabilities for full LSP features
   filetypes = { "gd", "gdscript", "gdscript3" },
   capabilities = capabilities,
   on_attach = on_attach,
-})
-
-local lspconfig = require("lspconfig")
-local configs = require("lspconfig.configs")
-
--- Check if the config already exists to avoid errors
-if not configs.haxe_language_server then
-  configs.haxe_language_server = {
-    default_config = {
-      cmd = { "haxe-language-server" },
-      filetypes = { "haxe" },
-      root_dir = function(fname)
-        return lspconfig.util.root_pattern("*.hxml", ".git")(fname)
-      end,
-      settings = {},
-    },
-  }
-end
-
--- Now setup the server
-lspconfig.haxe_language_server.setup({
-  cmd = { "haxe-language-server" },
-  filetypes = { "haxe" },
-  capabilities = require("cmp_nvim_lsp").default_capabilities(),
-  root_markers = { "project.xml", "build.hxml", "*.hxproj" },
-  settings = {
-    haxe = {
-      executable = "haxe",
-      displayArguments = { "build.hxml" }, -- Add this
-    },
-  },
 })
 
 local mason_lspconfig = require("mason-lspconfig")
@@ -1367,11 +1283,6 @@ mason_lspconfig.setup({
 mason_lspconfig.setup({
   handlers = {
     function(server_name)
-      -- Skip haxe_language_server since we configure it manually
-      if server_name == "haxe_language_server" then
-        return
-      end
-
       require("lspconfig")[server_name].setup({
         capabilities = capabilities,
         on_attach = on_attach,
@@ -1387,34 +1298,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.bo[args.buf].tagfunc = nil -- Disable buggy tagfunc
   end,
 })
-
---[[
-=====================================================================
-==================== CONFIGURE FORMATTER ============================
-=====================================================================
---]]
-
--- paths to check for project.godot file
-local paths_to_check = { "/" }
-local is_godot_project = false
-local godot_project_path = ""
-local cwd = vim.fn.getcwd()
-
--- iterate over paths and check
-for _, value in pairs(paths_to_check) do
-  if vim.uv.fs_stat(cwd .. value .. "project.godot") then
-    is_godot_project = true
-    godot_project_path = cwd .. value
-    break
-  end
-end
-
--- check if server is already running in godot project path
-local is_server_running = vim.uv.fs_stat(godot_project_path .. "/server.pipe")
--- start server, if not already running
-if is_godot_project and not is_server_running then
-  vim.fn.serverstart(godot_project_path .. "/server.pipe")
-end
 
 --[[
 =====================================================================
@@ -1445,87 +1328,14 @@ end, {
 ==================== CONFIGURE NVIM-CMP =============================
 =====================================================================
 --]]
-local cmp = require("cmp")
 local ls = require("luasnip")
 require("luasnip.loaders.from_vscode").load({})
 ls.config.setup({})
-
-vim.lsp.config.haxe_language_server = {
-  cmd = { "haxe-language-server" },
-  filetypes = { "haxe" },
-  root_markers = { "project.xml", "build.hxml", "*.hxproj" },
-  capabilities = require("cmp_nvim_lsp").default_capabilities(),
-  settings = {
-    haxe = {
-      executable = "haxe",
-      displayArguments = { "build.hxml" },
-    },
-  },
-}
-
-cmp.setup({
-  snippet = {
-    expand = function(args)
-      ls.lsp_expand(args.body)
-    end,
-  },
-  -- completion = {
-  --   completeopt = "menu,menuone,noinsert",
-  -- },
-  mapping = cmp.mapping.preset.insert({
-    ["<C-n>"] = cmp.mapping.select_next_item(),
-    ["<C-p>"] = cmp.mapping.select_prev_item(),
-    ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-    ["<C-f>"] = cmp.mapping.scroll_docs(4),
-    ["<C-Space>"] = cmp.mapping.complete({}),
-    ["<CR>"] = cmp.mapping.confirm({
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
-    }),
-  }),
-  sources = {
-    { name = "nvim_lsp", priority = 1000 },
-    { name = "luasnip", priority = 750 },
-    { name = "path" },
-    { name = "orgmode" },
-    { name = "go_pkgs" },
-  },
-  matching = { disallow_symbol_nonprefix_matching = false },
-  enabled = function()
-    -- disable completion in comments
-    local context = require("cmp.config.context")
-    -- keep command mode completion enabled when cursor is in a comment
-    if vim.api.nvim_get_mode().mode == "c" then
-      return true
-    else
-      return not context.in_treesitter_capture("comment") and not context.in_syntax_group("Comment")
-    end
-  end,
-})
--- If you want insert `(` after select function or method item
-local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
 local s = ls.snippet
 local t = ls.text_node
 local i = ls.insert_node
 local f = ls.function_node
-
-vim.keymap.set({ "i" }, "<C-K>", function()
-  ls.expand()
-end, { silent = true })
-vim.keymap.set({ "i", "s" }, "<Tab>", function()
-  ls.jump(1)
-end, { silent = true })
-vim.keymap.set({ "i", "s" }, "<S-Tab>", function()
-  ls.jump(-1)
-end, { silent = true })
-
-vim.keymap.set({ "i", "s" }, "<C-E>", function()
-  if ls.choice_active() then
-    ls.change_choice(1)
-  end
-end, { silent = true })
 
 ls.add_snippets("java", {
   s("cc", {
@@ -1577,18 +1387,6 @@ ls.add_snippets("go", {
     t({ "", "}" }),
   }),
 })
-
-local function fn(args, parent, user_args)
-  return args[1][1]
-end
-
--- /**
---  * @param {Type} paramName - Description
---  * @returns {Type} Message
---  */
--- function funcName(paramName) {
---
--- }
 
 ls.add_snippets("javascript", {
   s("tfunc", {

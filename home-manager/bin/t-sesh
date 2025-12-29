@@ -20,7 +20,7 @@ if [ -n "$arg" ]; then
     echo "Using existing directory: $session_dir"
 else
     # Original flow: show fzf menu
-    session_cmd=$(find ~/work ~/ws ~/personal ~/personal/opensource ~/personal/dotfiles \
+    session_cmd=$(find ~/work ~/ws ~/personal ~/personal/opensource ~/personal/dotfiles ~/personal/opensource/butterflydynamics.com\
             -maxdepth 1 2> /dev/null \
             | xargs echo "$create_cmd" \
             | tr " " "\n" \

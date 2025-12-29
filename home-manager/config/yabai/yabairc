@@ -28,4 +28,4 @@ yabai -m config mouse_action2 resize
 yabai -m mouse_drop_action swap
 
 # yabai -m rule --add app="^Karabiner-Elements$"manage=off
-yabai -m rule --add app="^(IPEVO Annotator|Calculator|Calendar|Clock|Dictionary|Karabiner-Elements|Stickies)$" manage=off
+yabai -m rule --add app="^(IPEVO Annotator|Calculator|Calendar|Clock|Dictionary|Karabiner-Elements|Stickies|wolfram_automata|raylib_space_invaders|_01_sand_simulation|_03_particle_sim|_04_procedural_generator|Instruments|Unity)$" manage=off

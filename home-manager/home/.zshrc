@@ -1,8 +1,9 @@
 # Profile zsh startup
 # zmodload zsh/zprof
 
-# Skip global compinit on startup
-# skip_global_compinit=1
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
 # Essential environment variables
 export ANDROID_HOME="$HOME/Library/Android/sdk"
@@ -14,6 +15,7 @@ export CPPFLAGS="-I/opt/homebrew/opt/llvm/include -I/opt/homebrew/opt/openjdk@17
 export DOOMDIR="$HOME/.config/doom"
 export EMACSDIR="$HOME/.config/emacs"
 export HOMEBREW_NO_AUTO_UPDATE=1
+export VULKAN_SDK="$HOME/VulkanSDK/vulkan/macOS"
 
 # Early initialization of critical components
 typeset -U path
@@ -39,6 +41,7 @@ path=(
     $HOME/.
     /opt/homebrew/opt/openjdk@17/bin
     $HOME/personal/opensource/Odin
+	$VULKAN_SDK/bin
 )
 export PATH
 
@@ -50,20 +53,25 @@ fi
 
 # History configuration
 HISTFILE="$HOME/.zsh_history"
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=50000
+SAVEHIST=50000
+unsetopt BEEP
+setopt AUTO_CD
+setopt GLOB_DOTS
+setopt NOMATCH
+setopt EXTENDED_GLOB
+setopt INTERACTIVE_COMMENTS
+setopt APPEND_HISTORY
 setopt EXTENDED_HISTORY HIST_EXPIRE_DUPS_FIRST HIST_IGNORE_ALL_DUPS 
-setopt HIST_FIND_NO_DUPS HIST_SAVE_NO_DUPS SHARE_HISTORY autocd
+setopt HIST_IGNORE_SPACE HIST_REDUCE_BLANKS HIST_VERIFY               
+setopt HIST_FIND_NO_DUPS HIST_SAVE_NO_DUPS SHARE_HISTORY HIST_IGNORE_DUPS autocd
 
+export DYLD_LIBRARY_PATH="$VULKAN_SDK/lib:$DYLD_LIBRARY_PATH"
+export VK_ICD_FILENAMES="$VULKAN_SDK/share/vulkan/icd.d/MoltenVK_icd.json"
+export VK_LAYER_PATH="$VULKAN_SDK/share/vulkan/explicit_layer.d"
 
 eval "$(command fnm env --use-on-cd)"
 
-# Lazy load brew
-brew() {
-    unset -f brew
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-    brew "$@"
-}
 
 # Custom backward-kill-word that stops at forward slashes and dots
 backward-kill-word-boundaries() {
@@ -82,39 +90,10 @@ zle -N backward-kill-word-boundaries
 bindkey '^[^H' backward-kill-word-boundaries
 bindkey '^[^?' backward-kill-word-boundaries
 
-# Bind Option+Shift+Backspace to original backward-kill-word (whole words)
-# Option+Shift+Backspace typically sends different sequences
-
 bindkey '^W' backward-kill-word
 
-# Load essential Nix plugins with optimization flags
-# if [ -f /nix/store/*-zsh-autosuggestions*/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-    source /nix/store/*-zsh-autosuggestions*/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-    ZSH_AUTOSUGGEST_MANUAL_REBIND=1
-    ZSH_AUTOSUGGEST_USE_ASYNC=1
-# fi
-
-# Load Zap and prompt-related plugins immediately
-if [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ]; then
-    source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
-fi
-
-# Defer syntax highlighting (it's one of the slowest)
-# if [ -f /nix/store/*zsh-defer*/share/zsh-defer/zsh-defer.plugin.zsh ]; then
-    source /nix/store/*zsh-defer*/share/zsh-defer/zsh-defer.plugin.zsh
-    
-    # Defer syntax highlighting load
-    zsh-defer source /nix/store/*-zsh-syntax-highlighting*/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-    
-    # Defer history substring search (depends on syntax highlighting)
-    zsh-defer source /nix/store/*-zsh-history-substring-search*/share/zsh-history-substring-search/zsh-history-substring-search.zsh
-    
-    # Defer Zap loading
-# fi
-
-source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
-plug 'zap-zsh/supercharge'
-plug 'chivalryq/git-alias'
+source /opt/homebrew/opt/antidote/share/antidote/antidote.zsh
+antidote load
 
 # Basic keybindings
 bindkey -e
@@ -122,76 +101,28 @@ bindkey -s "^f" "t-sesh\n"
 bindkey -s "^g" "nvim .\n"
 bindkey -s "^h" "home-manager switch --show-trace\n"
 
-###################################################################################################
 alias y="yarn"
 alias ta='tmux a'
 alias dsk="ssh devdesk"
-alias emc="emacsclient -c -a 'emacs'"
 alias ls='lsd'
 alias la="ls -a"
 alias ll="ls -la"
 alias lt="ls --tree"
-alias nds="ninja-dev-sync"
-alias bb=brazil-build
-alias bba='brazil-build apollo-pkg'
-alias bre='brazil-runtime-exec'
-alias brc='brazil-recursive-cmd'
-alias bws='brazil ws'
-alias bwsuse='bws use --gitMode -p'
-alias bwscreate='bws create -n'
-alias erg='eda run git'
-alias bbr='brc brazil-build'
-alias bball='brc --allPackages'
-alias bbb='brc --allPackages brazil-build'
-alias bbc='brc --allPackages brazil-build clean'
-alias bbra='bbr apollo-pkg'
-alias eauth=' eauth'
-alias pbclear='pbcopy < /dev/null'
-alias pbpaste='PASTE=$(/usr/bin/pbpaste);pbclear;echo $PASTE' # Modify to paste and forget, this could get irritating at times
-alias kvim='NVIM_APPNAME="nvim-kickstart" nvim'
+alias gst='git status'
+alias gl='git pull'
+
 gomodauto() {
     echo "$(grv | head -1 | awk '{print $2}' | cut -d'@' -f2 | tr ':' '/' | cut -d'.' -f-2)/$(git rev-parse --show-prefix)" | sed 's:/*$::' | xargs -I{} go mod init {}
 }
 tunnel_dsk() {
     ssh devdesk -v -N -L "$1":localhost:"$1"
 } 
-ddir() {
-    echo $1 | tr '/' ' ' | cut -d' ' -f3,5 | tr ' ' '/' | awk '{print "/local/home/"$1}'
-}
-dpwd() {
-    pwd | tr '/' ' ' | cut -d' ' -f3,5 | tr ' ' '/' | awk '{print "/local/home/"$1}'
-}
-synconce() {
-    simulation_mode=false
-
-    while getopts ":n" opt; do
-        case ${opt} in
-            n )
-                simulation_mode=true
-                ;;
-        esac
-    done
-
-    if [[ "$simulation_mode" = true ]]; then
-        echo "NOT ACTUALLY SYNCING"
-        rsync -rlzptvn --exclude '**/build/' --exclude 'tmp' --exclude 'logs' --exclude 'env' --exclude '.idea' --exclude '.bemol' --exclude '.brazil*' ./ pandveda@devdesk:$(dpwd)
-    else
-        echo "ACTUALLY SYNCING"
-        rsync -rlzptvn --exclude '**/build/' --exclude 'tmp' --exclude 'logs' --exclude 'env' --exclude '.idea' --exclude '.bemol' --exclude '.brazil*' ./ pandveda@devdesk:$(dpwd)
-    fi
-
-}
-
 
 export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
 zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
 source <(carapace _carapace)
-    
-###################################################################################################
-
 source <(fzf --zsh)
 
-# Defer OPAM initialization
 [[ ! -r $HOME/.opam/opam-init/init.zsh ]] || source $HOME/.opam/opam-init/init.zsh > /dev/null 2> /dev/null
 
 if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then 
@@ -200,90 +131,6 @@ fi
 
 export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/$USER/channels${NIX_PATH:+:$NIX_PATH}
 
-eval "$(direnv hook zsh)"
-export GOEXPERIMENT=jsonv2
-
-########################### PROMPT STYLE START ####################################################
-
-autoload -Uz vcs_info
-autoload -U colors && colors
-zstyle ':vcs_info:*' enable git 
-
-precmd_vcs_info() { vcs_info }
-precmd_functions+=( precmd_vcs_info )
-setopt prompt_subst
-
-
-zstyle ':vcs_info:git*+set-message:*' hooks git-untracked
-+vi-git-untracked(){
-    if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
-        git status --porcelain | grep '??' &> /dev/null ; then
-        hook_com[staged]+='!' # signify new files with a bang
-    fi
-}
-
-zstyle ':vcs_info:*' check-for-changes true
-zstyle ':vcs_info:git:*' formats " %{$fg[blue]%}(%{$fg[red]%}%m%u%c%{$fg[yellow]%}%{$fg[magenta]%} %b%{$fg[blue]%})%{$reset_color%}"
-
-OS=$(uname -or)
-
-case $OS in
-    *Darwin*) ICON="" ;;
-    *Android*) ICON="" ;;
-    *microsoft*) ICON="" ;;
-    *BSD*) 
-      DISTRO=$(uname -s)
-      case $DISTRO in
-        *FreeBSD*) ICON="" ;;
-        *OpenBSD*) ICON="" ;;
-      esac
-    ;;
-    *Linux*) 
-      DISTRO=$(awk -F= '/^ID=/ {print $2}' /etc/os-release 2> /dev/null | sed 's/"//g')
-      case $DISTRO in
-        arch|archarm) ICON="" ;;
-        void) ICON="" ;;
-        centos) ICON="" ;;
-        ubuntu) ICON="" ;;
-        fedora) ICON="" ;;
-        alpine) ICON="" ;;
-        artix) ICON="" ;;
-        gentoo) ICON="" ;;
-        debian) ICON="" ;;
-        linuxmint) ICON="" ;;
-        manjaro) ICON="" ;;
-        pop) ICON="" ;;
-        parrot) ICON="" ;;
-        kali) ICON="" ;;
-        guix) ICON="" ;;
-        nixos) ICON="" ;;
-        endeavouros) ICON="" ;;
-        deepin) ICON="" ;;
-        archlabs) ICON="" ;;
-        almalinux) ICON="" ;;
-        raspbian) ICON="" ;;
-        rhel) ICON="" ;;
-        slackware) ICON="" ;;
-        zorin) ICON="" ;;
-        elementary) ICON="" ;;
-        solus) ICON="" ;;
-        rocky) ICON="" ;;
-        opensuse*) ICON="" ;;
-        *) ICON="" ;;
-      esac
-      ;;
-    *) ICON="" ;;
-esac
-
-
-PROMPT="%B%{$fg_bold[black]%} $ICON % %(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ )%{$fg[blue]%}%c%{$reset_color%}"
-PROMPT+="\$vcs_info_msg_0_ "
-########################### PROMPT STYLE END ######################################################
-
-
-########################### WORK PLUGINS START ####################################################
-# Set up mise for runtime management
-eval "$(mise activate zsh)"
-########################### WORK PLUGINS END ######################################################
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # zprof > /tmp/zsh_profile.log
