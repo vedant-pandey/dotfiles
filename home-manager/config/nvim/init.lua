@@ -73,6 +73,12 @@ require("lazy").setup({
     opts = {
       keymap = { preset = "default", ["<CR>"] = { "select_and_accept", "fallback" } },
 
+      enabled = function()
+        return not vim.tbl_contains({ "DressingInput", "TelescopePrompt" }, vim.bo.filetype)
+          and vim.bo.buftype ~= "prompt"
+          and vim.b.completion ~= false
+      end,
+
       appearance = {
         nerd_font_variant = "mono",
       },
@@ -111,14 +117,14 @@ require("lazy").setup({
     },
   },
 
-  {
-    -- Add indentation guides even on blank lines
-    "lukas-reineke/indent-blankline.nvim",
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help ibl`
-    main = "ibl",
-    opts = {},
-  },
+  -- {
+  --   -- Add indentation guides even on blank lines
+  --   "lukas-reineke/indent-blankline.nvim",
+  --   -- Enable `lukas-reineke/indent-blankline.nvim`
+  --   -- See `:help ibl`
+  --   main = "ibl",
+  --   opts = {},
+  -- },
 
   {
     "numToStr/Comment.nvim",
@@ -131,13 +137,10 @@ require("lazy").setup({
       ignore = nil,
       ---LHS of toggle mappings in NORMAL mode
       toggler = {
-        -- ---Line-comment toggle keymap
         -- line = "gcc",
-        -- ---Block-comment toggle keymap
-        -- block = "gbc",
-        ---Line-comment toggle keymap
         line = "<leader>/",
         ---Block-comment toggle keymap
+        -- block = "gbc",
         block = "<localleader>/",
       },
       ---LHS of operator-pending mappings in NORMAL and VISUAL mode
@@ -257,22 +260,6 @@ require("lazy").setup({
   },
 
   {
-    "windwp/nvim-ts-autotag",
-    ft = { "html", "javascriptreact", "typescriptreact", "svelte", "vue" },
-    config = function()
-      require("nvim-ts-autotag").setup()
-    end,
-  },
-
-  {
-    "brianhuster/live-preview.nvim",
-    ft = { "markdown", "html", "asciidoc", "svg" },
-    config = function()
-      require("live-preview").setup()
-    end,
-  },
-
-  {
     "stevearc/conform.nvim",
     config = function()
       require("conform").setup({
@@ -385,19 +372,26 @@ require("lazy").setup({
   },
 
   "dhruvasagar/vim-table-mode",
-  {
-    "mrshmllow/orgmode-babel.nvim",
-    dependencies = {
-      "nvim-orgmode/orgmode",
-      "nvim-treesitter/nvim-treesitter",
-    },
-    cmd = { "OrgExecute", "OrgTangle" },
-    opts = {
-      -- by default, none are enabled
-      langs = { "python", "lua", "shell", "java", "ocaml", "go", "latex" },
 
-      -- paths to emacs packages to additionally load
-      load_paths = {},
+  {
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    ---@type snacks.Config
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+      bigfile = {
+        enabled = true,
+        size = 3 * 1024 * 1024, -- 1.5MB
+      },
+      indent = { enabled = true },
+      input = { enabled = true },
+      notifier = { enabled = true },
+      quickfile = { enabled = true },
+      scope = { enabled = true },
+      -- words = { enabled = true },
     },
   },
 
@@ -447,19 +441,14 @@ require("lazy").setup({
   },
 
   {
-    "lervag/vimtex",
-    lazy = false, -- we don't want to lazy load VimTeX
-    -- tag = "v2.15", -- uncomment to pin to a specific release
-    init = function()
-      -- VimTeX configuration goes here, e.g.
-      vim.g.vimtex_view_method = "skim"
-      vim.g.vimtex_compiler_method = "tectonic"
-    end,
-  },
-
-  {
     "lewis6991/gitsigns.nvim",
-    opts = {},
+    -- opts = {},
+    config = function()
+      vim.keymap.set("n", "<leader>ghs", "<cmd>Gitsigns stage_hunk<cr>", { desc = "[G]it [H]unk [S]tage" })
+      vim.keymap.set("n", "<leader>ghp", "<cmd>Gitsigns preview_hunk<cr>", { desc = "[G]it [H]unk [P]review" })
+      vim.keymap.set("n", "]c", "<cmd>Gitsigns nav_hunk 'next'<cr>", { desc = "Next hunk" })
+      vim.keymap.set("n", "[c", "<cmd>Gitsigns nav_hunk 'prev'<cr>", { desc = "Prev hunk" })
+    end,
   },
 
   {
@@ -482,14 +471,8 @@ require("lazy").setup({
     end,
   },
 
-  {
-    "stevearc/dressing.nvim",
-    opts = {},
-  },
-
   "tpope/vim-tbone",
 
-  -- {
   {
     "folke/lazydev.nvim",
     ft = "lua", -- only load on lua files
@@ -525,33 +508,6 @@ require("lazy").setup({
         ["<C-t>"] = "toggle_complete",
       },
     },
-  },
-
-  {
-    "hasansujon786/super-kanban.nvim",
-    dependencies = {
-      "folke/snacks.nvim",
-      "nvim-orgmode/orgmode",
-    },
-    opts = {}, -- optional: pass your config table here
-  },
-
-  "kLabz/haxe.vim",
-  "jdonaldson/vaxe",
-
-  {
-    "dense-analysis/ale",
-    config = function()
-      -- Configuration goes here.
-      local g = vim.g
-
-      g.ale_ruby_rubocop_auto_correct_all = 1
-
-      g.ale_linters = {
-        ruby = { "rubocop", "ruby" },
-        lua = { "lua_language_server" },
-      }
-    end,
   },
 
   "tommcdo/vim-exchange",
@@ -1001,46 +957,46 @@ vim.defer_fn(function()
           ["iF"] = "@method_definition.inner",
         },
       },
-      move = {
-        enable = true,
-        set_jumps = true, -- whether to set jumps in the jumplist
-        goto_next_start = {
-          ["]f"] = "@function.outer",
-          ["]c"] = "@class.outer",
-          ["]l"] = "@let_binding.outer",
-          ["]m"] = "@module_binding.outer",
-          ["]x"] = "@match_expression.outer",
-          ["]v"] = "@value_definition.outer",
-          ["]t"] = "@type_definition.outer",
-        },
-        goto_next_end = {
-          ["]F"] = "@function.outer",
-          ["]C"] = "@class.outer",
-          ["]L"] = "@let_binding.outer",
-          ["]M"] = "@module_binding.outer",
-          ["]X"] = "@match_expression.outer",
-          ["]V"] = "@value_definition.outer",
-          ["]T"] = "@type_definition.outer",
-        },
-        goto_previous_start = {
-          ["[f"] = "@function.outer",
-          ["[c"] = "@class.outer",
-          ["[l"] = "@let_binding.outer",
-          ["[m"] = "@module_binding.outer",
-          ["[x"] = "@match_expression.outer",
-          ["[v"] = "@value_definition.outer",
-          ["[t"] = "@type_definition.outer",
-        },
-        goto_previous_end = {
-          ["[F"] = "@function.outer",
-          ["[C"] = "@class.outer",
-          ["[L"] = "@let_binding.outer",
-          ["[M"] = "@module_binding.outer",
-          ["[X"] = "@match_expression.outer",
-          ["[V"] = "@value_definition.outer",
-          ["[T"] = "@type_definition.outer",
-        },
-      },
+      -- move = {
+      --   enable = true,
+      --   set_jumps = true, -- whether to set jumps in the jumplist
+      --   goto_next_start = {
+      --     ["]f"] = "@function.outer",
+      --     ["]c"] = "@class.outer",
+      --     ["]l"] = "@let_binding.outer",
+      --     ["]m"] = "@module_binding.outer",
+      --     ["]x"] = "@match_expression.outer",
+      --     ["]v"] = "@value_definition.outer",
+      --     ["]t"] = "@type_definition.outer",
+      --   },
+      --   goto_next_end = {
+      --     ["]F"] = "@function.outer",
+      --     ["]C"] = "@class.outer",
+      --     ["]L"] = "@let_binding.outer",
+      --     ["]M"] = "@module_binding.outer",
+      --     ["]X"] = "@match_expression.outer",
+      --     ["]V"] = "@value_definition.outer",
+      --     ["]T"] = "@type_definition.outer",
+      --   },
+      --   goto_previous_start = {
+      --     ["[f"] = "@function.outer",
+      --     ["[c"] = "@class.outer",
+      --     ["[l"] = "@let_binding.outer",
+      --     ["[m"] = "@module_binding.outer",
+      --     ["[x"] = "@match_expression.outer",
+      --     ["[v"] = "@value_definition.outer",
+      --     ["[t"] = "@type_definition.outer",
+      --   },
+      --   goto_previous_end = {
+      --     ["[F"] = "@function.outer",
+      --     ["[C"] = "@class.outer",
+      --     ["[L"] = "@let_binding.outer",
+      --     ["[M"] = "@module_binding.outer",
+      --     ["[X"] = "@match_expression.outer",
+      --     ["[V"] = "@value_definition.outer",
+      --     ["[T"] = "@type_definition.outer",
+      --   },
+      -- },
       -- swap = {
       -- 	enable = true,
       -- 	swap_next = {
@@ -1243,7 +1199,8 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 
 capabilities = vim.tbl_deep_extend("force", capabilities, require("blink.cmp").get_lsp_capabilities({}, false))
 
-require("lspconfig").zls.setup({
+-- require("lspconfig").zls.setup({
+vim.lsp.config("zls", {
   capabilities = capabilities,
   on_attach = on_attach,
   cmd = {
@@ -1251,7 +1208,8 @@ require("lspconfig").zls.setup({
   },
 })
 
-require("lspconfig").clangd.setup({
+-- require("lspconfig").clangd.setup({
+vim.lsp.config("clangd", {
   capabilities = capabilities,
   on_attach = on_attach,
   cmd = {
@@ -1268,7 +1226,8 @@ require("lspconfig").clangd.setup({
   },
 })
 
-require("lspconfig").gdscript.setup({
+-- require("lspconfig").gdscript.setup({
+vim.lsp.config("gdscript", {
   filetypes = { "gd", "gdscript", "gdscript3" },
   capabilities = capabilities,
   on_attach = on_attach,
@@ -1283,7 +1242,8 @@ mason_lspconfig.setup({
 mason_lspconfig.setup({
   handlers = {
     function(server_name)
-      require("lspconfig")[server_name].setup({
+      -- require("lspconfig")[server_name].setup({
+      vim.lsp.config(server_name, {
         capabilities = capabilities,
         on_attach = on_attach,
         settings = servers[server_name],
