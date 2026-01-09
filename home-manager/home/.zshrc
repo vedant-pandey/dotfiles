@@ -104,7 +104,6 @@ antidote load
 bindkey -e
 bindkey -s "^f" "t-sesh\n"
 bindkey -s "^g" "nvim .\n"
-bindkey -s "^h" "home-manager switch --show-trace\n"
 
 alias y="yarn"
 alias ta='tmux a'
