@@ -47,23 +47,19 @@ require("lazy").setup({
       { "j-hui/fidget.nvim", opts = {} },
     },
   },
-  {
-    "folke/tokyonight.nvim",
-    lazy = false,
-    priority = 1000,
-    opts = {},
-  },
+
+  { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+
+  { "folke/tokyonight.nvim", lazy = false, priority = 1000, opts = { transparent = false } },
+
+  { "rebelot/kanagawa.nvim", opts = { transparent = false } },
 
   { "rafamadriz/friendly-snippets" },
 
-  {
-    "L3MON4D3/LuaSnip",
-    dependencies = { "rafamadriz/friendly-snippets" },
-  },
+  { "L3MON4D3/LuaSnip", dependencies = { "rafamadriz/friendly-snippets" } },
 
   {
     "saghen/blink.cmp",
-    -- optional: provides snippets for the snippet source
     dependencies = { "rafamadriz/friendly-snippets" },
 
     -- use a release tag to download pre-built binaries
@@ -73,10 +69,28 @@ require("lazy").setup({
     opts = {
       keymap = { preset = "default", ["<CR>"] = { "select_and_accept", "fallback" } },
 
+      snippets = { preset = "luasnip" },
+
+      -- enabled = function()
+      --   return not vim.tbl_contains({ "DressingInput", "TelescopePrompt" }, vim.bo.filetype)
+      --     and vim.bo.buftype ~= "prompt"
+      --     and vim.b.completion ~= false
+      -- end,
+
       enabled = function()
-        return not vim.tbl_contains({ "DressingInput", "TelescopePrompt" }, vim.bo.filetype)
-          and vim.bo.buftype ~= "prompt"
-          and vim.b.completion ~= false
+        -- 1. Get the current filetype and buftype
+        local filetype = vim.bo[0].filetype
+        local buftype = vim.bo[0].buftype
+
+        local disabled_filetypes = { "TelescopePrompt", "oil", "minifiles", "netrw", "java" }
+
+        local disabled_buftypes = { "prompt", "nofile", "quickfix" }
+
+        if vim.tbl_contains(disabled_filetypes, filetype) or vim.tbl_contains(disabled_buftypes, buftype) then
+          return false
+        end
+
+        return true
       end,
 
       appearance = {
@@ -232,11 +246,37 @@ require("lazy").setup({
     dependencies = { "nvim-lua/plenary.nvim" },
     opts = {
       keywords = {
-        DONE = { icon = "✅", color = "hint", alt = { "NOTE" } },
-        STEP = { icon = "➡️", color = "step", alt = { "STEP 1" } },
+        -- PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+        -- TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
+
+        TODO = { icon = "✅", color = "hint", alt = { "DONE" } },
+        DONE = { icon = "✅", color = "hint" },
+        WARN = { icon = "⚠️", color = "warning", alt = { "WARNING", "XXX" } },
+        HACK = { icon = "🔥", color = "warning" },
+        FIX = { icon = "🐞", color = "error", alt = { "FIXME", "BUG", "FIXIT", "ISSUE" } },
+        NOTE = { icon = "📝", color = "hint", alt = { "INFO" } },
+        STEP = { icon = "➡️", color = "step", alt = {} },
+        TIDY = { icon = "♻️", color = "warning", alt = { "REFACTOR", "CLEANUP" } },
+        PLAN = { icon = "🔮", color = "default", alt = { "SCOPE" } },
+        SCAN = { icon = "👀", color = "info", alt = { "REVISIT", "LOOK" } },
+        TUNE = { icon = "🚀", color = "test", alt = { "PERF", "SPEED" } },
       },
       colors = {
-        step = { "Identifier", "#FFFFFF" },
+        -- step = { "#FFFFFF" },
+        -- hint = { "#5ffc3f" },
+        -- error = { "#DC2626" },
+        -- warning = { "#FBBF24" },
+        -- info = { "#2563EB" },
+        -- default = { "#7C3AED" },
+        -- test = { "#FF00FF" },
+
+        step = { "#73daca" },
+        hint = { "#9ece6a" },
+        error = { "#f7768e" },
+        warning = { "#e0af68" },
+        info = { "#7dcfff" },
+        default = { "#bb9af7" },
+        test = { "#ff5e8c" },
       },
 
       -- your configuration comes here
@@ -247,9 +287,9 @@ require("lazy").setup({
 
   {
     "akinsho/bufferline.nvim",
-    -- version = "*",
+    version = "*",
     dependencies = "nvim-tree/nvim-web-devicons",
-    opts = {},
+    opts = { options = { always_show_bufferline = true } },
     keys = {
       { "<C-n>", "<cmd>BufferLineCycleNext<CR>", desc = "Goto next buffer" },
       { "<C-p>", "<cmd>BufferLineCyclePrev<CR>", desc = "Goto prev buffer" },
@@ -330,45 +370,88 @@ require("lazy").setup({
     "nvim-orgmode/orgmode",
     event = "VeryLazy",
     ft = { "org" },
-    opts = {
-      org_agenda_files = "~/personal/dotfiles/notes/orgmode/**/*",
-      org_default_notes_file = "~/personal/dotfiles/notes/orgmode/refile.org",
-      org_deadline_warning_days = 7,
-      org_todo_keywords = {
-        "Unplanned(u)",
-        "Todo(t)",
-        "InProgress(i)",
-        "|",
-        "Reassigned(r)",
-        "Deprioritised(d)",
-        "Finished(f)",
-      },
-      org_todo_keyword_faces = {
-        Unplanned = ":foreground #333333 :background #E5E5E5",
-        Todo = ":background #FFE5E5 :foreground #CC0000",
-        InProgress = ":background #E5F2FF :foreground #0066CC",
-        Reassigned = ":background #FFF3E5 :foreground #CC6600",
-        Deprioritised = ":background #F2E5FF :foreground #6600CC",
-        Finished = ":background #E5FFE5 :foreground #006600",
-      },
-      calendar_week_start_day = 0,
-      org_agenda_span = "day",
-      org_startup_folded = "showeverything",
-      mappings = {
-        org = {
-          org_todo = "gl",
-          org_todo_prev = "gh",
-          org_priority_up = "gk",
-          org_priority_down = "gj",
-          org_toggle_checkbox = "<Leader>x",
-          org_open_at_point = "gd",
+    -- opts = {
+    --   org_agenda_files = "~/personal/dotfiles/notes/orgmode/**/*",
+    --   org_default_notes_file = "~/personal/dotfiles/notes/orgmode/refile.org",
+    --   org_deadline_warning_days = 7,
+    --   org_todo_keywords = {
+    --     "Unplanned(u)",
+    --     "Todo(t)",
+    --     "InProgress(i)",
+    --     "|",
+    --     "Reassigned(r)",
+    --     "Deprioritised(d)",
+    --     "Finished(f)",
+    --   },
+    --   org_todo_keyword_faces = {
+    --     Unplanned = ":foreground #333333 :background #E5E5E5",
+    --     Todo = ":background #FFE5E5 :foreground #CC0000",
+    --     InProgress = ":background #E5F2FF :foreground #0066CC",
+    --     Reassigned = ":background #FFF3E5 :foreground #CC6600",
+    --     Deprioritised = ":background #F2E5FF :foreground #6600CC",
+    --     Finished = ":background #E5FFE5 :foreground #006600",
+    --   },
+    --   calendar_week_start_day = 0,
+    --   org_agenda_span = "day",
+    --   org_startup_folded = "showeverything",
+    --   mappings = {
+    --     org = {
+    --       org_todo = "gl",
+    --       org_todo_prev = "gh",
+    --       org_priority_up = "gk",
+    --       org_priority_down = "gj",
+    --       org_toggle_checkbox = "<Leader>x",
+    --       org_open_at_point = "gd",
+    --     },
+    --     agenda = {
+    --       org_agenda_priority_up = "gk",
+    --       org_agenda_priority_down = "gj",
+    --     },
+    --   },
+    -- },
+    branch = "master",
+    config = function()
+      require("orgmode").setup({
+        -- org_use_property_inheritance = false,
+        org_agenda_files = "~/personal/dotfiles/notes/orgmode/**/*",
+        org_default_notes_file = "~/personal/dotfiles/notes/orgmode/refile.org",
+        org_deadline_warning_days = 7,
+        org_todo_keywords = {
+          "Unplanned(u)",
+          "Todo(t)",
+          "InProgress(i)",
+          "|",
+          "Reassigned(r)",
+          "Deprioritised(d)",
+          "Finished(f)",
         },
-        agenda = {
-          org_agenda_priority_up = "gk",
-          org_agenda_priority_down = "gj",
+        org_todo_keyword_faces = {
+          Unplanned = ":foreground #333333 :background #E5E5E5",
+          Todo = ":background #FFE5E5 :foreground #CC0000",
+          InProgress = ":background #E5F2FF :foreground #0066CC",
+          Reassigned = ":background #FFF3E5 :foreground #CC6600",
+          Deprioritised = ":background #F2E5FF :foreground #6600CC",
+          Finished = ":background #E5FFE5 :foreground #006600",
         },
-      },
-    },
+        calendar_week_start_day = 0,
+        org_agenda_span = "day",
+        org_startup_folded = "showeverything",
+        mappings = {
+          org = {
+            org_todo = "gl",
+            org_todo_prev = "gh",
+            org_priority_up = "gk",
+            org_priority_down = "gj",
+            org_toggle_checkbox = "<Leader>x",
+            org_open_at_point = "gd",
+          },
+          agenda = {
+            org_agenda_priority_up = "gk",
+            org_agenda_priority_down = "gj",
+          },
+        },
+      })
+    end,
   },
 
   "dhruvasagar/vim-table-mode",
@@ -509,6 +592,107 @@ require("lazy").setup({
   },
 
   "tommcdo/vim-exchange",
+
+  {
+    "yousefakbar/notmuch.nvim",
+    config = function()
+      -- Configuration goes here
+      local opts = {
+        notmuch_db_path = vim.fn.expand("~/.mail"),
+        maildir_sync_cmd = "mbsync -a",
+        -- renderer = "w3m -dump -T text/html",
+        -- keymaps = {
+        --   search = {
+        --     ["/"] = "search", -- Bind search to /
+        --     ["q"] = "quit", -- Quit
+        --     ["r"] = "refresh", -- Refresh the list
+        --     ["<Enter>"] = "show", -- Open the email
+        --
+        --     -- Your custom tags
+        --     ["d"] = { "+trash", "-inbox", "-unread" }, -- Delete
+        --     ["a"] = { "-inbox", "-unread" }, -- Archive
+        --   },
+        --
+        --   -- 2. Keymaps for Reading an Email (Show View)
+        --   show = {
+        --     ["q"] = "quit",
+        --
+        --     -- You need to repeat these here so they work while reading too!
+        --     ["d"] = { "+trash", "-inbox", "-unread" },
+        --     ["a"] = { "-inbox", "-unread" },
+        --   },
+        -- },
+      }
+      require("notmuch").setup(opts)
+    end,
+    keys = {
+      { "<leader>eo", "<cmd>Notmuch<cr>", { desc = "[E]mail [O]pen" } },
+    },
+
+    -- keys = function(_, _)
+    --   local curl = require("curl")
+    --   return {
+    --     { "<leader>ct", curl.open_curl_tab, { desc = "Directory scoped Curl tab" } },
+    --     { "<leader>cg", curl.open_global_tab, { desc = "Global scoped Curl tab" } },
+    --     { "<leader>cct", curl.create_scoped_collection, { desc = "Create or open a collection" } },
+    --     { "<leader>ccg", curl.create_global_collection, { desc = "Create or open a global collection" } },
+    --     { "<leader>ccT", curl.pick_scoped_collection, { desc = "Select a scoped collection and open it" } },
+    --     { "<leader>ccG", curl.pick_global_collection, { desc = "Select a global collection and open it" } },
+    --   }
+    -- end,
+  },
+  {
+    "neo451/feed.nvim",
+    cmd = "Feed",
+    ---@module 'feed'
+    ---@type feed.config
+    opts = {
+      feeds = {
+        {
+          "https://indianexpress.com/feed/",
+          name = "IE Top News",
+          tags = { "latest", "top" },
+        },
+        {
+          "https://indianexpress.com/section/explained/feed/",
+          name = "IE Explained",
+          tags = { "detail", "explain" },
+        },
+        {
+          "https://indianexpress.com/section/opinion/feed/",
+          name = "IE Opinion",
+          tags = { "detail", "opinion" },
+        },
+        {
+          "https://indianexpress.com/section/world/feed/",
+          name = "IE World",
+          tags = { "world", "global" },
+        },
+        {
+          "https://indianexpress.com/section/sports/feed/",
+          name = "IE Sports",
+          tags = { "sports" },
+        },
+        {
+          "https://indianexpress.com/section/technology/feed/",
+          name = "IE Tech",
+          tags = { "tech" },
+        },
+        {
+          "https://indianexpress.com/section/upsc-current-affairs/feed/",
+          name = "IE UPSC",
+          tags = { "upsc" },
+        },
+      },
+    },
+  },
+  -- {
+  --   "nvim-java/nvim-java",
+  --   config = function()
+  --     require("java").setup()
+  --     vim.lsp.enable("jdtls")
+  --   end,
+  -- },
 }, {})
 
 --[[
@@ -532,6 +716,12 @@ vim.o.background = "dark"
 vim.o.scrolloff = 30
 vim.o.relativenumber = true
 vim.o.colorcolumn = "120,150"
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = {"org", "markdown", "text"},
+	callback = function ()
+		vim.opt_local.colorcolumn = "0"
+	end
+})
 vim.o.number = true
 local tabLen = 4
 vim.o.tabstop = tabLen
@@ -554,6 +744,7 @@ vim.o.linebreak = true
 vim.o.foldcolumn = "0" -- '0' is not bad
 vim.o.foldenable = true
 
+-- vim.cmd.colorscheme("catppuccin-mocha")
 vim.cmd.colorscheme("tokyonight-night")
 
 vim.loader.enable()
@@ -846,28 +1037,6 @@ vim.keymap.set("n", "<leader>sr", require("telescope.builtin").resume, { desc = 
 =====================================================================
 --]]
 
-vim.filetype.add({
-  extension = {
-    hx = "haxe",
-  },
-})
-
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "haxe",
-  callback = function()
-    vim.opt_local.autowrite = true
-    -- Or auto-save on text change:
-    vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
-      buffer = 0,
-      callback = function()
-        if vim.bo.modified then
-          vim.cmd("silent! write")
-        end
-      end,
-    })
-  end,
-})
-
 -- Defer Treesitter setup after first render to improve startup time of 'nvim {filename}'
 vim.defer_fn(function()
   require("nvim-treesitter.configs").setup({
@@ -892,7 +1061,6 @@ vim.defer_fn(function()
       "ocaml",
       "latex",
       "java",
-      "haxe",
     },
 
     fold = { enable = true },
@@ -901,7 +1069,9 @@ vim.defer_fn(function()
     -- Install languages synchronously (only applied to `ensure_installed`)
     sync_install = false,
     -- List of parsers to ignore installing
-    ignore_install = {},
+    ignore_install = {
+      "org",
+    },
     -- You can specify additional Treesitter modules here: -- For example: -- playground = {--enable = true,-- },
     modules = { playground = { enable = true } },
     highlight = { enable = true },
@@ -1014,17 +1184,6 @@ require("nvim-treesitter.configs").setup({
     additional_vim_regex_highlighting = false,
   },
 })
-
-local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-parser_config.haxe = {
-  install_info = {
-    url = "https://github.com/vantreeseba/tree-sitter-haxe",
-    files = { "src/parser.c", "src/scanner.c" },
-    -- optional entries:
-    branch = "main",
-  },
-  filetype = "haxe",
-}
 
 vim.opt.foldmethod = "manual"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
@@ -1165,8 +1324,9 @@ local servers = {
   bashls = {},
   html = {},
   rust_analyzer = {},
+  slangd = {},
   ts_ls = {},
-  -- vtsls = {},
+  harper_ls = {},
 
   lua_ls = {
     Lua = {
@@ -1346,6 +1506,17 @@ ls.add_snippets("go", {
   }),
 })
 
+ls.add_snippets("zig", {
+  s("makeself", {
+    t({ "const Self = @This();" }),
+    i(0),
+  }),
+  s("alloSign", {
+    t({ "allocator: std.mem.Allocator" }),
+    i(0),
+  }),
+})
+
 ls.add_snippets("javascript", {
   s("tfunc", {
     t({ "/** ", "* @param {" }),
@@ -1410,6 +1581,8 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Move up" })
 -- vim.keymap.set("n", "k", "kzz", { desc = "Move up" })
 vim.keymap.set("n", "<leader>ax", "<cmd>tabclose<cr>", { desc = "t[A]b [X] close" })
 vim.keymap.set("n", "<leader>an", "<cmd>tabnew<cr>", { desc = "t[A]b [N]ew" })
+vim.keymap.set("n", "]\\", "<cmd>tabnext<cr>", { desc = "t[A]b [N]ew" })
+vim.keymap.set("n", "[\\", "<cmd>tabprevious<cr>", { desc = "t[A]b [N]ew" })
 vim.keymap.set("n", "n", "nzzzv", { desc = "Next search" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search" })
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww t-sesh<CR>", { desc = "t-sesh find projects" })

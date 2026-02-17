@@ -22,7 +22,6 @@ export CMAKE_PREFIX_PATH="/opt/homebrew/opt/llvm"
 # export PKG_CONFIG_PATH="$(brew --prefix zstd)/lib/pkgconfig"
 export CMAKE_PREFIX_PATH="/opt/homebrew/opt/llvm"
 
-
 # Early initialization of critical components
 typeset -U path
 
@@ -74,6 +73,7 @@ setopt HIST_FIND_NO_DUPS HIST_SAVE_NO_DUPS SHARE_HISTORY HIST_IGNORE_DUPS autocd
 
 export VK_ICD_FILENAMES="$VULKAN_SDK/share/vulkan/icd.d/MoltenVK_icd.json"
 export VK_LAYER_PATH="$VULKAN_SDK/share/vulkan/explicit_layer.d"
+export DYLD_FALLBACK_LIBRARY_PATH="$HOME/.nix-profile/lib:$DYLD_FALLBACK_LIBRARY_PATH"
 
 eval "$(command fnm env --use-on-cd)"
 
@@ -324,3 +324,4 @@ export NIX_PATH=$HOME/.nix-defexpr/channels:/nix/var/nix/profiles/per-user/$USER
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # zprof > /tmp/zsh_profile.log
+export PATH="$HOME/.local/bin:$PATH"

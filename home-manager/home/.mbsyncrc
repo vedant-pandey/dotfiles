@@ -1,0 +1,22 @@
+# ~/.mbsyncrc
+IMAPAccount primary_gmail
+Host imap.gmail.com
+User vedantpandey46@gmail.com
+PassCmd "security find-generic-password -s mbsync_primary_gmail -w" 
+SSLType IMAPS
+
+IMAPStore primary_gmail-remote
+Account primary_gmail
+
+MaildirStore primary_gmail-local
+Path ~/.mail/primary_gmail/
+Inbox ~/.mail/primary_gmail/Inbox
+SubFolders Verbatim
+
+Channel primary_gmail
+Far :primary_gmail-remote:
+Near :primary_gmail-local:
+Patterns *
+Create Both
+Expunge Both
+SyncState *

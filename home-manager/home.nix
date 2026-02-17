@@ -7,11 +7,10 @@
         username = "vedant";
         homeDirectory = "/Users/vedant";
 
-        stateVersion = "25.05";
+        stateVersion = "25.11";
 
         packages = with pkgs; [
             lua
-            zsh-defer
             pandoc
             elixir
             ansible
@@ -34,13 +33,17 @@
             gnupg
             git
             uv
-            llvm
 			go
+			bitwarden-cli
+			notmuch
+			tree-sitter
+			isync
+			msmtp
+			w3m
+			qpdf
 
-            # ZSH config deps
-            zsh-autosuggestions
-            zsh-syntax-highlighting
-            zsh-history-substring-search
+			kubernetes-helm
+			kubectl
         ];
 
     };
@@ -57,6 +60,11 @@
             defaultEditor = true;
             viAlias = true;
             vimAlias = true;
+			extraPackages = with pkgs; [
+				gcc 
+				tree-sitter
+				nodejs
+			];
         };
 
         direnv = {

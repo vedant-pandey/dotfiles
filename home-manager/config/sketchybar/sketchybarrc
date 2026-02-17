@@ -21,27 +21,25 @@ LABEL_COLOR=$WHITE # Color of all labels
 ITEM_DIR="$HOME/.config/sketchybar/items"
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
-FONT="MesloLGS NF"
+FONT="FiraCode Nerd Font"
 
 PADDINGS=3
 
-POPUP_BORDER_WIDTH=2
-POPUP_CORNER_RADIUS=11
 POPUP_BACKGROUND_COLOR=$BLACK
 POPUP_BORDER_COLOR=$COMMENT
 
 CORNER_RADIUS=15
-BORDER_WIDTH=2
 
 SHADOW=on
 
 # General bar and defaults
 
 	# color="$BAR_COLOR" \
+	# shadow="$SHADOW" \
+	# blur_radius=20 \
 sketchybar --bar \
 	height=30 \
 	color="$TRANSPARENT" \
-	shadow="$SHADOW" \
 	position=top \
 	sticky=on \
 	padding_right=0 \
@@ -49,7 +47,6 @@ sketchybar --bar \
 	corner_radius="$CORNER_RADIUS" \
 	y_offset=5 \
 	margin=5 \
-	blur_radius=20 \
 	notch_width=200 \
 	--default updates=when_shown \
 	icon.font="$FONT:Bold:13.5" \
@@ -69,19 +66,14 @@ sketchybar --bar \
 	popup.background.shadow.drawing="$SHADOW"
 
 # Left
-source "$ITEM_DIR/apple.sh"
 source "$ITEM_DIR/spaces.sh"
 source "$ITEM_DIR/front_app.sh"
 
-# Center (of notch)
-# source "$ITEM_DIR/spotify.sh"
-
 # Right
-source "$ITEM_DIR/clock.sh"
 source "$ITEM_DIR/calendar.sh"
+source "$ITEM_DIR/clock.sh"
 source "$ITEM_DIR/battery.sh"
 source "$ITEM_DIR/volume.sh"
-source "$ITEM_DIR/cpu.sh"
 
 #################### Finalizing Setup ####################
 

@@ -29,4 +29,9 @@ yabai -m mouse_drop_action swap
 
 # yabai -m rule --add app="^Karabiner-Elements$"manage=off
 yabai -m rule --add app="^(IPEVO Annotator|Calculator|Calendar|Clock|Dictionary|Karabiner-Elements|Stickies|wolfram_automata|raylib_space_invaders|_01_sand_simulation|_03_particle_sim|_04_procedural_generator|Instruments|Unity)$" manage=off
+yabai -m rule --add app="^Brave Browser$" title="^ohcamlmycaml" space=^4
+
+yabai -m config top_padding 5
 yabai -m config external_bar all:32:0
+
+

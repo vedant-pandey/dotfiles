@@ -16,5 +16,6 @@ sketchybar --add item battery right \
 	background.border_color="$COLOR" \
 	background.color="$BAR_COLOR" \
 	background.drawing=on \
+	click_script="open 'x-apple.systempreferences:com.apple.Battery-Settings.extension'" \
 	script="$PLUGIN_DIR/power.sh" \
 	--subscribe battery power_source_change

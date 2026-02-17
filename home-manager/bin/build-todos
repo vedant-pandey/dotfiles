@@ -1,0 +1,67 @@
+#!/bin/bash
+#
+# counter=1
+# INCLUDES="$1"
+# EXCLUDES="$2"
+# grep -rn -E "(TODO|DONE|DONE|WARN|WARNING|XXX|HACK|FIX|FIXME|BUG|FIXIT|ISSUE|NOTE|INFO|STEP|TIDY|REFACTOR|CLEANUP|PLAN|SCOPE|SCAN|REVISIT|LOOK|TUNE|PERF|SPEED):" \
+# 	--include="$INCLUDES" \
+# 	--exclude-dir="$EXCLUDES" . |
+# 	while IFS=: read -r file line todo; do
+# 		clean_todo=$(echo "$todo" | sed 's/.*\(TODO\|BUG\|FIXME\): *//' | xargs)
+# 		folder=$(echo "$file" | cut -d'/' -f2)
+# 		echo "* TODO #$counter [$folder] $clean_todo"
+# 		echo "  [[file:$file::$line]]"
+# 		echo
+# 		((counter++))
+# 	done
+
+#!/bin/bash
+
+# 1. Configuration: Your 4-letter tags
+TAGS="TODO|FIXME|BUG|HACK|NOTE|WARN|TIDY|PLAN|LOOK|TUNE|PERF|OPTIMIZE|REFACTOR"
+
+# 2. Arguments
+INCLUDE_PATTERN="$1"
+EXCLUDE_PATTERN="$2"
+
+# 3. Build arguments array for ripgrep
+# We use an array to handle spaces and quotes safely
+CMD_ARGS=("-n" "($TAGS):")
+
+# If an include pattern is provided (e.g., "*.zig"), add it as a glob
+if [ -n "$INCLUDE_PATTERN" ]; then
+    CMD_ARGS+=("-g" "$INCLUDE_PATTERN")
+fi
+
+# If an exclude pattern is provided (e.g., ".zig-cache"), add it as a negative glob
+if [ -n "$EXCLUDE_PATTERN" ]; then
+    CMD_ARGS+=("-g" "!$EXCLUDE_PATTERN")
+fi
+
+# 4. Run ripgrep on current directory (.) and pipe to awk
+rg "${CMD_ARGS[@]}" . | \
+awk -v tags="$TAGS" -F: '
+    BEGIN {
+        clean_regex = ".*(" tags "):[[:space:]]*"
+    }
+    {
+        file = $1
+        line = $2
+        
+        # Reconstruct content (handles colons inside the todo text)
+        content = ""
+        for (i = 3; i <= NF; i++) content = content $i ((i < NF) ? ":" : "")
+        
+        # Clean the tag prefix
+        gsub(clean_regex, "", content)
+        
+        # Get folder context
+        split(file, path, "/")
+        folder = path[2]
+        if (folder == "") folder = "."
+
+        # Print Org-mode format
+        printf "* %s #%d [%s] %s\n", "TODO", NR, folder, content
+        printf "  [[file:%s::%s]]\n\n", file, line
+    }
+'

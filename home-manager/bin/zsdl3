@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 
 name=$1
+
+print_usage() {
+	echo "Usage: zsdl3 [filename]"
+}
+
+if [[ -z "$name" ]]; then
+	echo "File name missing"
+	print_usage 
+	exit 1
+fi
+
 mkdir "$name"
 cd "$name"
 zig init
