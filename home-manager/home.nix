@@ -44,6 +44,7 @@
 
 			kubernetes-helm
 			kubectl
+			kind
         ];
 
     };

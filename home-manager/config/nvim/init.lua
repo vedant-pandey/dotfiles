@@ -37,7 +37,6 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   "tpope/vim-fugitive",
   "tpope/vim-rhubarb",
-  "tikhomirov/vim-glsl",
   {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -48,11 +47,8 @@ require("lazy").setup({
     },
   },
 
-  { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 
   { "folke/tokyonight.nvim", lazy = false, priority = 1000, opts = { transparent = false } },
-
-  { "rebelot/kanagawa.nvim", opts = { transparent = false } },
 
   { "rafamadriz/friendly-snippets" },
 
@@ -82,7 +78,7 @@ require("lazy").setup({
         local filetype = vim.bo[0].filetype
         local buftype = vim.bo[0].buftype
 
-        local disabled_filetypes = { "TelescopePrompt", "oil", "minifiles", "netrw", "java" }
+        local disabled_filetypes = { "TelescopePrompt", "oil", "minifiles", "netrw" }
 
         local disabled_buftypes = { "prompt", "nofile", "quickfix" }
 
@@ -249,17 +245,11 @@ require("lazy").setup({
         -- PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
         -- TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
 
-        TODO = { icon = "✅", color = "hint", alt = { "DONE" } },
-        DONE = { icon = "✅", color = "hint" },
-        WARN = { icon = "⚠️", color = "warning", alt = { "WARNING", "XXX" } },
-        HACK = { icon = "🔥", color = "warning" },
+        TODO = { icon = "▶", color = "hint" },
+        WARN = { icon = "⚠", color = "warning", alt = { "WARNING", "XXX" } },
+        HACK = { icon = "☠", color = "warning" },
         FIX = { icon = "🐞", color = "error", alt = { "FIXME", "BUG", "FIXIT", "ISSUE" } },
-        NOTE = { icon = "📝", color = "hint", alt = { "INFO" } },
-        STEP = { icon = "➡️", color = "step", alt = {} },
-        TIDY = { icon = "♻️", color = "warning", alt = { "REFACTOR", "CLEANUP" } },
-        PLAN = { icon = "🔮", color = "default", alt = { "SCOPE" } },
-        SCAN = { icon = "👀", color = "info", alt = { "REVISIT", "LOOK" } },
-        TUNE = { icon = "🚀", color = "test", alt = { "PERF", "SPEED" } },
+        NOTE = { icon = "✎", color = "hint", alt = { "INFO" } },
       },
       colors = {
         -- step = { "#FFFFFF" },
@@ -306,7 +296,6 @@ require("lazy").setup({
         formatters_by_ft = {
           lua = { "stylua" },
           ocaml = { "ocamlformat" },
-          sh = { "beautysh" },
           go = { "gofmt", "golines", "goimports" },
           c = { "clang-format" },
           cpp = { "clang-format" },
@@ -454,8 +443,6 @@ require("lazy").setup({
     end,
   },
 
-  "dhruvasagar/vim-table-mode",
-
   {
     "folke/snacks.nvim",
     priority = 1000,
@@ -474,23 +461,6 @@ require("lazy").setup({
       notifier = { enabled = true },
       quickfile = { enabled = true },
       scope = { enabled = true },
-      -- words = { enabled = true },
-    },
-  },
-
-  {
-    "folke/zen-mode.nvim",
-    opts = {
-      window = {
-        width = 130,
-        options = {},
-      },
-      plugins = {
-        options = {},
-      },
-    },
-    keys = {
-      { "<leader>mz", "<cmd>ZenMode<cr>", { desc = "[M]ode [Z]en" } },
     },
   },
 
@@ -535,26 +505,6 @@ require("lazy").setup({
   },
 
   {
-    "oysandvik94/curl.nvim",
-    cmd = { "CurlOpen" },
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-    },
-    config = true,
-    keys = function(_, _)
-      local curl = require("curl")
-      return {
-        { "<leader>ct", curl.open_curl_tab, { desc = "Directory scoped Curl tab" } },
-        { "<leader>cg", curl.open_global_tab, { desc = "Global scoped Curl tab" } },
-        { "<leader>cct", curl.create_scoped_collection, { desc = "Create or open a collection" } },
-        { "<leader>ccg", curl.create_global_collection, { desc = "Create or open a global collection" } },
-        { "<leader>ccT", curl.pick_scoped_collection, { desc = "Select a scoped collection and open it" } },
-        { "<leader>ccG", curl.pick_global_collection, { desc = "Select a global collection and open it" } },
-      }
-    end,
-  },
-
-  {
     "folke/lazydev.nvim",
     ft = "lua", -- only load on lua files
     opts = {
@@ -566,133 +516,15 @@ require("lazy").setup({
     },
   },
 
-  {
-    "hasansujon786/super-kanban.nvim",
-    dependencies = {
-      "folke/snacks.nvim", -- [required]
-      "nvim-orgmode/orgmode", -- [optional] Org format support
-    },
-    opts = {
-      orgmode = {
-        notes_dir = "~/personal/dotfiles/notes/orgmode",
-        default_template = {
-          "** 💭 Backlog\n",
-          "** 🖋 Todo\n",
-          "** 🛠 Work in progress\n",
-          "** 🏁 Completed\n",
-          "*Complete*",
-        },
-      },
-      mappings = {
-        ["<cr>"] = "open_note",
-        ["gD"] = "delete_card",
-        ["<C-t>"] = "toggle_complete",
-      },
-    },
-  },
-
   "tommcdo/vim-exchange",
 
   {
-    "yousefakbar/notmuch.nvim",
+    "nvim-java/nvim-java",
     config = function()
-      -- Configuration goes here
-      local opts = {
-        notmuch_db_path = vim.fn.expand("~/.mail"),
-        maildir_sync_cmd = "mbsync -a",
-        -- renderer = "w3m -dump -T text/html",
-        -- keymaps = {
-        --   search = {
-        --     ["/"] = "search", -- Bind search to /
-        --     ["q"] = "quit", -- Quit
-        --     ["r"] = "refresh", -- Refresh the list
-        --     ["<Enter>"] = "show", -- Open the email
-        --
-        --     -- Your custom tags
-        --     ["d"] = { "+trash", "-inbox", "-unread" }, -- Delete
-        --     ["a"] = { "-inbox", "-unread" }, -- Archive
-        --   },
-        --
-        --   -- 2. Keymaps for Reading an Email (Show View)
-        --   show = {
-        --     ["q"] = "quit",
-        --
-        --     -- You need to repeat these here so they work while reading too!
-        --     ["d"] = { "+trash", "-inbox", "-unread" },
-        --     ["a"] = { "-inbox", "-unread" },
-        --   },
-        -- },
-      }
-      require("notmuch").setup(opts)
+      require("java").setup()
+      vim.lsp.enable("jdtls")
     end,
-    keys = {
-      { "<leader>eo", "<cmd>Notmuch<cr>", { desc = "[E]mail [O]pen" } },
-    },
-
-    -- keys = function(_, _)
-    --   local curl = require("curl")
-    --   return {
-    --     { "<leader>ct", curl.open_curl_tab, { desc = "Directory scoped Curl tab" } },
-    --     { "<leader>cg", curl.open_global_tab, { desc = "Global scoped Curl tab" } },
-    --     { "<leader>cct", curl.create_scoped_collection, { desc = "Create or open a collection" } },
-    --     { "<leader>ccg", curl.create_global_collection, { desc = "Create or open a global collection" } },
-    --     { "<leader>ccT", curl.pick_scoped_collection, { desc = "Select a scoped collection and open it" } },
-    --     { "<leader>ccG", curl.pick_global_collection, { desc = "Select a global collection and open it" } },
-    --   }
-    -- end,
   },
-  {
-    "neo451/feed.nvim",
-    cmd = "Feed",
-    ---@module 'feed'
-    ---@type feed.config
-    opts = {
-      feeds = {
-        {
-          "https://indianexpress.com/feed/",
-          name = "IE Top News",
-          tags = { "latest", "top" },
-        },
-        {
-          "https://indianexpress.com/section/explained/feed/",
-          name = "IE Explained",
-          tags = { "detail", "explain" },
-        },
-        {
-          "https://indianexpress.com/section/opinion/feed/",
-          name = "IE Opinion",
-          tags = { "detail", "opinion" },
-        },
-        {
-          "https://indianexpress.com/section/world/feed/",
-          name = "IE World",
-          tags = { "world", "global" },
-        },
-        {
-          "https://indianexpress.com/section/sports/feed/",
-          name = "IE Sports",
-          tags = { "sports" },
-        },
-        {
-          "https://indianexpress.com/section/technology/feed/",
-          name = "IE Tech",
-          tags = { "tech" },
-        },
-        {
-          "https://indianexpress.com/section/upsc-current-affairs/feed/",
-          name = "IE UPSC",
-          tags = { "upsc" },
-        },
-      },
-    },
-  },
-  -- {
-  --   "nvim-java/nvim-java",
-  --   config = function()
-  --     require("java").setup()
-  --     vim.lsp.enable("jdtls")
-  --   end,
-  -- },
 }, {})
 
 --[[
@@ -717,13 +549,14 @@ vim.o.scrolloff = 30
 vim.o.relativenumber = true
 vim.o.colorcolumn = "120,150"
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = {"org", "markdown", "text"},
-	callback = function ()
-		vim.opt_local.colorcolumn = "0"
-	end
+  pattern = { "org", "markdown", "text" },
+  callback = function()
+    vim.opt_local.colorcolumn = "0"
+  end,
 })
 vim.o.number = true
 local tabLen = 4
+vim.o.expandtab = true
 vim.o.tabstop = tabLen
 vim.o.softtabstop = tabLen
 vim.o.shiftwidth = tabLen
@@ -1319,14 +1152,14 @@ local servers = {
   nextls = {},
   glsl_analyzer = {},
   gopls = {},
+  nil_ls = {},
+  cmake = {},
   pylsp = {},
   wgsl_analyzer = {},
-  bashls = {},
   html = {},
   rust_analyzer = {},
   slangd = {},
   ts_ls = {},
-  harper_ls = {},
 
   lua_ls = {
     Lua = {
@@ -1379,8 +1212,7 @@ vim.lsp.config("clangd", {
     "--function-arg-placeholders",
     "--fallback-style=llvm",
     "--header-insertion-decorators=0",
-    -- "-j=4", -- Adjust based on your CPU
-    -- "--pch-storage=memory", -- Important for Unreal's PCH usage
+    "-j=4", -- Adjust based on your CPU
   },
 })
 
@@ -1612,3 +1444,4 @@ vim.keymap.set("n", "<leader>gg", ":Git<CR>", { desc = "[G]it [G]o" })
 vim.keymap.set("n", "<C-s>", 'yiw:s/<C-r>"/', { desc = "Replace" })
 
 vim.keymap.set("t", "<ESC><ESC>", "<C-\\")
+vim.keymap.set("n", "Q", ":<C-f>")
